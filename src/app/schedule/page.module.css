@@ -1,0 +1,213 @@
+.main {
+    min-height: 100vh;
+}
+
+/* Hero Section */
+.hero {
+    padding: calc(var(--header-height) + var(--space-12)) 0 var(--space-12);
+    background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
+    text-align: center;
+}
+
+.container {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 var(--space-5);
+}
+
+.pageTitle {
+    font-family: var(--font-pixel);
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    background: var(--gradient-title);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: var(--space-4);
+}
+
+.pageSubtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-8);
+}
+
+.countdownWrapper {
+    display: inline-block;
+}
+
+/* Sections */
+.section {
+    padding: var(--space-16) 0;
+    background: var(--bg-dark);
+}
+
+.sectionDark {
+    padding: var(--space-16) 0;
+    background: var(--bg-darker);
+}
+
+.sectionTitle {
+    font-family: var(--font-pixel);
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    color: var(--accent-gold);
+    margin-bottom: var(--space-10);
+    text-align: center;
+}
+
+/* Key Dates Grid */
+.keyDatesGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-6);
+}
+
+.keyDateCard {
+    background: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    text-align: center;
+    transition: all var(--transition-base);
+}
+
+.keyDateCard:hover {
+    transform: translateY(-4px);
+    border-color: rgba(244, 160, 32, 0.3);
+    box-shadow: var(--shadow-glow);
+}
+
+.keyDateIcon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto var(--space-4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(244, 160, 32, 0.1);
+    border-radius: var(--radius-lg);
+    color: var(--accent-gold);
+}
+
+.keyDateCard h3 {
+    font-family: var(--font-pixel);
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.keyDateValue {
+    font-family: var(--font-pixel);
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+}
+
+.keyDateTime {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* Flow Chart */
+.flowChart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}
+
+.flowNode {
+    background: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6) var(--space-8);
+    text-align: center;
+    min-width: 140px;
+}
+
+.flowNodeWinner {
+    background: linear-gradient(135deg, rgba(244, 160, 32, 0.2) 0%, rgba(244, 160, 32, 0.1) 100%);
+    border-color: var(--accent-gold);
+}
+
+.flowNumber {
+    font-family: var(--font-pixel);
+    font-size: 1.5rem;
+    color: var(--accent-gold);
+    margin-bottom: var(--space-2);
+}
+
+.flowLabel {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.flowArrow {
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+/* Notes Grid */
+.notesGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-5);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.noteCard {
+    background: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+}
+
+.noteCard h4 {
+    font-family: var(--font-pixel);
+    font-size: 0.65rem;
+    color: var(--accent-gold);
+    margin-bottom: var(--space-2);
+}
+
+.noteCard p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .keyDatesGrid {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .flowChart {
+        flex-direction: column;
+    }
+
+    .flowArrow {
+        transform: rotate(90deg);
+    }
+}
+
+@media (max-width: 576px) {
+
+    .section,
+    .sectionDark {
+        padding: var(--space-12) 0;
+    }
+
+    .notesGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .flowNode {
+        width: 100%;
+        max-width: 200px;
+    }
+}

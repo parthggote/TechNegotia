@@ -1,0 +1,105 @@
+.card {
+    --card-accent: var(--accent-gold);
+
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    overflow: hidden;
+}
+
+.hoverable {
+    transition: all var(--transition-base);
+}
+
+.hoverable:hover {
+    background: var(--bg-card-hover);
+    border-color: rgba(255, 255, 255, 0.12);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Accent Bar */
+.accentBar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--card-accent);
+}
+
+/* Variants */
+.featured {
+    background: linear-gradient(135deg,
+            rgba(244, 160, 32, 0.1) 0%,
+            rgba(111, 135, 195, 0.1) 100%);
+    border-color: rgba(244, 160, 32, 0.2);
+}
+
+.featured:hover {
+    border-color: rgba(244, 160, 32, 0.4);
+    box-shadow: var(--shadow-glow);
+}
+
+.glass {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Header */
+.header {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+}
+
+.icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-md);
+    font-size: 1.5rem;
+}
+
+.headerText {
+    flex: 1;
+}
+
+.title {
+    font-family: var(--font-pixel);
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    margin-bottom: var(--space-1);
+    letter-spacing: 0.02em;
+}
+
+.subtitle {
+    font-size: 0.85rem;
+    color: var(--accent-gold);
+    font-weight: 500;
+}
+
+/* Body */
+.body {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+/* Footer */
+.footer {
+    margin-top: var(--space-5);
+    padding-top: var(--space-4);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}

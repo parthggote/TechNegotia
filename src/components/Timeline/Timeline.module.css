@@ -1,0 +1,120 @@
+.timeline {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.timelineItem {
+    display: flex;
+    gap: var(--space-5);
+    position: relative;
+}
+
+.timelineMarker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    width: 24px;
+}
+
+.dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent-gold);
+    box-shadow: 0 0 0 4px rgba(244, 160, 32, 0.2);
+    z-index: 1;
+}
+
+.line {
+    flex: 1;
+    width: 2px;
+    background: linear-gradient(180deg,
+            rgba(255, 255, 255, 0.2) 0%,
+            rgba(255, 255, 255, 0.05) 100%);
+    margin-top: var(--space-2);
+}
+
+.timelineContent {
+    flex: 1;
+    padding-bottom: var(--space-8);
+}
+
+.timeWrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-2);
+}
+
+.time {
+    font-family: var(--font-pixel);
+    font-size: 0.7rem;
+    color: var(--accent-gold);
+}
+
+.badge {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    border: 1px solid;
+}
+
+.eventTitle {
+    font-family: var(--font-pixel);
+    font-size: 0.8rem;
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+}
+
+.eventDesc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* Last item has no bottom padding */
+.timelineItem:last-child .timelineContent {
+    padding-bottom: 0;
+}
+
+.timelineItem:last-child .line {
+    display: none;
+}
+
+/* Hover effect */
+.timelineItem:hover .timelineContent {
+    background: var(--bg-card);
+    margin: calc(-1 * var(--space-3));
+    padding: var(--space-3);
+    padding-bottom: calc(var(--space-8) + var(--space-3));
+    border-radius: var(--radius-md);
+    margin-left: 0;
+}
+
+.timelineItem:last-child:hover .timelineContent {
+    padding-bottom: var(--space-3);
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .timelineMarker {
+        display: none;
+    }
+
+    .timelineContent {
+        border-left: 3px solid var(--accent-gold);
+        padding-left: var(--space-4);
+        padding-bottom: var(--space-6);
+    }
+
+    .timelineItem:hover .timelineContent {
+        margin: 0;
+        padding: var(--space-4);
+        padding-bottom: var(--space-6);
+        margin-left: 0;
+    }
+}

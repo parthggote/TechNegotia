@@ -1,0 +1,287 @@
+.hero {
+    position: relative;
+    height: 100vh;
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Parallax Container */
+.parallaxContainer {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.layer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* Removed top: 0 to allow height to be driven by content/css */
+    will-change: transform;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    /* Align images to bottom */
+    width: 100%;
+    /* Ensure layer itself doesn't constrain height incorrectly */
+    height: 100%;
+    pointer-events: none;
+}
+
+/* Sky fills entire background using Next.js fill */
+.layerSky {
+    z-index: 1;
+    top: 0;
+    /* Only sky needs top 0 */
+}
+
+/* Layers with auto-height images */
+.layerMountains {
+    z-index: 2;
+}
+
+.layerHills {
+    z-index: 3;
+}
+
+.layerGrass {
+    z-index: 4;
+}
+
+.autoHeightImg {
+    /* Critical: allow image to shrink/grow */
+    width: 100%;
+    height: auto;
+    /* Prevent image from getting too short on mobile - ensure min-height covers viewport bottom area */
+    min-height: 50vh;
+    /* But standard usage is cover-like behavior without zoom */
+    object-fit: cover;
+    object-position: bottom;
+    /* Override for specific layering needs if necessary */
+    display: block;
+}
+
+/* Gradient Overlay - subtle fade at bottom */
+.overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 150px;
+    background: linear-gradient(180deg,
+            transparent 0%,
+            rgba(15, 21, 36, 0.5) 60%,
+            var(--bg-dark) 100%);
+    z-index: 5;
+    pointer-events: none;
+}
+
+/* Content */
+.content {
+    position: relative;
+    z-index: 6;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: calc(var(--header-height) + var(--space-6)) var(--space-5) var(--space-16);
+    text-align: center;
+}
+
+.contentInner {
+    max-width: 800px;
+}
+
+/* Pre-title - "START YOUR" */
+.preTitle {
+    font-family: var(--font-pixel);
+    font-size: clamp(0.5rem, 1.5vw, 0.7rem);
+    color: var(--text-secondary);
+    letter-spacing: 0.4em;
+    margin-bottom: var(--space-3);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    text-transform: uppercase;
+}
+
+/* Main Title - Script/Decorative style like "Coding Adventure" */
+.title {
+    margin-bottom: var(--space-4);
+    line-height: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* "Tech" - smaller, more standard */
+.titleMain {
+    font-family: var(--font-pixel);
+    font-size: clamp(1.8rem, 6vw, 3.5rem);
+    background: linear-gradient(180deg,
+            #ffd700 0%,
+            #f4a020 40%,
+            #e86a17 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4));
+    font-style: italic;
+    letter-spacing: 0.05em;
+}
+
+/* "Negotia" - larger, more decorative script-like */
+.titleScript {
+    font-family: var(--font-pixel);
+    font-size: clamp(2.5rem, 9vw, 5.5rem);
+    background: linear-gradient(180deg,
+            #ffd700 0%,
+            #ffb347 30%,
+            #f4a020 60%,
+            #e86a17 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 30px rgba(244, 160, 32, 0.3));
+    font-style: italic;
+    letter-spacing: 0.02em;
+    margin-top: -0.1em;
+}
+
+/* Tagline */
+.tagline {
+    font-family: var(--font-body);
+    font-size: clamp(0.85rem, 2vw, 1rem);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-6);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* CTA Button - matches reference white/cream button */
+.cta {
+    margin-bottom: var(--space-6);
+}
+
+.ctaButton {
+    display: inline-block;
+    font-family: var(--font-pixel);
+    font-size: clamp(0.55rem, 1.2vw, 0.7rem);
+    padding: var(--space-3) var(--space-8);
+    background: #fffef5;
+    color: #1a1a2e;
+    border-radius: var(--radius-full);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: all var(--transition-fast);
+    box-shadow: 0 4px 0 #d4d4c4, 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.ctaButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #d4d4c4, 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+.ctaButton:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #d4d4c4;
+}
+
+/* Mascot - positioned at bottom left */
+.mascot {
+    position: absolute;
+    bottom: 8%;
+    left: 8%;
+    z-index: 5;
+    animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(-2deg);
+    }
+
+    50% {
+        transform: translateY(-12px) rotate(2deg);
+    }
+}
+
+.mascot img {
+    max-width: 160px;
+    height: auto;
+    filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.4));
+}
+
+/* Supporters - positioned at absolute bottom center */
+.supporters {
+    position: absolute;
+    bottom: var(--space-5);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 7;
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+}
+
+.supportersLabel {
+    font-family: var(--font-body);
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+}
+
+.supportersLogos {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+}
+
+.sponsorLogo {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero {
+        max-height: none;
+        height: 100svh;
+    }
+
+    .mascot {
+        bottom: 12%;
+        left: 5%;
+    }
+
+    .mascot img {
+        max-width: 100px;
+    }
+
+    .supporters {
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+
+    .supportersLogos {
+        gap: var(--space-3);
+    }
+}
+
+@media (max-width: 480px) {
+    .mascot {
+        display: none;
+    }
+
+    .content {
+        padding-top: calc(var(--header-height) + var(--space-8));
+    }
+}
