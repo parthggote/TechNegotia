@@ -27,7 +27,6 @@ export const NAV_LINKS = [
     { href: "/schedule", label: "Schedule", icon: "hn hn-calender" },
     { href: "/rounds", label: "Rounds", icon: "hn hn-trophy" },
     { href: "/prizes", label: "Prizes", icon: "hn hn-sparkles" },
-    { href: "/contact", label: "Contact", icon: "hn hn-envelope" },
 ];
 
 export const ROUNDS_DATA = [
