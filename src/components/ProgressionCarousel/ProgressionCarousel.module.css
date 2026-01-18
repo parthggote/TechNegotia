@@ -119,6 +119,36 @@
     line-height: 1.4;
 }
 
+.dateInfo {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-6);
+    margin-bottom: var(--space-4);
+    padding: var(--space-3);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dateItem {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.dateLabel {
+    font-family: var(--font-pixel);
+    font-size: 0.5rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+}
+
+.dateValue {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
 .description {
     font-size: 0.95rem;
     color: var(--text-secondary);

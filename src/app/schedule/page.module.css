@@ -37,12 +37,14 @@
 
 /* Sections */
 .section {
-    padding: var(--space-16) 0;
+    padding: 12rem 0;
+    /* Increased from var(--space-16) which is 8rem */
     background: var(--bg-dark);
 }
 
 .sectionDark {
-    padding: var(--space-16) 0;
+    padding: 12rem 0;
+    /* Increased from var(--space-16) which is 8rem */
     background: var(--bg-darker);
 }
 

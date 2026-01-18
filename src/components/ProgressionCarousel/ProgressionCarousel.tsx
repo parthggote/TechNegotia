@@ -7,23 +7,29 @@ import styles from "./ProgressionCarousel.module.css";
 const PROGRESSION_STEPS = [
     {
         id: 1,
-        label: "Phase 1: Registration",
-        title: "Join the Adventure",
-        description: "Register your team and get ready. The journey begins with choosing your problem statement.",
+        label: "Phase 1: Problem Release",
+        title: "The Beginning",
+        description: "Review the problem statements released via social media and start strategizing your approach.",
+        date: "Friday, Feb 20",
+        time: "6:00 PM",
         image: "/html-parralax-combined.gif"
     },
     {
         id: 2,
-        label: "Phase 2: The Challenge",
+        label: "Phase 2: Event Day",
         title: "Build & Adapt",
-        description: "Develop your prototype. Sudden crisis scenarios will test your team's resilience and adaptability.",
+        description: "Build your prototype, handle the crisis scenario, and prepare for the investor pitch.",
+        date: "Saturday, Feb 21",
+        time: "9:00 AM - 7:00 PM",
         image: "/fire-animation.gif"
     },
     {
         id: 3,
-        label: "Phase 3: Victory",
-        title: "Pitch & Conquer",
-        description: "Secure investment credits and defend your valuation in the boardroom. Only the best survive.",
+        label: "Phase 3: Finale",
+        title: "Winners Announced",
+        description: "The final verdict. Winners are announced and prizes are distributed during the closing ceremony.",
+        date: "Saturday, Feb 21",
+        time: "7:00 PM",
         image: "/javascript-course-banner.gif"
     }
 ];
@@ -44,7 +50,7 @@ export default function ProgressionCarousel() {
     useEffect(() => {
         const timer = setInterval(() => {
             nextSlide();
-        }, 5000); // Change slide every 5 seconds
+        }, 8000); // Change slide every 8 seconds
 
         return () => clearInterval(timer);
     }, [nextSlide]); // Re-creates timer when nextSlide changes (or dependencies change)
@@ -91,6 +97,18 @@ export default function ProgressionCarousel() {
                                 <div className={styles.content}>
                                     <div className={styles.stepLabel}>{step.label}</div>
                                     <h3 className={styles.title}>{step.title}</h3>
+
+                                    <div className={styles.dateInfo}>
+                                        <div className={styles.dateItem}>
+                                            <span className={styles.dateLabel}>DATE</span>
+                                            <span className={styles.dateValue}>{step.date}</span>
+                                        </div>
+                                        <div className={styles.dateItem}>
+                                            <span className={styles.dateLabel}>TIME</span>
+                                            <span className={styles.dateValue}>{step.time}</span>
+                                        </div>
+                                    </div>
+
                                     <p className={styles.description}>{step.description}</p>
                                 </div>
                             </div>
