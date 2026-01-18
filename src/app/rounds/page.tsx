@@ -177,10 +177,10 @@ export default function RoundsPage() {
                     <div className={styles.container}>
                         <h2 className={styles.ctaTitle}>Ready to Compete?</h2>
                         <p className={styles.ctaDesc}>
-                            Register now and prepare for the ultimate hackathon experience.
+                            Register now and get ready for an exciting journey ahead.
                         </p>
                         <a href="/register" className={styles.ctaButton}>
-                            Register Your Team
+                            REGISTER YOUR TEAM
                         </a>
                     </div>
                 </section>

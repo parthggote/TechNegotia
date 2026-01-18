@@ -32,8 +32,8 @@ export const NAV_LINKS = [
 export const ROUNDS_DATA = [
     {
         id: 1,
-        title: "Round 1: The Foundation",
-        subtitle: "Prototype & Crisis Handling",
+        title: "Round 1: Beginner's Quest",
+        subtitle: "Beginner's Quest",
         description: "Build prototypes from pre-released problems and adapt to sudden crisis scenarios.",
         teams: "All Teams (~150)",
         duration: "Event Day",
@@ -49,8 +49,8 @@ export const ROUNDS_DATA = [
     },
     {
         id: 2,
-        title: "Round 2: Investor Pitch",
-        subtitle: "Credit-Based Funding",
+        title: "Round 2: Trader's Path",
+        subtitle: "Trader's Path",
         description: "Pitch to 'investor' judges to secure virtual credits. Highest funding wins.",
         teams: "Top 30-40 Teams",
         duration: "Pitching Session",
@@ -66,8 +66,8 @@ export const ROUNDS_DATA = [
     },
     {
         id: 3,
-        title: "Round 3: Boardroom Verdict",
-        subtitle: "Final Negotiation",
+        title: "Round 3: Hero's Trial",
+        subtitle: "Hero's Trial",
         description: "Defend valuation in a high-stakes boardroom negotiation.",
         teams: "Final 9-10 Teams",
         duration: "Final Showdown",
