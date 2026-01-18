@@ -123,6 +123,15 @@
     margin-left: 4px;
 }
 
+/* Custom Contact Button - smaller size */
+.contactBtn {
+    font-family: var(--font-pixel) !important;
+    font-size: 0.45rem !important;
+    padding: 8px 12px !important;
+    min-height: auto !important;
+    line-height: 1.2 !important;
+}
+
 /* Actions */
 .actions {
     display: flex;

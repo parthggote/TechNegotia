@@ -52,19 +52,19 @@ export default function Hero() {
             {/* Content */}
             <div className={styles.content}>
                 <div className={styles.contentInner}>
-                    <p className={styles.preTitle}>Begin thy journey within the realm of</p>
+                    <p className={styles.preTitle}>Venture forth into the realm of</p>
 
                     <h1 className={styles.title}>
                         <span className={styles.titleScript}>TechNegotia</span>
                     </h1>
 
                     <p className={styles.tagline}>
-                        Where counsel is spoken, and fate is negotiated
+                        Fortune favors the strategic.
                     </p>
 
                     <div className={styles.cta}>
                         <Link href="/register" className="nes-btn is-warning">
-                            Get started
+                            Start the Quest
                         </Link>
                     </div>
                 </div>

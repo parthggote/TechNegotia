@@ -60,9 +60,9 @@ export default function Header() {
 
                 {/* Right Side Actions */}
                 <div className={styles.actions}>
-                    {/* Register Button - Desktop */}
-                    <Link href="/register" className="nes-btn is-primary">
-                        Sign up
+                    {/* Contact Us Button - Desktop */}
+                    <Link href="/contact" className={`nes-btn is-primary ${styles.contactBtn}`}>
+                        Contact Us
                     </Link>
 
                     {/* Mobile Menu Toggle */}
