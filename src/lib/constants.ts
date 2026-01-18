@@ -6,8 +6,8 @@ export const EVENT_CONFIG = {
     description: "A multi-round hackathon-style event focusing on problem-solving, prototyping under crisis, investor pitching with credit-based funding, and final negotiations.",
 
     // Update these dates for the actual event
-    eventDate: new Date("2026-02-15T09:00:00"),
-    problemReleaseDate: new Date("2026-02-14T18:00:00"),
+    eventDate: new Date("2026-02-21T09:00:00"),
+    problemReleaseDate: new Date("2026-02-20T18:00:00"),
 
     venue: {
         name: "Main Campus Auditorium",
@@ -79,56 +79,63 @@ export const ROUNDS_DATA = [
     }
 ];
 
-export const SCHEDULE_DATA = [
-    {
-        time: "Day Before",
-        event: "Problem Statements Released",
-        description: "Problems announced via social media - start strategizing!",
-        type: "release"
-    },
-    {
-        time: "9:00 AM",
-        event: "Check-in & Opening Ceremony",
-        description: "Team registration and event kickoff",
-        type: "ceremony"
-    },
-    {
-        time: "10:00 AM",
-        event: "Round 1 Begins",
-        description: "Problem selection (FCFS) and prototype development starts",
-        type: "round"
-    },
-    {
-        time: "12:00 PM",
-        event: "Crisis Scenario Announced",
-        description: "Surprise twist! Adapt your solution",
-        type: "crisis"
-    },
-    {
-        time: "2:00 PM",
-        event: "Round 1 Submissions",
-        description: "Submit prototypes for evaluation",
-        type: "deadline"
-    },
-    {
-        time: "3:00 PM",
-        event: "Round 2 - Investor Pitches",
-        description: "Top 40 teams pitch for credits",
-        type: "round"
-    },
-    {
-        time: "5:00 PM",
-        event: "Round 3 - Boardroom",
-        description: "Final negotiations begin",
-        type: "round"
-    },
-    {
-        time: "7:00 PM",
-        event: "Winners Announced",
-        description: "Prize distribution and closing ceremony",
-        type: "ceremony"
-    }
-];
+export type ScheduleItemType = "release" | "ceremony" | "round" | "crisis" | "deadline";
+
+export const SCHEDULE_DATA: {
+    time: string;
+    event: string;
+    description: string;
+    type: ScheduleItemType;
+}[] = [
+        {
+            time: "Day Before",
+            event: "Problem Statements Released",
+            description: "Problems announced via social media - start strategizing!",
+            type: "release"
+        },
+        {
+            time: "9:00 AM",
+            event: "Check-in & Opening Ceremony",
+            description: "Team registration and event kickoff",
+            type: "ceremony"
+        },
+        {
+            time: "10:00 AM",
+            event: "Round 1 Begins",
+            description: "Problem selection (FCFS) and prototype development starts",
+            type: "round"
+        },
+        {
+            time: "12:00 PM",
+            event: "Crisis Scenario Announced",
+            description: "Surprise twist! Adapt your solution",
+            type: "crisis"
+        },
+        {
+            time: "2:00 PM",
+            event: "Round 1 Submissions",
+            description: "Submit prototypes for evaluation",
+            type: "deadline"
+        },
+        {
+            time: "3:00 PM",
+            event: "Round 2 - Investor Pitches",
+            description: "Top 40 teams pitch for credits",
+            type: "round"
+        },
+        {
+            time: "5:00 PM",
+            event: "Round 3 - Boardroom",
+            description: "Final negotiations begin",
+            type: "round"
+        },
+        {
+            time: "7:00 PM",
+            event: "Winners Announced",
+            description: "Prize distribution and closing ceremony",
+            type: "ceremony"
+        }
+    ];
 
 export const FAQ_DATA = [
     {

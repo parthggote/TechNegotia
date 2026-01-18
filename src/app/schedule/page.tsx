@@ -2,6 +2,7 @@ import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import Timeline from "@/components/Timeline/Timeline";
 import CountdownTimer from "@/components/CountdownTimer/CountdownTimer";
+import ProgressionCarousel from "@/components/ProgressionCarousel/ProgressionCarousel";
 import { SCHEDULE_DATA, EVENT_CONFIG } from "@/lib/constants";
 import styles from "./page.module.css";
 
@@ -108,39 +109,8 @@ export default function SchedulePage() {
                 <section className={styles.section}>
                     <div className={styles.container}>
                         <h2 className={styles.sectionTitle}>Team Progression</h2>
-                        <div className={styles.flowChart}>
-                            <div className={styles.flowNode}>
-                                <div className={styles.flowNumber}>{EVENT_CONFIG.stats.totalTeams}+</div>
-                                <div className={styles.flowLabel}>Teams Register</div>
-                            </div>
-                            <div className={styles.flowArrow}>
-                                <svg width="48" height="24" viewBox="0 0 48 24">
-                                    <path d="M0 12 L40 12 M32 4 L40 12 L32 20" stroke="currentColor" strokeWidth="2" fill="none" />
-                                </svg>
-                            </div>
-                            <div className={styles.flowNode}>
-                                <div className={styles.flowNumber}>{EVENT_CONFIG.stats.round2Teams}</div>
-                                <div className={styles.flowLabel}>Advance to Round 2</div>
-                            </div>
-                            <div className={styles.flowArrow}>
-                                <svg width="48" height="24" viewBox="0 0 48 24">
-                                    <path d="M0 12 L40 12 M32 4 L40 12 L32 20" stroke="currentColor" strokeWidth="2" fill="none" />
-                                </svg>
-                            </div>
-                            <div className={styles.flowNode}>
-                                <div className={styles.flowNumber}>{EVENT_CONFIG.stats.round3Teams}</div>
-                                <div className={styles.flowLabel}>Final Boardroom</div>
-                            </div>
-                            <div className={styles.flowArrow}>
-                                <svg width="48" height="24" viewBox="0 0 48 24">
-                                    <path d="M0 12 L40 12 M32 4 L40 12 L32 20" stroke="currentColor" strokeWidth="2" fill="none" />
-                                </svg>
-                            </div>
-                            <div className={`${styles.flowNode} ${styles.flowNodeWinner}`}>
-                                <div className={styles.flowNumber}>3</div>
-                                <div className={styles.flowLabel}>Winners</div>
-                            </div>
-                        </div>
+
+                        <ProgressionCarousel />
                     </div>
                 </section>
 
