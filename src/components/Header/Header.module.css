@@ -30,7 +30,7 @@
 .logo {
     display: flex;
     align-items: center;
-    gap: var(--space-2);
+    gap: var(--space-1);
     text-decoration: none;
     flex-shrink: 0;
 }
@@ -76,20 +76,40 @@
 .navLink {
     display: flex;
     align-items: center;
-    gap: var(--space-1);
-    font-family: var(--font-body);
-    font-size: 0.875rem;
+    gap: var(--space-2);
+    font-family: var(--font-pixel);
+    font-size: 0.95rem;
     font-weight: 500;
-    color: var(--text-secondary);
+    color: #1a1a2e;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
     text-decoration: none;
     padding: var(--space-2) var(--space-3);
     border-radius: var(--radius-md);
     transition: all var(--transition-fast);
 }
 
+.navLink i {
+    font-size: 1.1em;
+    margin-right: -2px;
+}
+
 .navLink:hover {
-    color: var(--text-primary);
+    color: var(--accent-gold);
+    background: rgba(255, 255, 255, 0.1);
+    -webkit-text-stroke: 1px black;
+    text-shadow: none;
+}
+
+.header.scrolled .navLink {
+    color: #f5f5f0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.header.scrolled .navLink:hover {
+    color: var(--accent-gold);
     background: rgba(255, 255, 255, 0.05);
+    -webkit-text-stroke: 1px black;
+    text-shadow: none;
 }
 
 /* Arrow for dropdown items - add via CSS for specific items if needed */

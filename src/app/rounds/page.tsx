@@ -64,17 +64,7 @@ export default function RoundsPage() {
                                     <p>{round.description}</p>
                                 </div>
 
-                                <div className={styles.highlightsCard}>
-                                    <h3>Key Highlights</h3>
-                                    <ul className={styles.highlightsList}>
-                                        {round.highlights.map((highlight, i) => (
-                                            <li key={i}>
-                                                <span className={styles.bulletIcon} style={{ background: round.color }} />
-                                                {highlight}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
+
 
                                 {round.id === 1 && (
                                     <div className={styles.detailsGrid}>

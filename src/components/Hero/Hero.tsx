@@ -52,15 +52,14 @@ export default function Hero() {
             {/* Content */}
             <div className={styles.content}>
                 <div className={styles.contentInner}>
-                    <p className={styles.preTitle}>START YOUR</p>
+                    <p className={styles.preTitle}>Begin thy journey within the realm of</p>
 
                     <h1 className={styles.title}>
-                        <span className={styles.titleMain}>Tech</span>
-                        <span className={styles.titleScript}>Negotia</span>
+                        <span className={styles.titleScript}>TechNegotia</span>
                     </h1>
 
                     <p className={styles.tagline}>
-                        The ultimate hackathon where problem-solving meets negotiation
+                        Where counsel is spoken, and fate is negotiated
                     </p>
 
                     <div className={styles.cta}>
@@ -84,11 +83,15 @@ export default function Hero() {
 
             {/* Supported By Section - at bottom like reference */}
             <div className={styles.supporters}>
-                <span className={styles.supportersLabel}>SUPPORTED BY</span>
+                <span className={styles.supportersLabel}>ORGANIZED BY</span>
                 <div className={styles.supportersLogos}>
-                    <div className={styles.sponsorLogo}>Sponsor 1</div>
-                    <div className={styles.sponsorLogo}>Sponsor 2</div>
-                    <div className={styles.sponsorLogo}>Sponsor 3</div>
+                    <Image
+                        src="/ChatGPT_Image_Jan_18__2026__03_32_18_AM-removebg-preview.png"
+                        alt="Sponsors"
+                        width={300}
+                        height={80}
+                        className={styles.sponsorImage}
+                    />
                 </div>
             </div>
         </section>
