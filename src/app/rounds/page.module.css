@@ -101,44 +101,7 @@
     line-height: 1.8;
 }
 
-/* Highlights Card */
-.highlightsCard {
-    background: var(--bg-card);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: var(--radius-lg);
-    padding: var(--space-6);
-    margin-bottom: var(--space-8);
-}
 
-.highlightsCard h3 {
-    font-family: var(--font-pixel);
-    font-size: 0.75rem;
-    color: var(--accent-gold);
-    margin-bottom: var(--space-5);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-}
-
-.highlightsList {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-4);
-}
-
-.highlightsList li {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    font-size: 0.95rem;
-    color: var(--text-primary);
-}
-
-.bulletIcon {
-    width: 8px;
-    height: 8px;
-    border-radius: 2px;
-    flex-shrink: 0;
-}
 
 /* Details Grid */
 .detailsGrid {

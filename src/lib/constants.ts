@@ -23,58 +23,39 @@ export const EVENT_CONFIG = {
 };
 
 export const NAV_LINKS = [
-    { href: "/", label: "Home" },
-    { href: "/about", label: "About" },
-    { href: "/schedule", label: "Schedule" },
-    { href: "/rounds", label: "Rounds" },
-    { href: "/prizes", label: "Prizes" },
-    { href: "/contact", label: "Contact" },
+    { href: "/", label: "Home", icon: "hn hn-home" },
+    { href: "/schedule", label: "Schedule", icon: "hn hn-calender" },
+    { href: "/rounds", label: "Rounds", icon: "hn hn-trophy" },
+    { href: "/prizes", label: "Prizes", icon: "hn hn-sparkles" },
+    { href: "/contact", label: "Contact", icon: "hn hn-envelope" },
 ];
 
 export const ROUNDS_DATA = [
     {
         id: 1,
-        title: "Round 1",
-        subtitle: "Prototype & Crisis",
-        description: "Teams select problems (FCFS), build prototypes as wireframes/mockups, and handle surprise crises testing adaptability.",
-        teams: "150 Teams",
-        duration: "4 Hours",
-        highlights: [
-            "Problem allocation via FCFS",
-            "Prototype development",
-            "Crisis scenario handling",
-            "Evaluation: Practicality & Crisis Response"
-        ],
+        title: "Round 1: The Foundation",
+        subtitle: "Prototype & Crisis Handling",
+        description: "Build prototypes from pre-released problems and adapt to sudden crisis scenarios.",
+        teams: "All Teams (~150)",
+        duration: "Event Day",
         color: "#4ecdc4"
     },
     {
         id: 2,
-        title: "Round 2",
-        subtitle: "Investor Pitch",
-        description: "Top 30-40 teams pitch to judges with virtual credits. Secure funding of ≥5000 credits per judge to advance.",
-        teams: "~40 Teams",
-        duration: "3 Hours",
-        highlights: [
-            "90-second elevator pitches",
-            "Credit-based funding system",
-            "Multiple pitch tables",
-            "Minimum 5000 credits/judge required"
-        ],
+        title: "Round 2: Investor Pitch",
+        subtitle: "Credit-Based Funding",
+        description: "Pitch to 'investor' judges to secure virtual credits. Highest funding wins.",
+        teams: "Top 30-40 Teams",
+        duration: "Pitching Session",
         color: "#f4a020"
     },
     {
         id: 3,
-        title: "Round 3",
-        subtitle: "Boardroom Negotiation",
-        description: "Final 9-10 teams enter high-stakes negotiations defending valuations and strategies to win.",
-        teams: "~10 Teams",
-        duration: "2 Hours",
-        highlights: [
-            "Defense presentations",
-            "Strategic negotiations",
-            "Final scoring",
-            "Winners announced"
-        ],
+        title: "Round 3: Boardroom Verdict",
+        subtitle: "Final Negotiation",
+        description: "Defend valuation in a high-stakes boardroom negotiation.",
+        teams: "Final 9-10 Teams",
+        duration: "Final Showdown",
         color: "#ff6b9d"
     }
 ];

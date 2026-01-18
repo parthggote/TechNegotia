@@ -12,6 +12,9 @@
   /* Deep Navy/Black */
   --bg-card: #1E293B;
 
+  --header-bg: rgba(15, 21, 36, 0.95);
+  /* Dark mode header bg */
+
   /* Text Colors */
   --text-primary: #F8FAFC;
   --text-secondary: #94A3B8;
@@ -81,6 +84,19 @@
   /* Layout */
   --container-max: 1200px;
   --header-height: 72px;
+}
+
+body.light-mode {
+  --bg-dark: #F8FAFC;
+  --bg-darker: #f1f5f9;
+  --bg-card: #ffffff;
+  --text-primary: #0F1524;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
+  --header-bg: rgba(255, 255, 255, 0.95);
+
+  /* Adjust shadows for light mode if needed */
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.1);
 }
 
 /* ===== Reset & Base Styles ===== */

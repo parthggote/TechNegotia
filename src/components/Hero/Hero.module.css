@@ -26,7 +26,9 @@
     pointer-events: none;
     background-repeat: repeat-x;
     background-position: center bottom;
-    background-size: auto 80vh;
+    background-size: auto 100%;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: pixelated;
 }
 
 .layerSky {
@@ -34,19 +36,19 @@
     top: 0;
     bottom: 0;
     background-image: url('/LandingPage_Sky.webp');
-    background-size: auto 80vh;
-    background-position: center center;
+    background-size: 200% 100%;
+    background-position: 0% center;
     background-repeat: repeat-x;
-    animation: moveClouds 60s linear infinite;
+    animation: moveClouds 120s linear infinite;
 }
 
 @keyframes moveClouds {
     0% {
-        background-position-x: 0%;
+        background-position: 0% center;
     }
 
     100% {
-        background-position-x: 100%;
+        background-position: -200% center;
     }
 }
 
@@ -74,13 +76,13 @@
 /* Responsive adjustments */
 @media (orientation: landscape) and (max-height: 700px) {
     .layer {
-        background-size: auto 80vh;
+        background-size: auto 100%;
     }
 }
 
 @media (max-width: 768px) {
     .layer {
-        background-size: auto 80vh;
+        background-size: auto 100%;
     }
 }
 
@@ -116,15 +118,14 @@
     max-width: 800px;
 }
 
-/* Pre-title - "START YOUR" */
+/* Pre-title - "Begin thy journey" */
 .preTitle {
     font-family: var(--font-pixel);
-    font-size: clamp(0.5rem, 1.5vw, 0.7rem);
-    color: var(--text-secondary);
-    letter-spacing: 0.4em;
+    font-size: clamp(0.7rem, 2vw, 1rem);
+    color: #f5f5f0;
+    letter-spacing: 0.1em;
     margin-bottom: var(--space-3);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-    text-transform: uppercase;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 /* Main Title - Script/Decorative style like "Coding Adventure" */
@@ -138,8 +139,8 @@
 
 /* "Tech" - smaller, more standard */
 .titleMain {
-    font-family: var(--font-pixel);
-    font-size: clamp(1.8rem, 6vw, 3.5rem);
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: clamp(1.2rem, 4vw, 2.2rem);
     background: linear-gradient(180deg,
             #ffd700 0%,
             #f4a020 40%,
@@ -147,15 +148,15 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4));
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
     font-style: italic;
     letter-spacing: 0.05em;
 }
 
-/* "Negotia" - larger, more decorative script-like */
+/* "TechNegotia" - decorative script-like with black shadow */
 .titleScript {
     font-family: var(--font-pixel);
-    font-size: clamp(2.5rem, 9vw, 5.5rem);
+    font-size: clamp(1.2rem, 4vw, 2.2rem);
     background: linear-gradient(180deg,
             #ffd700 0%,
             #ffb347 30%,
@@ -164,19 +165,17 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 30px rgba(244, 160, 32, 0.3));
-    font-style: italic;
-    letter-spacing: 0.02em;
-    margin-top: -0.1em;
+    filter: drop-shadow(2px 2px 0px #000) drop-shadow(-1px -1px 0px #000) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.6));
+    letter-spacing: 0.05em;
 }
 
 /* Tagline */
 .tagline {
-    font-family: var(--font-body);
-    font-size: clamp(0.85rem, 2vw, 1rem);
-    color: var(--text-secondary);
+    font-family: var(--font-pixel);
+    font-size: clamp(0.45rem, 1.2vw, 0.6rem);
+    color: #e8e8e0;
     margin-bottom: var(--space-6);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 /* CTA Button - matches reference white/cream button */
@@ -208,11 +207,12 @@
     box-shadow: 0 2px 0 #d4d4c4;
 }
 
-/* Mascot - positioned at bottom left */
+/* Mascot - positioned at bottom center-left like reference */
 .mascot {
     position: absolute;
-    bottom: 8%;
-    left: 8%;
+    bottom: 12%;
+    left: 50%;
+    transform: translateX(-280%);
     z-index: 5;
     animation: float 4s ease-in-out infinite;
 }
@@ -221,11 +221,11 @@
 
     0%,
     100% {
-        transform: translateY(0) rotate(-2deg);
+        transform: translateX(-280%) translateY(0) rotate(-2deg);
     }
 
     50% {
-        transform: translateY(-12px) rotate(2deg);
+        transform: translateX(-280%) translateY(-12px) rotate(2deg);
     }
 }
 
@@ -233,12 +233,14 @@
     max-width: 160px;
     height: auto;
     filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.4));
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: pixelated;
 }
 
 /* Supporters - positioned at absolute bottom center */
 .supporters {
     position: absolute;
-    bottom: var(--space-5);
+    bottom: var(--space-8);
     left: 50%;
     transform: translateX(-50%);
     z-index: 7;
@@ -249,9 +251,9 @@
 
 .supportersLabel {
     font-family: var(--font-body);
-    font-size: 0.65rem;
+    font-size: 0.85rem;
     font-weight: 500;
-    color: var(--text-muted);
+    color: #ffffff;
     letter-spacing: 0.15em;
     text-transform: uppercase;
 }
@@ -262,12 +264,11 @@
     gap: var(--space-5);
 }
 
-.sponsorLogo {
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--text-secondary);
-    opacity: 0.8;
+.sponsorImage {
+    height: 60px;
+    width: auto;
+    max-width: 400px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
 }
 
 /* Responsive */
