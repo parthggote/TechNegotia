@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ROUNDS_DATA, EVENT_CONFIG } from "@/lib/constants";
 import styles from "./page.module.css";
 import CountdownTimer from "@/components/CountdownTimer/CountdownTimer";
+import HowItWorks from "@/components/HowItWorks/HowItWorks";
 
 export default function Home() {
   return (
@@ -22,37 +23,7 @@ export default function Home() {
         </section>
 
         {/* How It Works Section */}
-        <section className={styles.sectionDark} id="how-it-works">
-          <div className={styles.container}>
-            <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>How It Works</h2>
-              <p className={styles.sectionDesc}>
-                Three intense rounds testing your problem-solving, pitching, and negotiation skills
-              </p>
-            </div>
-
-            <div className={styles.roundsDisplay}>
-              {ROUNDS_DATA.map((round) => (
-                <div key={round.id} className={styles.roundCard}>
-                  <div className={styles.roundHeader} style={{ borderColor: round.color }}>
-                    <h3 className={styles.roundTitle} style={{ color: round.color }}>{round.title}</h3>
-                    <span className={styles.roundSubtitle}>{round.subtitle}</span>
-                  </div>
-                  <div className={styles.roundBody}>
-                    <p className={styles.roundDescription}>{round.description}</p>
-
-                    <div className={styles.roundStats}>
-                      <span className={styles.statTag}><i className="hn hn-users" /> {round.teams}</span>
-                      <span className={styles.statTag}><i className="hn hn-clock" /> {round.duration}</span>
-                    </div>
-
-
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        <HowItWorks />
       </main>
       <Footer />
     </>
