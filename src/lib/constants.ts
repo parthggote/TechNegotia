@@ -6,8 +6,8 @@ export const EVENT_CONFIG = {
     description: "A multi-round hackathon-style event focusing on problem-solving, prototyping under crisis, investor pitching with credit-based funding, and final negotiations.",
 
     // Update these dates for the actual event
-    eventDate: new Date("2026-02-22T09:00:00"),
-    problemReleaseDate: new Date("2026-02-21T18:00:00"),
+    eventDate: new Date("2026-02-21T09:00:00"),
+    problemReleaseDate: new Date("2026-02-20T18:00:00"),
 
     venue: {
         name: "Main Campus Auditorium",

@@ -37,12 +37,14 @@
 
 /* Sections */
 .section {
-    padding: var(--space-16) 0;
+    padding: 12rem 0;
+    /* Increased from var(--space-16) which is 8rem */
     background: var(--bg-dark);
 }
 
 .sectionDark {
-    padding: var(--space-16) 0;
+    padding: 12rem 0;
+    /* Increased from var(--space-16) which is 8rem */
     background: var(--bg-darker);
 }
 
@@ -109,45 +111,7 @@
     color: var(--text-muted);
 }
 
-/* Flow Chart */
-.flowChart {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-3);
-    flex-wrap: wrap;
-}
 
-.flowNode {
-    background: var(--bg-card);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: var(--radius-lg);
-    padding: var(--space-6) var(--space-8);
-    text-align: center;
-    min-width: 140px;
-}
-
-.flowNodeWinner {
-    background: linear-gradient(135deg, rgba(244, 160, 32, 0.2) 0%, rgba(244, 160, 32, 0.1) 100%);
-    border-color: var(--accent-gold);
-}
-
-.flowNumber {
-    font-family: var(--font-pixel);
-    font-size: 1.5rem;
-    color: var(--accent-gold);
-    margin-bottom: var(--space-2);
-}
-
-.flowLabel {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-}
-
-.flowArrow {
-    color: var(--text-muted);
-    flex-shrink: 0;
-}
 
 /* Notes Grid */
 .notesGrid {
