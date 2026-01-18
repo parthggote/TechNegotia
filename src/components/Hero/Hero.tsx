@@ -1,12 +1,15 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./Hero.module.css";
 
 export default function Hero() {
     const heroRef = useRef<HTMLDivElement>(null);
+    const [displayText, setDisplayText] = useState("");
+    const [showCursor, setShowCursor] = useState(true);
+    const fullText = "Start the Quest";
 
     useEffect(() => {
         const handleScroll = () => {
@@ -28,6 +31,35 @@ export default function Hero() {
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
+
+    // Typewriter effect
+    useEffect(() => {
+        let timeoutId: NodeJS.Timeout;
+        
+        const startTyping = () => {
+            let currentIndex = 0;
+            
+            const typeNextChar = () => {
+                if (currentIndex < fullText.length) {
+                    setDisplayText(fullText.slice(0, currentIndex + 1));
+                    currentIndex++;
+                    timeoutId = setTimeout(typeNextChar, 200); // 200ms per character
+                } else {
+                    // Stop cursor blinking after typing is complete
+                    setTimeout(() => setShowCursor(false), 1000);
+                }
+            };
+            
+            typeNextChar();
+        };
+
+        // Start typing after 1 second delay
+        timeoutId = setTimeout(startTyping, 1000);
+
+        return () => {
+            if (timeoutId) clearTimeout(timeoutId);
+        };
+    }, [fullText]);
 
     return (
         <section className={styles.hero} ref={heroRef}>
@@ -63,8 +95,11 @@ export default function Hero() {
                     </p>
 
                     <div className={styles.cta}>
-                        <Link href="/register" className="nes-btn is-warning">
-                            Start the Quest
+                        <Link href="/register" className={`nes-btn is-warning ${styles.typewriterBtn}`}>
+                            <span className={styles.typewriterText}>
+                                {displayText}
+                                {showCursor && <span className={styles.cursor}>|</span>}
+                            </span>
                         </Link>
                     </div>
                 </div>
