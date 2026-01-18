@@ -18,7 +18,7 @@ export const EVENT_CONFIG = {
         totalTeams: 150,
         round2Teams: 40,
         round3Teams: 10,
-        prizePool: "₹50,000+",
+        prizePool: "₹15,000+",
     }
 };
 
@@ -37,7 +37,15 @@ export const ROUNDS_DATA = [
         description: "Build prototypes from pre-released problems and adapt to sudden crisis scenarios.",
         teams: "All Teams (~150)",
         duration: "Event Day",
-        color: "#4ecdc4"
+        color: "#4ecdc4",
+        gif: "/output-onlinegiftools.gif",
+        modalText: "The runes have spoken… behold your Beginner’s Quest.",
+        details: [
+            "Teams select a problem statement (FCFS basis).",
+            "Problem statements released 1 day prior on the event website.",
+            "Prepare a solution or basic prototype.",
+            "Evaluation on problem understanding and practicality."
+        ]
     },
     {
         id: 2,
@@ -46,7 +54,15 @@ export const ROUNDS_DATA = [
         description: "Pitch to 'investor' judges to secure virtual credits. Highest funding wins.",
         teams: "Top 30-40 Teams",
         duration: "Pitching Session",
-        color: "#f4a020"
+        color: "#f4a020",
+        gif: "/output-onlinegiftools (2).gif",
+        modalText: "Stand firm, adventurers. The next challenge lies before you.",
+        details: [
+            "Top teams present a 90-second elevator pitch.",
+            "Startups receive virtual credit investments from judges.",
+            "Negotiate equity and valuation on the spot.",
+            "Teams with the highest funding advance to the finale."
+        ]
     },
     {
         id: 3,
@@ -55,7 +71,15 @@ export const ROUNDS_DATA = [
         description: "Defend valuation in a high-stakes boardroom negotiation.",
         teams: "Final 9-10 Teams",
         duration: "Final Showdown",
-        color: "#ff6b9d"
+        color: "#ff6b9d",
+        gif: "/mascot_3.gif",
+        modalText: "Step lightly, adventurer. The Final Trial awaits your precision",
+        details: [
+            "Deep-dive negotiation with the Grand Jury.",
+            "Defend your startup's valuation and business model.",
+            "Handle critical questions and crisis scenarios.",
+            "The ultimate test of resilience and strategy."
+        ]
     }
 ];
 
@@ -120,7 +144,7 @@ export const SCHEDULE_DATA: {
 export const FAQ_DATA = [
     {
         question: "What is the team size?",
-        answer: "Teams can have 2-4 members. Solo participation is not allowed."
+        answer: "Teams can have 1-4 members. Solo participation is allowed."
     },
     {
         question: "What should prototypes include?",

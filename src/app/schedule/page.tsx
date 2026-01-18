@@ -34,13 +34,7 @@ export default function SchedulePage() {
 
 
 
-                {/* Timeline Section */}
-                <section className={styles.sectionDark}>
-                    <div className={styles.container}>
-                        <h2 className={styles.sectionTitle}>Day of Event</h2>
-                        <Timeline events={SCHEDULE_DATA} />
-                    </div>
-                </section>
+
 
                 {/* Team Flow */}
                 <section className={styles.section}>

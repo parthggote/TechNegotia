@@ -4,6 +4,8 @@ import { useState } from "react";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import styles from "./page.module.css";
+import MascotSuccessModal from "@/components/MascotSuccessModal/MascotSuccessModal";
+import { MASCOTS, MascotData } from "@/lib/mascotData";
 
 interface TeamMember {
     name: string;
@@ -21,6 +23,8 @@ export default function RegisterPage() {
     const [agreedToRules, setAgreedToRules] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
+    const [assignedMascot, setAssignedMascot] = useState<MascotData | null>(null);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
 
     const updateMember = (index: number, field: keyof TeamMember, value: string) => {
         const newMembers = [...members];
@@ -47,13 +51,29 @@ export default function RegisterPage() {
         // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 2000));
 
+        // Assign Random Mascot
+        const randomMascot = MASCOTS[Math.floor(Math.random() * MASCOTS.length)];
+        setAssignedMascot(randomMascot);
+
         setIsSubmitting(false);
         setSubmitted(true);
+        setShowSuccessModal(true);
     };
 
     const isStep1Valid = teamName.length >= 3;
     const isStep2Valid = members.every(m => m.name && m.email);
     const isStep3Valid = agreedToRules;
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === "Enter") {
+            // Allow default submission only on the final step
+            if (step < 3) {
+                e.preventDefault();
+                if (step === 1 && isStep1Valid) setStep(2);
+                if (step === 2 && isStep2Valid) setStep(3);
+            }
+        }
+    };
 
     if (submitted) {
         return (
@@ -83,6 +103,12 @@ export default function RegisterPage() {
                     </section>
                 </main>
                 <Footer />
+                {showSuccessModal && assignedMascot && (
+                    <MascotSuccessModal
+                        onClose={() => setShowSuccessModal(false)}
+                        mascot={assignedMascot}
+                    />
+                )}
             </>
         );
     }
@@ -122,7 +148,7 @@ export default function RegisterPage() {
                             </div>
                         </div>
 
-                        <form onSubmit={handleSubmit} className={styles.form}>
+                        <form onSubmit={handleSubmit} className={styles.form} onKeyDown={handleKeyDown}>
                             {/* Step 1: Team Info */}
                             {step === 1 && (
                                 <div className={styles.formStep}>

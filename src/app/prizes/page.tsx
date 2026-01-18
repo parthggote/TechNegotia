@@ -12,12 +12,11 @@ const PRIZES = [
     {
         position: "1st",
         title: "Grand Champion",
-        prize: "₹25,000",
+        prize: "₹7,000",
         perks: [
             "Cash Prize",
             "Winner Trophy",
             "Certificates for all members",
-            "Internship opportunities",
             "Exclusive merchandise"
         ],
         color: "#f4a020"
@@ -25,7 +24,7 @@ const PRIZES = [
     {
         position: "2nd",
         title: "First Runner-up",
-        prize: "₹15,000",
+        prize: "₹5,000",
         perks: [
             "Cash Prize",
             "Runner-up Trophy",
@@ -38,7 +37,7 @@ const PRIZES = [
     {
         position: "3rd",
         title: "Second Runner-up",
-        prize: "₹10,000",
+        prize: "₹3,000",
         perks: [
             "Cash Prize",
             "Trophy",
@@ -49,23 +48,7 @@ const PRIZES = [
     }
 ];
 
-const SPECIAL_AWARDS = [
-    {
-        title: "Best Crisis Handler",
-        description: "Team that best adapted to the surprise crisis scenario in Round 1",
-        prize: "Special Recognition + Goodies"
-    },
-    {
-        title: "Best Pitch",
-        description: "Most compelling 90-second pitch in Round 2",
-        prize: "Special Recognition + Goodies"
-    },
-    {
-        title: "Best Negotiator",
-        description: "Outstanding negotiation skills demonstrated in Round 3",
-        prize: "Special Recognition + Goodies"
-    }
-];
+
 
 export default function PrizesPage() {
     return (
@@ -100,22 +83,6 @@ export default function PrizesPage() {
                                             <li key={i}>{perk}</li>
                                         ))}
                                     </ul>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-
-                {/* Special Awards */}
-                <section className={styles.sectionDark}>
-                    <div className={styles.container}>
-                        <h2 className={styles.sectionTitle}>Special Awards</h2>
-                        <div className={styles.awardsGrid}>
-                            {SPECIAL_AWARDS.map((award, index) => (
-                                <div key={index} className={styles.awardCard}>
-                                    <h3>{award.title}</h3>
-                                    <p className={styles.awardDesc}>{award.description}</p>
-                                    <span className={styles.awardPrize}>{award.prize}</span>
                                 </div>
                             ))}
                         </div>
@@ -164,7 +131,7 @@ export default function PrizesPage() {
                         </div>
                     </div>
                 </section>
-            </main>
+            </main >
             <Footer />
         </>
     );
