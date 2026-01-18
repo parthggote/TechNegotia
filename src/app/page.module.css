@@ -1,7 +1,8 @@
 /* Page Module Styles */
 
 .section {
-    padding: var(--space-16) 0;
+    padding: var(--space-8) 0;
+    /* Reduced from space-16 */
     background: var(--bg-dark);
 }
 
@@ -19,7 +20,7 @@
 /* Section Header */
 .sectionHeader {
     text-align: center;
-    margin-bottom: var(--space-12);
+    margin-bottom: var(--space-8);
 }
 
 .sectionTitle {
@@ -88,138 +89,84 @@
     color: var(--text-secondary);
 }
 
-/* Rounds Grid */
-.roundsGrid {
+
+
+/* Rounds Display */
+.roundsDisplay {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--space-6);
+    margin-top: var(--space-8);
 }
 
-.roundDesc {
-    margin-bottom: var(--space-4);
-}
-
-.roundMeta {
-    display: flex;
-    gap: var(--space-4);
-    margin-bottom: var(--space-4);
-    padding-bottom: var(--space-4);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.roundTeams,
-.roundDuration {
-    font-family: var(--font-pixel);
-    font-size: 0.6rem;
-    padding: var(--space-2) var(--space-3);
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: var(--radius-sm);
-    color: var(--text-secondary);
-}
-
-.roundHighlights {
+.roundCard {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.roundHighlights li {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    padding-left: var(--space-4);
-    position: relative;
+.roundCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    background: rgba(255, 255, 255, 0.05);
 }
 
-.roundHighlights li::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 8px;
-    width: 6px;
-    height: 6px;
-    background: var(--accent-gold);
-    border-radius: 1px;
-}
-
-.roundsCta {
-    text-align: center;
-    margin-top: var(--space-10);
-}
-
-/* Steps Grid - How It Works */
-.stepsGrid {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
-    gap: var(--space-4);
-    align-items: flex-start;
-}
-
-.step {
-    text-align: center;
+.roundHeader {
     padding: var(--space-6);
+    border-bottom: 2px solid;
+    /* Color set inline */
+    background: rgba(0, 0, 0, 0.2);
 }
 
-.stepNumber {
+.roundTitle {
     font-family: var(--font-pixel);
-    font-size: 2rem;
-    color: var(--accent-gold);
-    opacity: 0.3;
-    margin-bottom: var(--space-4);
+    font-size: 1.2rem;
+    margin-bottom: var(--space-2);
 }
 
-.stepTitle {
-    font-family: var(--font-pixel);
-    font-size: 0.75rem;
-    color: var(--text-primary);
-    margin-bottom: var(--space-3);
-}
-
-.stepDesc {
+.roundSubtitle {
     font-size: 0.9rem;
     color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+}
+
+.roundBody {
+    padding: var(--space-6);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.roundDescription {
+    font-size: 0.95rem;
     line-height: 1.6;
-}
-
-.stepConnector {
-    width: 40px;
-    height: 2px;
-    background: linear-gradient(90deg, var(--accent-gold), var(--accent-orange));
-    margin-top: 60px;
-}
-
-/* CTA Section */
-.ctaSection {
-    padding: var(--space-16) 0;
-    background: linear-gradient(135deg,
-            rgba(244, 160, 32, 0.1) 0%,
-            var(--bg-dark) 50%,
-            rgba(157, 78, 221, 0.1) 100%);
-    text-align: center;
-}
-
-.ctaContent {
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.ctaTitle {
-    font-family: var(--font-pixel);
-    font-size: clamp(1rem, 3vw, 1.5rem);
-    color: var(--text-primary);
-    margin-bottom: var(--space-4);
-}
-
-.ctaDesc {
-    font-size: 1.1rem;
     color: var(--text-secondary);
-    margin-bottom: var(--space-8);
+    margin-bottom: var(--space-6);
+    flex-grow: 1;
+    /* Pushes content down */
 }
 
-.ctaButtons {
+.roundStats {
     display: flex;
     gap: var(--space-4);
-    justify-content: center;
-    flex-wrap: wrap;
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.statTag {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-weight: 500;
 }
 
 /* Buttons */
@@ -273,10 +220,10 @@
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .roundsGrid {
-        grid-template-columns: 1fr;
-        max-width: 500px;
-        margin: 0 auto;
+    .roundsDisplay {
+        grid-template-columns: repeat(2, 1fr);
+        /* 2 columns on tablet */
+        gap: var(--space-4);
     }
 
     .stepsGrid {
@@ -302,6 +249,13 @@
     .stepNumber {
         margin-bottom: 0;
         font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .roundsDisplay {
+        grid-template-columns: 1fr;
+        /* Stack on mobile */
     }
 }
 
@@ -331,4 +285,33 @@
         width: 100%;
         max-width: 280px;
     }
+
+    .aboutLayout {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .aboutImage {
+        width: 100%;
+        height: 250px;
+        /* Specific height for mobile banner feel */
+        order: -1;
+    }
+
+    .fireGif {
+        /* On mobile, cover works well for a banner */
+        object-fit: cover;
+    }
+
+    .sectionHeaderRight {
+        text-align: center;
+        padding: var(--space-8) var(--space-5);
+        /* Restore normal padding on mobile */
+    }
+
+    .sectionHeaderRight .sectionDesc {
+        margin: 0 auto;
+    }
 }
+
+/* Cards removed */

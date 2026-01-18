@@ -7,10 +7,11 @@
 
 .label {
     font-family: var(--font-pixel);
-    font-size: 0.55rem;
-    color: var(--text-muted);
+    font-size: 1rem;
+    color: white;
     letter-spacing: 0.2em;
     text-transform: uppercase;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
 }
 
 .timer {
