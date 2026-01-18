@@ -35,7 +35,7 @@ export default function Home() {
               {ROUNDS_DATA.map((round) => (
                 <div key={round.id} className={styles.roundCard}>
                   <div className={styles.roundHeader} style={{ borderColor: round.color }}>
-                    <h3 className={styles.roundTitle} style={{ color: round.color }}>{round.title}</h3>
+                    <h3 className={styles.roundTitle} style={{ color: round.color }}>Round {round.id}</h3>
                     <span className={styles.roundSubtitle}>{round.subtitle}</span>
                   </div>
                   <div className={styles.roundBody}>
