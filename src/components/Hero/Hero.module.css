@@ -14,54 +14,74 @@
     z-index: 0;
 }
 
+/* Repeating background approach for all orientations */
 .layer {
     position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
-    /* Removed top: 0 to allow height to be driven by content/css */
     will-change: transform;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    /* Align images to bottom */
     width: 100%;
-    /* Ensure layer itself doesn't constrain height incorrectly */
     height: 100%;
     pointer-events: none;
+    background-repeat: repeat-x;
+    background-position: center bottom;
+    background-size: auto 80vh;
 }
 
-/* Sky fills entire background using Next.js fill */
 .layerSky {
     z-index: 1;
     top: 0;
-    /* Only sky needs top 0 */
+    bottom: 0;
+    background-image: url('/LandingPage_Sky.webp');
+    background-size: auto 80vh;
+    background-position: center center;
+    background-repeat: repeat-x;
+    animation: moveClouds 60s linear infinite;
 }
 
-/* Layers with auto-height images */
+@keyframes moveClouds {
+    0% {
+        background-position-x: 0%;
+    }
+
+    100% {
+        background-position-x: 100%;
+    }
+}
+
 .layerMountains {
     z-index: 2;
+    background-image: url('/LandingPage_Mountain.webp');
 }
 
 .layerHills {
     z-index: 3;
+    background-image: url('/LandingPage_Hills.webp');
 }
 
 .layerGrass {
     z-index: 4;
+    background-image: url('/LandingPage_Grass.webp');
 }
 
-.autoHeightImg {
-    /* Critical: allow image to shrink/grow */
-    width: 100%;
-    height: auto;
-    /* Prevent image from getting too short on mobile - ensure min-height covers viewport bottom area */
-    min-height: 50vh;
-    /* But standard usage is cover-like behavior without zoom */
-    object-fit: cover;
-    object-position: bottom;
-    /* Override for specific layering needs if necessary */
-    display: block;
+/* Hide Next.js Image components since we're using background images */
+.layer img,
+.layer>div {
+    display: none;
+}
+
+/* Responsive adjustments */
+@media (orientation: landscape) and (max-height: 700px) {
+    .layer {
+        background-size: auto 80vh;
+    }
+}
+
+@media (max-width: 768px) {
+    .layer {
+        background-size: auto 80vh;
+    }
 }
 
 /* Gradient Overlay - subtle fade at bottom */
@@ -273,6 +293,32 @@
 
     .supportersLogos {
         gap: var(--space-3);
+    }
+}
+
+/* Landscape mode specific adjustments */
+@media (orientation: landscape) and (max-height: 700px) {
+    .hero {
+        height: 100vh;
+        min-height: 500px;
+    }
+
+    .parallaxContainer {
+        overflow: hidden;
+    }
+
+    .mascot {
+        bottom: 15%;
+        left: 8%;
+    }
+
+    .mascot img {
+        max-width: 120px;
+    }
+
+    .content {
+        padding-top: calc(var(--header-height) + var(--space-4));
+        padding-bottom: var(--space-8);
     }
 }
 

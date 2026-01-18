@@ -4,8 +4,6 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./Hero.module.css";
-import CountdownTimer from "@/components/CountdownTimer/CountdownTimer";
-import { EVENT_CONFIG } from "@/lib/constants";
 
 export default function Hero() {
     const heroRef = useRef<HTMLDivElement>(null);
@@ -22,7 +20,6 @@ export default function Hero() {
 
             // Adjusted parallax speeds
             if (sky) sky.style.transform = `translateY(${scrollY * 0.1}px)`;
-            // Provide a smaller movement for bottom pinned layers to avoid detaching too quickly or use negative margin if needed
             if (mountains) mountains.style.transform = `translateY(${scrollY * 0.15}px)`;
             if (hills) hills.style.transform = `translateY(${scrollY * 0.25}px)`;
             if (grass) grass.style.transform = `translateY(${scrollY * 0.4}px)`;
@@ -37,51 +34,16 @@ export default function Hero() {
             {/* Parallax Layers */}
             <div className={styles.parallaxContainer}>
                 {/* Layer 1: Sky - Background */}
-                <div className={`${styles.layer} ${styles.layerSky}`}>
-                    <Image
-                        src="/LandingPage_Sky.webp"
-                        alt="Sky Background"
-                        fill
-                        priority
-                        style={{ objectFit: "cover", objectPosition: "top" }}
-                    />
-                </div>
+                <div className={`${styles.layer} ${styles.layerSky}`}></div>
 
                 {/* Layer 2: Mountains */}
-                <div className={`${styles.layer} ${styles.layerMountains}`}>
-                    <Image
-                        src="/LandingPage_Mountain.webp"
-                        alt="Mountains"
-                        fill
-                        sizes="100vw"
-                        priority
-                        className={styles.autoHeightImg}
-                    />
-                </div>
+                <div className={`${styles.layer} ${styles.layerMountains}`}></div>
 
                 {/* Layer 3: Hills */}
-                <div className={`${styles.layer} ${styles.layerHills}`}>
-                    <Image
-                        src="/LandingPage_Hills.webp"
-                        alt="Hills"
-                        fill
-                        sizes="100vw"
-                        priority
-                        className={styles.autoHeightImg}
-                    />
-                </div>
+                <div className={`${styles.layer} ${styles.layerHills}`}></div>
 
                 {/* Layer 4: Grass */}
-                <div className={`${styles.layer} ${styles.layerGrass}`}>
-                    <Image
-                        src="/LandingPage_Grass.webp"
-                        alt="Grass"
-                        fill
-                        sizes="100vw"
-                        priority
-                        className={styles.autoHeightImg}
-                    />
-                </div>
+                <div className={`${styles.layer} ${styles.layerGrass}`}></div>
             </div>
 
             {/* Gradient Overlay - subtle bottom fade */}
