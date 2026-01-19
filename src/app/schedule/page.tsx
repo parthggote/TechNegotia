@@ -7,8 +7,8 @@ import { SCHEDULE_DATA, EVENT_CONFIG } from "@/lib/constants";
 import styles from "./page.module.css";
 
 export const metadata = {
-    title: "Schedule | TechNegotia 3.0",
-    description: "View the complete schedule for TechNegotia 3.0 - from problem release to final winners announcement.",
+    title: "Schedule | TechNegotia",
+    description: "View the complete schedule for TechNegotia - from problem release to final winners announcement.",
 };
 
 export default function SchedulePage() {

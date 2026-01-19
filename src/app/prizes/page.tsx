@@ -4,8 +4,8 @@ import { EVENT_CONFIG } from "@/lib/constants";
 import styles from "./page.module.css";
 
 export const metadata = {
-    title: "Prizes | TechNegotia 3.0",
-    description: "Discover the exciting prizes awaiting the winners of TechNegotia 3.0.",
+    title: "Prizes | TechNegotia",
+    description: "Discover the exciting prizes awaiting the winners of TechNegotia.",
 };
 
 const PRIZES = [

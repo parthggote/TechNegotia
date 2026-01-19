@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { NAV_LINKS } from "@/lib/constants";
 import styles from "./Header.module.css";
 
@@ -27,8 +28,15 @@ export default function Header() {
             <div className={styles.container}>
                 {/* Logo */}
                 <Link href="/" className={styles.logo}>
-                    <span className={styles.logoIcon}>TN</span>
-                    <span className={styles.logoText}>TechNegotia</span>
+                    <Image
+                        src="/e6109e32a9ac1a8f2496d7fba78e9c84.gif"
+                        alt="Mascot Logo"
+                        width={60}
+                        height={60}
+                        className={styles.mascotLogo}
+                        unoptimized
+                    />
+                    <span className={styles.logoText}>Tech Negotia</span>
                 </Link>
 
                 {/* Main Navigation - Desktop */}

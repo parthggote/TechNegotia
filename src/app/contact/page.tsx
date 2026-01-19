@@ -8,23 +8,6 @@ import styles from "./page.module.css";
 
 export default function ContactPage() {
     const [openFaq, setOpenFaq] = useState<number | null>(null);
-    const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        subject: "",
-        message: ""
-    });
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [submitted, setSubmitted] = useState(false);
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        setIsSubmitting(false);
-        setSubmitted(true);
-        setFormData({ name: "", email: "", subject: "", message: "" });
-    };
 
     return (
         <>
@@ -80,10 +63,10 @@ export default function ContactPage() {
                 {/* Contact Section */}
                 <section className={styles.sectionDark}>
                     <div className={styles.container}>
-                        <div className={styles.contactGrid}>
+                        <div className={styles.contactWrapper}>
                             {/* Contact Info */}
                             <div className={styles.contactInfo}>
-                                <h2 className={styles.sectionTitleLeft}>Get in Touch</h2>
+                                <h2 className={styles.sectionTitle}>Get in Touch</h2>
                                 <p className={styles.contactDesc}>
                                     Could not find what you are looking for? Reach out to us directly.
                                 </p>
@@ -98,7 +81,7 @@ export default function ContactPage() {
                                         </div>
                                         <div>
                                             <h4>Email</h4>
-                                            <a href="mailto:contact@technegotia.com">contact@technegotia.com</a>
+                                            <a href="mailto:cabssakit@gmail.com">cabssakit@gmail.com</a>
                                         </div>
                                     </div>
 
@@ -129,81 +112,6 @@ export default function ContactPage() {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            {/* Contact Form */}
-                            <div className={styles.contactForm}>
-                                {submitted ? (
-                                    <div className={styles.successMessage}>
-                                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                                            <polyline points="22 4 12 14.01 9 11.01" />
-                                        </svg>
-                                        <h3>Message Sent!</h3>
-                                        <p>We will get back to you soon.</p>
-                                        <button
-                                            className={styles.btnSecondary}
-                                            onClick={() => setSubmitted(false)}
-                                        >
-                                            Send Another
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <form onSubmit={handleSubmit}>
-                                        <div className={styles.formRow}>
-                                            <div className={styles.formGroup}>
-                                                <label>Your Name *</label>
-                                                <input
-                                                    type="text"
-                                                    required
-                                                    value={formData.name}
-                                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                                    placeholder="John Doe"
-                                                />
-                                            </div>
-                                            <div className={styles.formGroup}>
-                                                <label>Your Email *</label>
-                                                <input
-                                                    type="email"
-                                                    required
-                                                    value={formData.email}
-                                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                                    placeholder="john@example.com"
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className={styles.formGroup}>
-                                            <label>Subject *</label>
-                                            <input
-                                                type="text"
-                                                required
-                                                value={formData.subject}
-                                                onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                                                placeholder="How can we help?"
-                                            />
-                                        </div>
-
-                                        <div className={styles.formGroup}>
-                                            <label>Message *</label>
-                                            <textarea
-                                                required
-                                                rows={5}
-                                                value={formData.message}
-                                                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                                                placeholder="Your message..."
-                                            />
-                                        </div>
-
-                                        <button
-                                            type="submit"
-                                            className={styles.btnPrimary}
-                                            disabled={isSubmitting}
-                                        >
-                                            {isSubmitting ? "Sending..." : "Send Message"}
-                                        </button>
-                                    </form>
-                                )}
                             </div>
                         </div>
                     </div>
