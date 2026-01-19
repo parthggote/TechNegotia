@@ -49,23 +49,49 @@ export default function HowItWorks() {
                                 <h3 className={styles.roundTitle} style={{ color: round.color }}>{round.title}</h3>
                                 <span className={styles.roundSubtitle}>{round.subtitle}</span>
                             </div>
-                            <div className={styles.roundBody}>
-                                <p className={styles.roundDescription}>{round.description}</p>
-
-                                <div className={styles.roundStats}>
-                                    <div className={styles.statTag}>
-                                        <span>{round.teams}</span>
-                                    </div>
-                                    <div className={styles.statTag}>
-                                        <span>{round.duration}</span>
-                                    </div>
-                                </div>
-                            </div>
                             <button
-                                className={styles.learnMoreBtn}
+                                className={`${styles.learnMoreBtn} ${round.id === 1 ? styles.magicBtn : ''} ${round.id === 2 ? styles.knightBtn : ''} ${round.id === 3 ? styles.assassinBtn : ''}`}
                                 onClick={() => setActiveRound(round)}
                             >
                                 Learn More
+                                {round.id === 1 && (
+                                    <div className={styles.magicMolecules}>
+                                        <span className={styles.molecule}></span>
+                                        <span className={styles.molecule}></span>
+                                        <span className={styles.molecule}></span>
+                                        <span className={styles.molecule}></span>
+                                        <span className={styles.molecule}></span>
+                                        <span className={styles.molecule}></span>
+                                        <span className={styles.molecule}></span>
+                                        <span className={styles.molecule}></span>
+                                        <span className={styles.molecule}></span>
+                                        <span className={styles.molecule}></span>
+                                        <span className={styles.molecule}></span>
+                                        <span className={styles.molecule}></span>
+                                    </div>
+                                )}
+                                {round.id === 2 && (
+                                    <div className={styles.knightElements}>
+                                        <img src="/sword.png" alt="Sword" className={`${styles.sword} ${styles.sword1}`} />
+                                        <img src="/shield.png" alt="Shield" className={`${styles.shield} ${styles.shield1}`} />
+                                        <img src="/sword.png" alt="Sword" className={`${styles.sword} ${styles.sword2}`} />
+                                        <img src="/shield.png" alt="Shield" className={`${styles.shield} ${styles.shield2}`} />
+                                        <img src="/sword.png" alt="Sword" className={`${styles.sword} ${styles.sword3}`} />
+                                        <img src="/shield.png" alt="Shield" className={`${styles.shield} ${styles.shield3}`} />
+                                        <img src="/sword.png" alt="Sword" className={`${styles.sword} ${styles.sword4}`} />
+                                        <img src="/shield.png" alt="Shield" className={`${styles.shield} ${styles.shield4}`} />
+                                    </div>
+                                )}
+                                {round.id === 3 && (
+                                    <div className={styles.assassinElements}>
+                                        <img src="/daggers.png" alt="Dagger" className={`${styles.dagger} ${styles.dagger1}`} />
+                                        <img src="/daggers.png" alt="Dagger" className={`${styles.dagger} ${styles.dagger2}`} />
+                                        <img src="/daggers.png" alt="Dagger" className={`${styles.dagger} ${styles.dagger3}`} />
+                                        <img src="/daggers.png" alt="Dagger" className={`${styles.dagger} ${styles.dagger4}`} />
+                                        <img src="/daggers.png" alt="Dagger" className={`${styles.dagger} ${styles.dagger5}`} />
+                                        <img src="/daggers.png" alt="Dagger" className={`${styles.dagger} ${styles.dagger6}`} />
+                                    </div>
+                                )}
                             </button>
                         </div>
                     ))}
