@@ -1,7 +1,7 @@
 // TechNegotia 3.0 Event Constants
 
 export const EVENT_CONFIG = {
-    name: "TechNegotia 3.0",
+    name: "TechNegotia",
     tagline: "Begin Your Journey",
     description: "A multi-round hackathon-style event focusing on problem-solving, prototyping under crisis, investor pitching with credit-based funding, and final negotiations.",
 

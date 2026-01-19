@@ -159,18 +159,6 @@
     color: var(--accent-gold);
 }
 
-/* Pixel Border */
-.pixelBorder {
-    height: 4px;
-    background: repeating-linear-gradient(90deg,
-            var(--accent-gold) 0px,
-            var(--accent-gold) 8px,
-            var(--accent-orange) 8px,
-            var(--accent-orange) 16px,
-            var(--accent-pink) 16px,
-            var(--accent-pink) 24px);
-}
-
 /* Responsive */
 @media (max-width: 992px) {
     .content {

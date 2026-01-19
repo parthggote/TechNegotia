@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@hackernoon/pixel-icon-library": "^1.0.6",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.26.2",

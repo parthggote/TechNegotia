@@ -12,7 +12,7 @@ export default function Footer() {
                     <div className={styles.brand}>
                         <Link href="/" className={styles.logo}>
                             <span className={styles.logoIcon}>TN</span>
-                            <span className={styles.logoText}>TechNegotia 3.0</span>
+                            <span className={styles.logoText}>TechNegotia</span>
                         </Link>
                         <p className={styles.brandDesc}>
                             {EVENT_CONFIG.description}
@@ -57,7 +57,7 @@ export default function Footer() {
                         <h4 className={styles.linksTitle}>Follow Us</h4>
                         <div className={styles.socialLinks}>
                             <a
-                                href="#"
+                                href="https://www.instagram.com/cabssa_kitcoek/"
                                 className={styles.socialLink}
                                 aria-label="Instagram"
                                 target="_blank"
@@ -68,7 +68,7 @@ export default function Footer() {
                                 </svg>
                             </a>
                             <a
-                                href="#"
+                                href="https://x.com/CABSSA_KIT/"
                                 className={styles.socialLink}
                                 aria-label="Twitter"
                                 target="_blank"
@@ -79,7 +79,7 @@ export default function Footer() {
                                 </svg>
                             </a>
                             <a
-                                href="#"
+                                href="https://www.linkedin.com/in/cabssa-kitcoek-1695ba37a?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
                                 className={styles.socialLink}
                                 aria-label="LinkedIn"
                                 target="_blank"
@@ -90,7 +90,7 @@ export default function Footer() {
                                 </svg>
                             </a>
                             <a
-                                href="mailto:contact@technegotia.com"
+                                href="mailto:cabssakit@gmail.com"
                                 className={styles.socialLink}
                                 aria-label="Email"
                             >
@@ -108,14 +108,9 @@ export default function Footer() {
                         &copy; {new Date().getFullYear()} TechNegotia. All rights reserved.
                     </p>
                     <div className={styles.bottomLinks}>
-                        <Link href="/privacy" className={styles.bottomLink}>Privacy Policy</Link>
-                        <Link href="/terms" className={styles.bottomLink}>Terms of Service</Link>
                     </div>
                 </div>
             </div>
-
-            {/* Decorative pixel border */}
-            <div className={styles.pixelBorder}></div>
         </footer>
     );
 }

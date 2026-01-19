@@ -2,10 +2,11 @@ import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import { EVENT_CONFIG, ROUNDS_DATA } from "@/lib/constants";
 import styles from "./page.module.css";
+import type { Metadata } from "next";
 
-export const metadata = {
-    title: "About | TechNegotia 3.0",
-    description: "Learn about TechNegotia 3.0 - a multi-round hackathon event focusing on problem-solving, prototyping, and strategic negotiation.",
+export const metadata: Metadata = {
+    title: "About | TechNegotia",
+    description: "Learn about TechNegotia - a multi-round hackathon event focusing on problem-solving, prototyping, and strategic negotiation.",
 };
 
 export default function AboutPage() {
@@ -28,7 +29,6 @@ export default function AboutPage() {
                     <div className={styles.container}>
                         <div className={styles.twoColumn}>
                             <div className={styles.textContent}>
-                                <h2 className={styles.sectionTitle}>The Event</h2>
                                 <p className={styles.paragraph}>
                                     TechNegotia 3.0 is not your typical hackathon. It is a multi-round,
                                     high-stakes event that combines technical problem-solving with the art

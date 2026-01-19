@@ -4,8 +4,8 @@ import { ROUNDS_DATA } from "@/lib/constants";
 import styles from "./page.module.css";
 
 export const metadata = {
-    title: "Rounds | TechNegotia 3.0",
-    description: "Explore the three exciting rounds of TechNegotia 3.0 - Prototype & Crisis, Investor Pitch, and Boardroom Negotiation.",
+    title: "Rounds | TechNegotia",
+    description: "Explore the three exciting rounds of TechNegotia - Prototype & Crisis, Investor Pitch, and Boardroom Negotiation.",
 };
 
 export default function RoundsPage() {
