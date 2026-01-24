@@ -1,6 +1,34 @@
 .main {
     min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Animated background particles */
+.main::before {
+    content: '';
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background:
+        radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 20%, rgba(168, 85, 247, 0.1) 0%, transparent 50%);
+    animation: particleFloat 20s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes particleFloat {
+
+    0%,
+    100% {
+        transform: translateY(0) scale(1);
+    }
+
+    50% {
+        transform: translateY(-20px) scale(1.05);
+    }
 }
 
 /* Login Section */
@@ -13,18 +41,40 @@
 }
 
 .loginCard {
-    background: white;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
     padding: 3rem;
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
     max-width: 400px;
     width: 100%;
+    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .loginCard h1 {
     margin-bottom: 2rem;
-    color: #333;
+    color: #fff;
     text-align: center;
+    font-size: 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .loginForm {
@@ -41,20 +91,29 @@
 
 .formGroup label {
     font-weight: 600;
-    color: #555;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
 }
 
 .formGroup input {
-    padding: 0.75rem;
-    border: 2px solid #ddd;
-    border-radius: 6px;
+    padding: 0.9rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
     font-size: 1rem;
-    transition: border-color 0.3s;
+    color: #fff;
+    transition: all 0.3s;
+}
+
+.formGroup input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
 }
 
 .formGroup input:focus {
     outline: none;
+    background: rgba(255, 255, 255, 0.08);
     border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .loginButton {
@@ -62,23 +121,44 @@
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
-    border-radius: 6px;
+    border-radius: 10px;
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.loginButton::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.loginButton:hover::before {
+    left: 100%;
 }
 
 .loginButton:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
 }
 
 /* Admin Header */
 .adminHeader {
-    background: white;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
     padding: 2rem 0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 .container {
@@ -95,23 +175,41 @@
 }
 
 .headerTop h1 {
-    color: #333;
-    font-size: 2rem;
+    color: #fff;
+    font-size: 2.2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 5px rgba(102, 126, 234, 0.5));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 15px rgba(102, 126, 234, 0.8));
+    }
 }
 
 .logoutButton {
     padding: 0.75rem 1.5rem;
-    background: #ff4757;
+    background: linear-gradient(135deg, #ff4757 0%, #ff6348 100%);
     color: white;
     border: none;
-    border-radius: 6px;
+    border-radius: 10px;
     cursor: pointer;
     font-weight: 600;
-    transition: background 0.3s;
+    transition: all 0.3s;
 }
 
 .logoutButton:hover {
-    background: #ff3838;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 71, 87, 0.4);
 }
 
 /* Controls */
@@ -129,37 +227,79 @@
 }
 
 .filters button {
-    padding: 0.5rem 1rem;
-    background: #f0f0f0;
-    border: 2px solid transparent;
-    border-radius: 6px;
+    padding: 0.6rem 1.2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
     cursor: pointer;
     font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
     transition: all 0.3s;
 }
 
 .filters button:hover {
-    background: #e0e0e0;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
 }
 
 .filterActive {
-    background: #667eea !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
     color: white !important;
-    border-color: #667eea !important;
+    border-color: transparent !important;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.rightControls {
+    display: flex;
+    gap: 1rem;
+    flex: 1;
+    align-items: center;
 }
 
 .searchInput {
     flex: 1;
     min-width: 250px;
-    padding: 0.75rem;
-    border: 2px solid #ddd;
-    border-radius: 6px;
+    padding: 0.8rem 1.2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
     font-size: 1rem;
+    color: #fff;
+    transition: all 0.3s;
+}
+
+.searchInput::placeholder {
+    color: rgba(255, 255, 255, 0.4);
 }
 
 .searchInput:focus {
     outline: none;
+    background: rgba(255, 255, 255, 0.08);
     border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.exportButton {
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(135deg, #2ed573 0%, #26de81 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+    font-size: 0.95rem;
+}
+
+.exportButton:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(46, 213, 115, 0.4);
+}
+
+.exportButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 /* Registrations Section */
@@ -171,35 +311,73 @@
 .noResults {
     text-align: center;
     padding: 3rem;
-    color: white;
+    color: rgba(255, 255, 255, 0.8);
     font-size: 1.2rem;
 }
 
-.registrationGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-    gap: 2rem;
+/* List View for Registrations */
+.registrationList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
     margin-top: 2rem;
 }
 
-/* Registration Card */
+/* Registration Card - List Style */
 .registrationCard {
-    background: white;
-    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: fadeInUp 0.5s ease-out backwards;
+}
+
+.registrationCard:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.registrationCard:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.registrationCard:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.registrationCard:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.registrationCard:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .registrationCard:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    transform: translateX(5px);
+    border-color: rgba(102, 126, 234, 0.3);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(102, 126, 234, 0.2);
 }
 
 .cardHeader {
     padding: 1.5rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -207,79 +385,108 @@
 
 .cardHeader h2 {
     margin: 0;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
+    color: #fff;
 }
 
 .statusBadge {
     padding: 0.5rem 1rem;
     border-radius: 20px;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .statusBadge.pending {
-    background: #ffa502;
-    color: white;
+    background: rgba(255, 165, 2, 0.2);
+    color: #ffa502;
+    border: 1px solid rgba(255, 165, 2, 0.3);
 }
 
 .statusBadge.approved {
-    background: #2ed573;
-    color: white;
+    background: rgba(46, 213, 115, 0.2);
+    color: #2ed573;
+    border: 1px solid rgba(46, 213, 115, 0.3);
 }
 
 .statusBadge.rejected {
-    background: #ff4757;
-    color: white;
+    background: rgba(255, 71, 87, 0.2);
+    color: #ff4757;
+    border: 1px solid rgba(255, 71, 87, 0.3);
 }
 
 .cardBody {
     padding: 1.5rem;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
 }
 
 .section {
-    margin-bottom: 1.5rem;
+    margin-bottom: 0;
 }
 
 .section h3 {
     color: #667eea;
-    margin-bottom: 0.75rem;
-    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.membersGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
 }
 
 .member {
-    padding: 0.75rem;
-    background: #f8f9fa;
-    border-radius: 6px;
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
-    line-height: 1.6;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    transition: all 0.3s;
+}
+
+.member:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(102, 126, 234, 0.3);
 }
 
 .member strong {
-    color: #333;
+    color: #fff;
+    display: block;
+    margin-bottom: 0.5rem;
 }
 
 .member span {
-    color: #666;
+    color: rgba(255, 255, 255, 0.7);
+    display: block;
+    margin-bottom: 0.25rem;
 }
 
 .paymentProof {
     width: 100%;
-    max-height: 300px;
-    object-fit: contain;
-    border-radius: 8px;
-    border: 2px solid #ddd;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     cursor: pointer;
-    transition: transform 0.3s;
+    transition: all 0.3s;
 }
 
 .paymentProof:hover {
-    transform: scale(1.05);
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
 .date {
-    color: #999;
-    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
     margin: 0;
 }
 
@@ -287,7 +494,7 @@
     display: flex;
     gap: 1rem;
     padding: 1.5rem;
-    border-top: 1px solid #eee;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .approveButton,
@@ -295,38 +502,67 @@
     flex: 1;
     padding: 1rem;
     border: none;
-    border-radius: 6px;
+    border-radius: 10px;
     font-weight: 600;
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.approveButton::before,
+.rejectButton::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.approveButton:hover::before,
+.rejectButton:hover::before {
+    width: 300px;
+    height: 300px;
 }
 
 .approveButton {
-    background: #2ed573;
+    background: linear-gradient(135deg, #2ed573 0%, #26de81 100%);
     color: white;
 }
 
 .approveButton:hover {
-    background: #26de81;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(46, 213, 115, 0.3);
+    box-shadow: 0 8px 20px rgba(46, 213, 115, 0.4);
 }
 
 .rejectButton {
-    background: #ff4757;
+    background: linear-gradient(135deg, #ff4757 0%, #ff6348 100%);
     color: white;
 }
 
 .rejectButton:hover {
-    background: #ff3838;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3);
+    box-shadow: 0 8px 20px rgba(255, 71, 87, 0.4);
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-    .registrationGrid {
+    .registrationList {
+        gap: 1.5rem;
+    }
+
+    .cardBody {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .membersGrid {
         grid-template-columns: 1fr;
     }
 
@@ -341,7 +577,16 @@
         width: 100%;
     }
 
+    .rightControls {
+        flex-direction: column;
+        width: 100%;
+    }
+
     .searchInput {
+        width: 100%;
+    }
+
+    .exportButton {
         width: 100%;
     }
 }

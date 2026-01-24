@@ -1,3 +1,6 @@
+'use client';
+
+import { useEffect } from 'react';
 import Header from "@/components/Header/Header";
 import Hero from "@/components/Hero/Hero";
 import Footer from "@/components/Footer/Footer";
@@ -7,8 +10,30 @@ import { ROUNDS_DATA, EVENT_CONFIG } from "@/lib/constants";
 import styles from "./page.module.css";
 import CountdownTimer from "@/components/CountdownTimer/CountdownTimer";
 import HowItWorks from "@/components/HowItWorks/HowItWorks";
+import MascotGuide from "@/components/MascotGuide";
+import { useMascotGuide } from "@/hooks/useMascotGuide";
+import { MASCOT_MESSAGES } from "@/lib/mascotData";
 
 export default function Home() {
+  const { isVisible, currentMessage, showMessage, dismissMessage, nextMessage, messageQueue } = useMascotGuide('home');
+
+  // Show welcome messages on first visit
+  useEffect(() => {
+    const messages = MASCOT_MESSAGES.home;
+    if (messages && messages.length > 0) {
+      // Show first message after a short delay
+      setTimeout(() => {
+        showMessage(messages[0]);
+        // Queue second message if it exists
+        if (messages[1]) {
+          setTimeout(() => {
+            showMessage(messages[1]);
+          }, 6000); // Show after first message auto-dismisses
+        }
+      }, 1000);
+    }
+  }, []);
+
   return (
     <>
       <Header />
@@ -26,6 +51,18 @@ export default function Home() {
         <HowItWorks />
       </main>
       <Footer />
+
+      {/* Mascot Guide */}
+      {currentMessage && (
+        <MascotGuide
+          message={currentMessage}
+          isVisible={isVisible}
+          onDismiss={dismissMessage}
+          onNext={nextMessage}
+          hasMore={messageQueue.length > 0}
+        />
+      )}
     </>
   );
 }
+

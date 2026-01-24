@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { isAdmin, checkAdminSession, setAdminSession, clearAdminSession } from "@/lib/adminAuth";
 import { getAllRegistrations, updateRegistrationStatus, Registration } from "@/lib/registrationService";
 import { sendApprovalEmail, sendRejectionEmail, initEmailJS } from "@/lib/emailService";
+import { exportFilteredRegistrations } from "@/lib/excelExport";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import styles from "./page.module.css";
@@ -145,6 +146,19 @@ export default function AdminPage() {
         return matchesFilter && matchesSearch;
     });
 
+    const handleExportToExcel = () => {
+        if (registrations.length === 0) {
+            alert('No registrations to export!');
+            return;
+        }
+
+        // Export based on current filter
+        exportFilteredRegistrations(registrations, filter);
+
+        const statusText = filter === 'all' ? 'all' : filter;
+        alert(`Exported ${filteredRegistrations.length} ${statusText} registration(s) to Excel!`);
+    };
+
     if (!isAdminAuth) {
         return (
             <>
@@ -240,13 +254,23 @@ export default function AdminPage() {
                                 </button>
                             </div>
 
-                            <input
-                                type="text"
-                                placeholder="Search by team or member name..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className={styles.searchInput}
-                            />
+                            <div className={styles.rightControls}>
+                                <input
+                                    type="text"
+                                    placeholder="Search by team or member name..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    className={styles.searchInput}
+                                />
+
+                                <button
+                                    onClick={handleExportToExcel}
+                                    className={styles.exportButton}
+                                    disabled={registrations.length === 0}
+                                >
+                                    📊 Export to Excel
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -258,7 +282,7 @@ export default function AdminPage() {
                         ) : filteredRegistrations.length === 0 ? (
                             <p className={styles.noResults}>No registrations found.</p>
                         ) : (
-                            <div className={styles.registrationGrid}>
+                            <div className={styles.registrationList}>
                                 {filteredRegistrations.map((reg) => (
                                     <div key={reg.userId} className={styles.registrationCard}>
                                         <div className={styles.cardHeader}>
@@ -273,15 +297,16 @@ export default function AdminPage() {
                                         <div className={styles.cardBody}>
                                             <div className={styles.section}>
                                                 <h3>Team Members</h3>
-                                                {reg.members.map((member, idx) => (
-                                                    <div key={idx} className={styles.member}>
-                                                        <strong>Member {idx + 1}:</strong> {member.name}
-                                                        <br />
-                                                        <span>📧 {member.email}</span>
-                                                        <br />
-                                                        <span>📱 {member.phone}</span>
-                                                    </div>
-                                                ))}
+                                                <div className={styles.membersGrid}>
+                                                    {reg.members.map((member, idx) => (
+                                                        <div key={idx} className={styles.member}>
+                                                            <strong>Member {idx + 1}</strong>
+                                                            <span>👤 {member.name}</span>
+                                                            <span>📧 {member.email}</span>
+                                                            <span>📱 {member.phone}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
                                             </div>
 
                                             <div className={styles.section}>
@@ -291,9 +316,6 @@ export default function AdminPage() {
                                                     alt="Payment proof"
                                                     className={styles.paymentProof}
                                                 />
-                                            </div>
-
-                                            <div className={styles.section}>
                                                 <p className={styles.date}>
                                                     Registered: {reg.timestamp.toDate().toLocaleDateString()}
                                                 </p>

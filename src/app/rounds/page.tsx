@@ -1,14 +1,27 @@
+'use client';
+
+import { useEffect } from 'react';
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import { ROUNDS_DATA } from "@/lib/constants";
 import styles from "./page.module.css";
-
-export const metadata = {
-    title: "Rounds | TechNegotia",
-    description: "Explore the three exciting rounds of TechNegotia - Prototype & Crisis, Investor Pitch, and Boardroom Negotiation.",
-};
+import MascotGuide from "@/components/MascotGuide";
+import { useMascotGuide } from "@/hooks/useMascotGuide";
+import { MASCOT_MESSAGES } from "@/lib/mascotData";
 
 export default function RoundsPage() {
+    const { isVisible, currentMessage, showMessage, dismissMessage, nextMessage, messageQueue } = useMascotGuide('rounds');
+
+    // Show info messages on first visit
+    useEffect(() => {
+        const messages = MASCOT_MESSAGES.rounds;
+        if (messages && messages.length > 0) {
+            setTimeout(() => {
+                showMessage(messages[0]);
+            }, 1500);
+        }
+    }, []);
+
     return (
         <>
             <Header />
@@ -186,6 +199,17 @@ export default function RoundsPage() {
                 </section>
             </main>
             <Footer />
+
+            {/* Mascot Guide */}
+            {currentMessage && (
+                <MascotGuide
+                    message={currentMessage}
+                    isVisible={isVisible}
+                    onDismiss={dismissMessage}
+                    onNext={nextMessage}
+                    hasMore={messageQueue.length > 0}
+                />
+            )}
         </>
     );
 }

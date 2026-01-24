@@ -1,0 +1,107 @@
+'use client';
+
+import { useState, useEffect, useCallback } from 'react';
+import { MascotMessage } from '@/lib/mascotData';
+
+interface UseMascotGuideReturn {
+    isVisible: boolean;
+    currentMessage: MascotMessage | null;
+    showMessage: (message: MascotMessage) => void;
+    dismissMessage: () => void;
+    nextMessage: () => void;
+    messageQueue: MascotMessage[];
+}
+
+export function useMascotGuide(pageId: string): UseMascotGuideReturn {
+    const [isVisible, setIsVisible] = useState(false);
+    const [currentMessage, setCurrentMessage] = useState<MascotMessage | null>(null);
+    const [messageQueue, setMessageQueue] = useState<MascotMessage[]>([]);
+    const [seenMessages, setSeenMessages] = useState<Set<string>>(new Set());
+
+    // Load seen messages from localStorage
+    useEffect(() => {
+        const stored = localStorage.getItem('mascot-seen-messages');
+        if (stored) {
+            try {
+                setSeenMessages(new Set(JSON.parse(stored)));
+            } catch (e) {
+                console.error('Failed to parse seen messages:', e);
+            }
+        }
+    }, []);
+
+    // Save seen messages to localStorage
+    const markAsSeen = useCallback((messageId: string) => {
+        setSeenMessages(prev => {
+            const updated = new Set(prev);
+            updated.add(messageId);
+            localStorage.setItem('mascot-seen-messages', JSON.stringify([...updated]));
+            return updated;
+        });
+    }, []);
+
+    // Show a message
+    const showMessage = useCallback((message: MascotMessage) => {
+        // Check if message should only be shown once
+        if (message.showOnce && seenMessages.has(message.id)) {
+            return;
+        }
+
+        setCurrentMessage(message);
+        setIsVisible(true);
+
+        // Mark as seen if showOnce is true
+        if (message.showOnce) {
+            markAsSeen(message.id);
+        }
+
+        // Auto-dismiss if duration is set
+        if (message.duration && message.duration > 0) {
+            setTimeout(() => {
+                dismissMessage();
+            }, message.duration);
+        }
+    }, [seenMessages, markAsSeen]);
+
+    // Dismiss current message
+    const dismissMessage = useCallback(() => {
+        setIsVisible(false);
+        setTimeout(() => {
+            setCurrentMessage(null);
+            // Show next message in queue if any
+            if (messageQueue.length > 0) {
+                const [next, ...rest] = messageQueue;
+                setMessageQueue(rest);
+                showMessage(next);
+            }
+        }, 300); // Wait for exit animation
+    }, [messageQueue, showMessage]);
+
+    // Show next message in queue
+    const nextMessage = useCallback(() => {
+        if (messageQueue.length > 0) {
+            dismissMessage();
+        }
+    }, [messageQueue, dismissMessage]);
+
+    // Add messages to queue
+    const queueMessages = useCallback((messages: MascotMessage[]) => {
+        const filtered = messages.filter(msg =>
+            !msg.showOnce || !seenMessages.has(msg.id)
+        );
+
+        if (filtered.length > 0) {
+            setMessageQueue(filtered);
+            showMessage(filtered[0]);
+        }
+    }, [seenMessages, showMessage]);
+
+    return {
+        isVisible,
+        currentMessage,
+        showMessage,
+        dismissMessage,
+        nextMessage,
+        messageQueue,
+    };
+}

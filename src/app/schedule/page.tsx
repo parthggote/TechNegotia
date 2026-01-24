@@ -1,3 +1,6 @@
+'use client';
+
+import { useEffect } from 'react';
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import Timeline from "@/components/Timeline/Timeline";
@@ -5,13 +8,22 @@ import CountdownTimer from "@/components/CountdownTimer/CountdownTimer";
 import ProgressionCarousel from "@/components/ProgressionCarousel/ProgressionCarousel";
 import { SCHEDULE_DATA, EVENT_CONFIG } from "@/lib/constants";
 import styles from "./page.module.css";
-
-export const metadata = {
-    title: "Schedule | TechNegotia",
-    description: "View the complete schedule for TechNegotia - from problem release to final winners announcement.",
-};
+import MascotGuide from "@/components/MascotGuide";
+import { useMascotGuide } from "@/hooks/useMascotGuide";
+import { MASCOT_MESSAGES } from "@/lib/mascotData";
 
 export default function SchedulePage() {
+    const { isVisible, currentMessage, showMessage, dismissMessage, nextMessage, messageQueue } = useMascotGuide('schedule');
+
+    useEffect(() => {
+        const messages = MASCOT_MESSAGES.schedule;
+        if (messages && messages.length > 0) {
+            setTimeout(() => {
+                showMessage(messages[0]);
+            }, 1500);
+        }
+    }, []);
+
     return (
         <>
             <Header />
@@ -71,6 +83,17 @@ export default function SchedulePage() {
                 </section>
             </main>
             <Footer />
+
+            {/* Mascot Guide */}
+            {currentMessage && (
+                <MascotGuide
+                    message={currentMessage}
+                    isVisible={isVisible}
+                    onDismiss={dismissMessage}
+                    onNext={nextMessage}
+                    hasMore={messageQueue.length > 0}
+                />
+            )}
         </>
     );
 }

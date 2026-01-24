@@ -1,0 +1,334 @@
+/* Mascot Guide Container */
+.mascotContainer {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999;
+    display: flex;
+    align-items: flex-end;
+    gap: 15px;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: auto;
+    /* Changed from none to auto to keep it interactive */
+}
+
+.mascotContainer.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+}
+
+/* Mascot Sprite */
+.mascotSprite {
+    position: relative;
+    width: 180px;
+    /* Increased from 120px */
+    height: 180px;
+    /* Increased from 120px */
+    animation: float 3s ease-in-out infinite;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+    flex-shrink: 0;
+    /* Prevent shrinking */
+}
+
+.mascotImage {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+
+/* Floating Animation */
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Dialogue Box */
+.dialogueBox {
+    position: relative;
+    background: #fff;
+    border: 4px solid #000;
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 320px;
+    min-width: 280px;
+    box-shadow:
+        8px 8px 0 rgba(0, 0, 0, 0.2),
+        0 4px 12px rgba(0, 0, 0, 0.1);
+    font-family: 'Press Start 2P', monospace;
+    animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Speech Bubble Tail */
+.dialogueBox::before {
+    content: '';
+    position: absolute;
+    bottom: 20px;
+    left: -16px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 12px 16px 12px 0;
+    border-color: transparent #000 transparent transparent;
+}
+
+.dialogueBox::after {
+    content: '';
+    position: absolute;
+    bottom: 22px;
+    left: -9px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 12px 10px 0;
+    border-color: transparent #fff transparent transparent;
+}
+
+/* Message Type Styling */
+.typeGreeting {
+    border-color: #4ecdc4;
+    background: linear-gradient(135deg, #fff 0%, #f0fffe 100%);
+}
+
+.typeHelp {
+    border-color: #209cee;
+    background: linear-gradient(135deg, #fff 0%, #f0f7ff 100%);
+}
+
+.typeTip {
+    border-color: #f7d51d;
+    background: linear-gradient(135deg, #fff 0%, #fffef0 100%);
+}
+
+.typeCelebration {
+    border-color: #92cc41;
+    background: linear-gradient(135deg, #fff 0%, #f7fff0 100%);
+}
+
+.typeWarning {
+    border-color: #e76e55;
+    background: linear-gradient(135deg, #fff 0%, #fff5f3 100%);
+}
+
+.typeInfo {
+    border-color: #666;
+    background: linear-gradient(135deg, #fff 0%, #f5f5f5 100%);
+}
+
+/* Close Button */
+.closeButton {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: transparent;
+    border: none;
+    color: #999;
+    font-size: 0.8rem;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    border-radius: 4px;
+    font-family: 'Press Start 2P', monospace;
+}
+
+.closeButton:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: #000;
+    transform: scale(1.1);
+}
+
+/* Message Icon */
+.messageIcon {
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+    animation: iconBounce 0.6s ease-in-out;
+}
+
+@keyframes iconBounce {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+/* Message Text */
+.messageText {
+    margin-bottom: 16px;
+    line-height: 1.6;
+}
+
+.messageText p {
+    margin: 0;
+    font-size: 0.7rem;
+    color: #000;
+}
+
+/* Typewriter Effect */
+.typewriter {
+    overflow: hidden;
+    white-space: pre-wrap;
+    animation: typing 1.5s steps(40, end), blink 0.75s step-end infinite;
+}
+
+@keyframes typing {
+    from {
+        width: 0;
+    }
+
+    to {
+        width: 100%;
+    }
+}
+
+@keyframes blink {
+
+    from,
+    to {
+        border-right: 2px solid transparent;
+    }
+
+    50% {
+        border-right: 2px solid #000;
+    }
+}
+
+/* Action Buttons */
+.actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.actionButton {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.6rem;
+    padding: 8px 12px;
+    border: 3px solid #000;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
+}
+
+.actionButton:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.2);
+}
+
+.actionButton:active {
+    transform: translate(0, 0);
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+.nextButton {
+    background: #4ecdc4;
+    border-color: #3aa39b;
+    color: #000;
+}
+
+.nextButton:hover {
+    background: #5ed9d0;
+}
+
+.dismissButton {
+    background: #f5f5f5;
+    border-color: #999;
+    color: #333;
+}
+
+.dismissButton:hover {
+    background: #fff;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .mascotContainer {
+        bottom: 10px;
+        right: 10px;
+        left: 10px;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .mascotSprite {
+        width: 120px;
+        /* Smaller on mobile */
+        height: 120px;
+    }
+
+    .dialogueBox {
+        max-width: 100%;
+        min-width: auto;
+        width: 100%;
+    }
+
+    .dialogueBox::before,
+    .dialogueBox::after {
+        bottom: auto;
+        top: -16px;
+        left: 50%;
+        transform: translateX(-50%) rotate(90deg);
+    }
+
+    .messageText p {
+        font-size: 0.65rem;
+    }
+
+    .actionButton {
+        font-size: 0.55rem;
+        padding: 6px 10px;
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+
+    .mascotContainer,
+    .mascotSprite,
+    .dialogueBox,
+    .messageIcon,
+    .typewriter {
+        animation: none !important;
+    }
+
+    .mascotContainer.visible {
+        opacity: 1;
+        transform: none;
+    }
+}
