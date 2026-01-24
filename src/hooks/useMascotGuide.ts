@@ -21,6 +21,8 @@ export function useMascotGuide(pageId: string): UseMascotGuideReturn {
 
     // Ref to hold latest dismissMessage to avoid stale closures
     const dismissMessageRef = useRef<() => void>(() => { });
+    // Ref to track auto-dismiss timer for cleanup
+    const autoDismissTimerRef = useRef<NodeJS.Timeout | null>(null);
 
     // Load seen messages from localStorage
     useEffect(() => {
@@ -51,6 +53,12 @@ export function useMascotGuide(pageId: string): UseMascotGuideReturn {
             return;
         }
 
+        // Clear any existing auto-dismiss timer
+        if (autoDismissTimerRef.current) {
+            clearTimeout(autoDismissTimerRef.current);
+            autoDismissTimerRef.current = null;
+        }
+
         setCurrentMessage(message);
         setIsVisible(true);
 
@@ -61,17 +69,21 @@ export function useMascotGuide(pageId: string): UseMascotGuideReturn {
 
         // Auto-dismiss if duration is set
         if (message.duration && message.duration > 0) {
-            const timerId = setTimeout(() => {
+            autoDismissTimerRef.current = setTimeout(() => {
                 dismissMessageRef.current();
+                autoDismissTimerRef.current = null;
             }, message.duration);
-
-            // Store timer ID for cleanup
-            return () => clearTimeout(timerId);
         }
     }, [seenMessages, markAsSeen]);
 
     // Dismiss current message
     const dismissMessage = useCallback(() => {
+        // Clear auto-dismiss timer when manually dismissing
+        if (autoDismissTimerRef.current) {
+            clearTimeout(autoDismissTimerRef.current);
+            autoDismissTimerRef.current = null;
+        }
+
         setIsVisible(false);
         setTimeout(() => {
             setCurrentMessage(null);
@@ -88,6 +100,15 @@ export function useMascotGuide(pageId: string): UseMascotGuideReturn {
     useEffect(() => {
         dismissMessageRef.current = dismissMessage;
     }, [dismissMessage]);
+
+    // Cleanup auto-dismiss timer on unmount
+    useEffect(() => {
+        return () => {
+            if (autoDismissTimerRef.current) {
+                clearTimeout(autoDismissTimerRef.current);
+            }
+        };
+    }, []);
 
     // Show next message in queue
     const nextMessage = useCallback(() => {
