@@ -11,30 +11,9 @@ export interface User {
     updatedAt?: Date;
 }
 
-// Event registration data
-export interface Registration {
-    id?: string;
-    userId?: string;
-    teamName: string;
-    leaderName: string;
-    leaderEmail: string;
-    leaderPhone: string;
-    teamMembers: TeamMember[];
-    eventType: 'individual' | 'team';
-    college: string;
-    year: string;
-    status: 'pending' | 'approved' | 'rejected';
-    createdAt: Date;
-    updatedAt?: Date;
-}
+// NOTE: Registration and TeamMember interfaces are defined in @/lib/registrationService.ts
+// Import from there to use the canonical definitions with Firestore Timestamp types
 
-// Team member data
-export interface TeamMember {
-    name: string;
-    email: string;
-    phone: string;
-    role?: string;
-}
 
 // Contact form submission data
 export interface ContactSubmission {

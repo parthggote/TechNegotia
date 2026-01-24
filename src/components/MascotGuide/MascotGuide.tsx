@@ -21,8 +21,13 @@ export default function MascotGuide({
     onNext,
     hasMore = false
 }: MascotGuideProps) {
-    // Use consistent mascot (first one) instead of random
-    const mascot = MASCOTS[0]; // Always use the first mascot for consistency
+    // Use consistent mascot (first one) with safety check
+    const mascot = MASCOTS.length > 0 ? MASCOTS[0] : null;
+
+    // Don't render if no mascot available
+    if (!mascot || !isVisible) {
+        return null;
+    }
 
     // Keyboard shortcuts
     useEffect(() => {

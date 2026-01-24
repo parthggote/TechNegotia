@@ -5,10 +5,19 @@ import { Registration } from './registrationService';
  * Export registrations to Excel file
  */
 export function exportRegistrationsToExcel(registrations: Registration[], filename: string = 'registrations.xlsx') {
-    // Sort registrations: approved first, then rejected, then pending
+    // Sort registrations: approved first, then rejected, then pending, unknown last
     const sortedRegistrations = [...registrations].sort((a, b) => {
-        const statusOrder = { 'approved': 1, 'rejected': 2, 'pending': 3 };
-        return statusOrder[a.status] - statusOrder[b.status];
+        const statusOrder: Record<string, number> = { 'approved': 1, 'rejected': 2, 'pending': 3 };
+        const aOrder = statusOrder[a.status] ?? 999; // Unknown statuses go last
+        const bOrder = statusOrder[b.status] ?? 999;
+
+        // Primary sort by status
+        if (aOrder !== bOrder) {
+            return aOrder - bOrder;
+        }
+
+        // Tie-breaker: sort by timestamp (newest first)
+        return b.timestamp.toMillis() - a.timestamp.toMillis();
     });
 
     // Prepare data for Excel

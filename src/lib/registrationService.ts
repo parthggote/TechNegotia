@@ -15,7 +15,8 @@ export interface Registration {
     teamName: string;
     members: TeamMember[];
     paymentProofURL: string;
-    timestamp: Timestamp;
+    timestamp: Timestamp; // Created timestamp
+    updatedAt?: Timestamp; // Updated timestamp (set when status changes)
     status: 'pending' | 'approved' | 'rejected';
 }
 

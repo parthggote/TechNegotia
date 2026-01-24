@@ -85,54 +85,100 @@ const fileToBase64 = (file: File): Promise<string> => {
  * More aggressive compression for Base64 storage
  */
 const compressImage = async (file: File, quality: number = 0.6): Promise<File> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
+        let settled = false;
+
+        // Helper to ensure resolve/reject is called only once
+        const safeResolve = (result: File) => {
+            if (!settled) {
+                settled = true;
+                resolve(result);
+            }
+        };
+
+        const safeReject = (error: any) => {
+            if (!settled) {
+                settled = true;
+                reject(error);
+            }
+        };
+
         const reader = new FileReader();
-        reader.readAsDataURL(file);
+
+        // Attach FileReader error handlers
+        reader.onerror = () => {
+            safeReject(new Error('Failed to read file'));
+        };
+
+        reader.onabort = () => {
+            safeReject(new Error('File reading was aborted'));
+        };
+
         reader.onload = (event) => {
             const img = new Image();
-            img.src = event.target?.result as string;
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
 
-                // Smaller max dimensions for Base64 storage
-                const maxWidth = 800;  // Reduced from 1200
-                const maxHeight = 800; // Reduced from 1200
-                let width = img.width;
-                let height = img.height;
-
-                if (width > height) {
-                    if (width > maxWidth) {
-                        height *= maxWidth / width;
-                        width = maxWidth;
-                    }
-                } else {
-                    if (height > maxHeight) {
-                        width *= maxHeight / height;
-                        height = maxHeight;
-                    }
-                }
-
-                canvas.width = width;
-                canvas.height = height;
-                ctx?.drawImage(img, 0, 0, width, height);
-
-                canvas.toBlob(
-                    (blob) => {
-                        if (blob) {
-                            const compressedFile = new File([blob], file.name, {
-                                type: file.type,
-                                lastModified: Date.now(),
-                            });
-                            resolve(compressedFile);
-                        } else {
-                            resolve(file); // Fallback to original if compression fails
-                        }
-                    },
-                    file.type,
-                    quality // Use provided quality parameter
-                );
+            // Attach Image error handler BEFORE setting src
+            img.onerror = () => {
+                safeReject(new Error('Failed to load image'));
             };
+
+            img.onload = () => {
+                try {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+
+                    if (!ctx) {
+                        safeReject(new Error('Failed to get canvas context'));
+                        return;
+                    }
+
+                    // Smaller max dimensions for Base64 storage
+                    const maxWidth = 800;  // Reduced from 1200
+                    const maxHeight = 800; // Reduced from 1200
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxWidth) {
+                            height *= maxWidth / width;
+                            width = maxWidth;
+                        }
+                    } else {
+                        if (height > maxHeight) {
+                            width *= maxHeight / height;
+                            height = maxHeight;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    canvas.toBlob(
+                        (blob) => {
+                            if (blob) {
+                                const compressedFile = new File([blob], file.name, {
+                                    type: file.type,
+                                    lastModified: Date.now(),
+                                });
+                                safeResolve(compressedFile);
+                            } else {
+                                // Fallback to original if compression fails
+                                safeResolve(file);
+                            }
+                        },
+                        file.type,
+                        quality // Use provided quality parameter
+                    );
+                } catch (error) {
+                    safeReject(error);
+                }
+            };
+
+            // Set src AFTER all handlers are attached
+            img.src = event.target?.result as string;
         };
+
+        reader.readAsDataURL(file);
     });
 };

@@ -32,6 +32,7 @@ export default function RegisterPage() {
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [existingRegistration, setExistingRegistration] = useState<Registration | null>(null);
     const [isCheckingRegistration, setIsCheckingRegistration] = useState(true);
+    const [registrationCheckError, setRegistrationCheckError] = useState<string | null>(null);
     const [uploadProgress, setUploadProgress] = useState(0);
 
     const updateMember = (index: number, field: keyof TeamMember, value: string) => {
@@ -62,15 +63,54 @@ export default function RegisterPage() {
                 return;
             }
 
+            setRegistrationCheckError(null);
             const result = await checkExistingRegistration(user.uid);
-            if (result.success && result.data) {
+
+            if (!result.success) {
+                // Handle failed check explicitly
+                setRegistrationCheckError(result.error || 'Failed to check registration status. Please refresh the page.');
+                setIsCheckingRegistration(false);
+                return;
+            }
+
+            if (result.data) {
                 setExistingRegistration(result.data);
             }
+
             setIsCheckingRegistration(false);
         };
 
         checkRegistration();
     }, [user, authLoading]);
+
+    // Retry registration check
+    const retryRegistrationCheck = () => {
+        setIsCheckingRegistration(true);
+        setRegistrationCheckError(null);
+
+        const checkRegistration = async () => {
+            if (!user) {
+                setIsCheckingRegistration(false);
+                return;
+            }
+
+            const result = await checkExistingRegistration(user.uid);
+
+            if (!result.success) {
+                setRegistrationCheckError(result.error || 'Failed to check registration status. Please try again.');
+                setIsCheckingRegistration(false);
+                return;
+            }
+
+            if (result.data) {
+                setExistingRegistration(result.data);
+            }
+
+            setIsCheckingRegistration(false);
+        };
+
+        checkRegistration();
+    };
 
     // Handle file selection
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,12 +121,18 @@ export default function RegisterPage() {
         const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
         if (!validTypes.includes(file.type)) {
             alert('Please upload a valid image file (JPG, PNG, or WEBP)');
+            e.target.value = '';
+            setPaymentProof(null);
+            setPaymentProofPreview('');
             return;
         }
 
         // Validate file size (5MB)
         if (file.size > 5 * 1024 * 1024) {
             alert('File size must be less than 5MB');
+            e.target.value = '';
+            setPaymentProof(null);
+            setPaymentProofPreview('');
             return;
         }
 
@@ -289,6 +335,62 @@ export default function RegisterPage() {
                                 <a href="/" className={styles.successButton} style={{ display: 'inline-block', marginTop: '1.5rem' }}>
                                     Return Home
                                 </a>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+                <Footer />
+            </>
+        );
+    }
+
+    // Show error state if registration check failed
+    if (registrationCheckError) {
+        return (
+            <>
+                <Header />
+                <main className={styles.main}>
+                    <section className={styles.hero}>
+                        <div className={styles.container}>
+                            <h1 className={styles.pageTitle}>⚠️ Error</h1>
+                            <p className={styles.pageSubtitle}>Unable to verify registration status</p>
+                        </div>
+                    </section>
+
+                    <section className={styles.section}>
+                        <div className={styles.container}>
+                            <div className={styles.reviewCard} style={{ textAlign: 'center', padding: '3rem 2rem' }}>
+                                <div style={{
+                                    padding: '1.5rem',
+                                    backgroundColor: '#fff3cd',
+                                    borderRadius: '8px',
+                                    border: '2px solid #ffc107',
+                                    marginBottom: '2rem'
+                                }}>
+                                    <p style={{ margin: 0, color: '#856404', fontSize: '1rem' }}>
+                                        {registrationCheckError}
+                                    </p>
+                                </div>
+                                <p style={{ marginBottom: '2rem', color: '#666' }}>
+                                    We need to verify your registration status before you can proceed.
+                                    Please try again or contact support if the problem persists.
+                                </p>
+                                <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                                    <button
+                                        onClick={retryRegistrationCheck}
+                                        className={styles.btnPrimary}
+                                        style={{ minWidth: '150px' }}
+                                    >
+                                        🔄 Retry
+                                    </button>
+                                    <a
+                                        href="/"
+                                        className={styles.btnSecondary}
+                                        style={{ display: 'inline-block', minWidth: '150px', textDecoration: 'none', textAlign: 'center' }}
+                                    >
+                                        Return Home
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </section>

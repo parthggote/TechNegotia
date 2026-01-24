@@ -265,16 +265,23 @@ export const subscribeToCollection = <T extends DocumentData>(
 
         const q = query(collectionRef, ...constraints);
 
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            const documents: T[] = [];
-            querySnapshot.forEach((doc) => {
-                documents.push({
-                    id: doc.id,
-                    ...doc.data(),
-                } as T & { id: string });
-            });
-            callback(documents);
-        });
+        const unsubscribe = onSnapshot(
+            q,
+            (querySnapshot) => {
+                const documents: T[] = [];
+                querySnapshot.forEach((doc) => {
+                    documents.push({
+                        id: doc.id,
+                        ...doc.data(),
+                    } as T & { id: string });
+                });
+                callback(documents);
+            },
+            (error) => {
+                console.error('Error in collection snapshot listener:', error);
+                callback([]); // Return empty array on error
+            }
+        );
 
         return unsubscribe;
     } catch (error: any) {
@@ -298,16 +305,23 @@ export const subscribeToDocument = <T extends DocumentData>(
 
         const docRef = doc(db, collectionName, documentId);
 
-        const unsubscribe = onSnapshot(docRef, (docSnap) => {
-            if (docSnap.exists()) {
-                callback({
-                    id: docSnap.id,
-                    ...docSnap.data(),
-                } as T & { id: string });
-            } else {
-                callback(null);
+        const unsubscribe = onSnapshot(
+            docRef,
+            (docSnap) => {
+                if (docSnap.exists()) {
+                    callback({
+                        id: docSnap.id,
+                        ...docSnap.data(),
+                    } as T & { id: string });
+                } else {
+                    callback(null);
+                }
+            },
+            (error) => {
+                console.error('Error in document snapshot listener:', error);
+                callback(null); // Signal failure by passing null
             }
-        });
+        );
 
         return unsubscribe;
     } catch (error: any) {

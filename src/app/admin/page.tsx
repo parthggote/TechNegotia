@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { isAdmin, checkAdminSession, setAdminSession, clearAdminSession } from "@/lib/adminAuth";
+import { adminLogin, adminLogout } from "@/lib/adminAuth";
+import { checkAdminSession, setAdminSession, clearAdminSession } from "@/lib/adminAuthClient";
 import { getAllRegistrations, updateRegistrationStatus, Registration } from "@/lib/registrationService";
 import { sendApprovalEmail, sendRejectionEmail, initEmailJS } from "@/lib/emailService";
 import { exportFilteredRegistrations } from "@/lib/excelExport";
@@ -17,6 +18,7 @@ export default function AdminPage() {
     const [password, setPassword] = useState("");
     const [registrations, setRegistrations] = useState<Registration[]>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -35,7 +37,7 @@ export default function AdminPage() {
         }
     }, []);
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
 
         // Check if user is signed in with Firebase
@@ -44,17 +46,20 @@ export default function AdminPage() {
             return;
         }
 
-        // Check admin credentials
-        if (isAdmin(email, password)) {
+        // Call server-side login action
+        const result = await adminLogin(email, password);
+
+        if (result.success) {
             setAdminSession();
             setIsAdminAuth(true);
             loadRegistrations();
         } else {
-            alert("Invalid admin credentials");
+            alert(result.error || "Invalid admin credentials");
         }
     };
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
+        await adminLogout();
         clearAdminSession();
         setIsAdminAuth(false);
         setRegistrations([]);
@@ -62,10 +67,18 @@ export default function AdminPage() {
 
     const loadRegistrations = async () => {
         setLoading(true);
+        setError(null);
         const result = await getAllRegistrations();
+
         if (result.success && result.data) {
             setRegistrations(result.data);
+        } else {
+            const errorMsg = result.error || 'Failed to load registrations';
+            setError(errorMsg);
+            setRegistrations([]);
+            alert(`Error: ${errorMsg}`);
         }
+
         setLoading(false);
     };
 
@@ -81,10 +94,16 @@ export default function AdminPage() {
             if (result.success) {
                 // Send approval email to user's sign-in email
                 console.log('Sending approval email to:', reg.userEmail);
+
+                // Safely extract first member name
+                const firstMemberName = Array.isArray(reg.members) && reg.members.length > 0
+                    ? reg.members[0].name
+                    : reg.userEmail || 'Team Member';
+
                 const emailSent = await sendApprovalEmail(
                     reg.teamName,
                     reg.userEmail, // Use sign-in email
-                    reg.members[0].name
+                    firstMemberName
                 );
 
                 if (emailSent) {
@@ -116,10 +135,16 @@ export default function AdminPage() {
             if (result.success) {
                 // Send rejection email to user's sign-in email
                 console.log('Sending rejection email to:', reg.userEmail);
+
+                // Safely extract first member name
+                const firstMemberName = Array.isArray(reg.members) && reg.members.length > 0
+                    ? reg.members[0].name
+                    : reg.userEmail || 'Team Member';
+
                 const emailSent = await sendRejectionEmail(
                     reg.teamName,
                     reg.userEmail, // Use sign-in email
-                    reg.members[0].name,
+                    firstMemberName,
                     reason || undefined
                 );
 
