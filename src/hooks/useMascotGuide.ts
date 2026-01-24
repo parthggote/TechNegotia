@@ -103,8 +103,10 @@ export function useMascotGuide(pageId: string): UseMascotGuideReturn {
         );
 
         if (filtered.length > 0) {
-            setMessageQueue(filtered);
+            // Show first message immediately
             showMessage(filtered[0]);
+            // Queue the rest (not including the first one)
+            setMessageQueue(filtered.slice(1));
         }
     }, [seenMessages, showMessage]);
 
