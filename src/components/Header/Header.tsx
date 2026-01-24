@@ -4,11 +4,17 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { NAV_LINKS } from "@/lib/constants";
+import { useAuth } from "@/hooks/useAuth";
+import AuthModal from "@/components/AuthModal/AuthModal";
 import styles from "./Header.module.css";
 
 export default function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+    const [showUserMenu, setShowUserMenu] = useState(false);
+
+    const { user, signOut } = useAuth();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -21,6 +27,11 @@ export default function Header() {
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
+
+    const handleSignOut = async () => {
+        await signOut();
+        setShowUserMenu(false);
     };
 
     return (
@@ -68,10 +79,42 @@ export default function Header() {
 
                 {/* Right Side Actions */}
                 <div className={styles.actions}>
-                    {/* Contact Us Button - Desktop */}
-                    <Link href="/contact" className={`nes-btn is-primary ${styles.contactBtn}`}>
-                        Contact Us
-                    </Link>
+                    {/* Authentication Buttons - Desktop */}
+                    {!user ? (
+                        <button
+                            onClick={() => setIsAuthModalOpen(true)}
+                            className={`nes-btn is-primary ${styles.authBtn}`}
+                        >
+                            Sign In / Sign Up
+                        </button>
+                    ) : (
+                        <div className={styles.userMenu}>
+                            <button
+                                className={`nes-btn ${styles.userButton}`}
+                                onClick={() => setShowUserMenu(!showUserMenu)}
+                            >
+                                <i className="nes-icon user"></i>
+                                {user.displayName || user.email?.split('@')[0]}
+                            </button>
+
+                            {showUserMenu && (
+                                <div className={styles.userDropdown}>
+                                    <div className="nes-container is-dark">
+                                        <p style={{ marginBottom: '0.5rem', fontSize: '0.75rem' }}>
+                                            {user.email}
+                                        </p>
+                                        <button
+                                            onClick={handleSignOut}
+                                            className="nes-btn is-error"
+                                            style={{ width: '100%', fontSize: '0.75rem' }}
+                                        >
+                                            Sign Out
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
 
                     {/* Mobile Menu Toggle */}
                     <button
@@ -92,6 +135,12 @@ export default function Header() {
                     onClick={() => setIsMobileMenuOpen(false)}
                 />
             )}
+
+            {/* Authentication Modal */}
+            <AuthModal
+                isOpen={isAuthModalOpen}
+                onClose={() => setIsAuthModalOpen(false)}
+            />
         </header>
     );
 }

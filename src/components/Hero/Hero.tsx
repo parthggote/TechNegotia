@@ -3,9 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
+import PaymentButton from "@/components/PaymentButton/PaymentButton";
 import styles from "./Hero.module.css";
 
 export default function Hero() {
+    const router = useRouter();
+    const { user, loading: authLoading } = useAuth();
     const heroRef = useRef<HTMLDivElement>(null);
     const [displayText, setDisplayText] = useState("");
     const [showCursor, setShowCursor] = useState(true);
@@ -35,10 +40,10 @@ export default function Hero() {
     // Typewriter effect
     useEffect(() => {
         let timeoutId: NodeJS.Timeout;
-        
+
         const startTyping = () => {
             let currentIndex = 0;
-            
+
             const typeNextChar = () => {
                 if (currentIndex < fullText.length) {
                     setDisplayText(fullText.slice(0, currentIndex + 1));
@@ -49,7 +54,7 @@ export default function Hero() {
                     setTimeout(() => setShowCursor(false), 1000);
                 }
             };
-            
+
             typeNextChar();
         };
 
@@ -95,12 +100,39 @@ export default function Hero() {
                     </p>
 
                     <div className={styles.cta}>
-                        <Link href="/register" className={`nes-btn is-warning ${styles.typewriterBtn}`}>
-                            <span className={styles.typewriterText}>
-                                {displayText}
-                                {showCursor && <span className={styles.cursor}>|</span>}
-                            </span>
-                        </Link>
+                        {/* Start the Quest Button - Conditional based on auth */}
+                        {authLoading ? (
+                            <button className={`nes-btn is-warning ${styles.typewriterBtn}`} disabled>
+                                <span className={styles.typewriterText}>Loading...</span>
+                            </button>
+                        ) : user ? (
+                            <Link href="/register" className={`nes-btn is-warning ${styles.typewriterBtn}`}>
+                                <span className={styles.typewriterText}>
+                                    {displayText}
+                                    {showCursor && <span className={styles.cursor}>|</span>}
+                                </span>
+                            </Link>
+                        ) : (
+                            <div className={styles.lockedButtonWrapper}>
+                                <button
+                                    className={`nes-btn is-warning ${styles.typewriterBtn} ${styles.questButtonDisabled}`}
+                                    disabled
+                                    title="Please sign in to start the quest"
+                                >
+                                    <span className={styles.typewriterText}>
+                                        🔒 {displayText}
+                                    </span>
+                                </button>
+                                <div className={styles.lockedTooltip}>
+                                    Please sign in to start the quest
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Payment Button */}
+                        <div className={styles.paymentButtonWrapper}>
+                            <PaymentButton paymentLink="#" isAuthenticated={!!user && !authLoading} />
+                        </div>
                     </div>
                 </div>
 

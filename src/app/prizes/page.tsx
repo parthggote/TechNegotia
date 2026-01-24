@@ -1,12 +1,13 @@
+'use client';
+
+import { useEffect } from 'react';
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import { EVENT_CONFIG } from "@/lib/constants";
 import styles from "./page.module.css";
-
-export const metadata = {
-    title: "Prizes | TechNegotia",
-    description: "Discover the exciting prizes awaiting the winners of TechNegotia.",
-};
+import MascotGuide from "@/components/MascotGuide";
+import { useMascotGuide } from "@/hooks/useMascotGuide";
+import { MASCOT_MESSAGES } from "@/lib/mascotData";
 
 const PRIZES = [
     {
@@ -51,6 +52,19 @@ const PRIZES = [
 
 
 export default function PrizesPage() {
+    const { isVisible, currentMessage, showMessage, dismissMessage, nextMessage, messageQueue } = useMascotGuide('prizes');
+
+    useEffect(() => {
+        const messages = MASCOT_MESSAGES.prizes;
+        if (messages && messages.length > 0) {
+            const timerId = setTimeout(() => {
+                showMessage(messages[0]);
+            }, 1500);
+
+            return () => clearTimeout(timerId);
+        }
+    }, [showMessage]);
+
     return (
         <>
             <Header />
@@ -133,6 +147,17 @@ export default function PrizesPage() {
                 </section>
             </main >
             <Footer />
+
+            {/* Mascot Guide */}
+            {currentMessage && (
+                <MascotGuide
+                    message={currentMessage}
+                    isVisible={isVisible}
+                    onDismiss={dismissMessage}
+                    onNext={nextMessage}
+                    hasMore={messageQueue.length > 0}
+                />
+            )}
         </>
     );
 }
