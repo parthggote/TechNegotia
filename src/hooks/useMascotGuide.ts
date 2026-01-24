@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { MascotMessage } from '@/lib/mascotData';
 
 interface UseMascotGuideReturn {
@@ -10,6 +10,7 @@ interface UseMascotGuideReturn {
     dismissMessage: () => void;
     nextMessage: () => void;
     messageQueue: MascotMessage[];
+    queueMessages: (messages: MascotMessage[]) => void;
 }
 
 export function useMascotGuide(pageId: string): UseMascotGuideReturn {
@@ -17,6 +18,9 @@ export function useMascotGuide(pageId: string): UseMascotGuideReturn {
     const [currentMessage, setCurrentMessage] = useState<MascotMessage | null>(null);
     const [messageQueue, setMessageQueue] = useState<MascotMessage[]>([]);
     const [seenMessages, setSeenMessages] = useState<Set<string>>(new Set());
+
+    // Ref to hold latest dismissMessage to avoid stale closures
+    const dismissMessageRef = useRef<() => void>(() => { });
 
     // Load seen messages from localStorage
     useEffect(() => {
@@ -57,9 +61,12 @@ export function useMascotGuide(pageId: string): UseMascotGuideReturn {
 
         // Auto-dismiss if duration is set
         if (message.duration && message.duration > 0) {
-            setTimeout(() => {
-                dismissMessage();
+            const timerId = setTimeout(() => {
+                dismissMessageRef.current();
             }, message.duration);
+
+            // Store timer ID for cleanup
+            return () => clearTimeout(timerId);
         }
     }, [seenMessages, markAsSeen]);
 
@@ -76,6 +83,11 @@ export function useMascotGuide(pageId: string): UseMascotGuideReturn {
             }
         }, 300); // Wait for exit animation
     }, [messageQueue, showMessage]);
+
+    // Update ref when dismissMessage changes
+    useEffect(() => {
+        dismissMessageRef.current = dismissMessage;
+    }, [dismissMessage]);
 
     // Show next message in queue
     const nextMessage = useCallback(() => {
@@ -103,5 +115,6 @@ export function useMascotGuide(pageId: string): UseMascotGuideReturn {
         dismissMessage,
         nextMessage,
         messageQueue,
+        queueMessages,
     };
 }

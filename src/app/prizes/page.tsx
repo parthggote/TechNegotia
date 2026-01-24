@@ -57,11 +57,13 @@ export default function PrizesPage() {
     useEffect(() => {
         const messages = MASCOT_MESSAGES.prizes;
         if (messages && messages.length > 0) {
-            setTimeout(() => {
+            const timerId = setTimeout(() => {
                 showMessage(messages[0]);
             }, 1500);
+
+            return () => clearTimeout(timerId);
         }
-    }, []);
+    }, [showMessage]);
 
     return (
         <>

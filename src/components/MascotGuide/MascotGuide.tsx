@@ -24,13 +24,11 @@ export default function MascotGuide({
     // Use consistent mascot (first one) with safety check
     const mascot = MASCOTS.length > 0 ? MASCOTS[0] : null;
 
-    // Don't render if no mascot available
-    if (!mascot || !isVisible) {
-        return null;
-    }
-
-    // Keyboard shortcuts
+    // Keyboard shortcuts - MUST run before any early returns
     useEffect(() => {
+        // Only attach listeners when visible
+        if (!isVisible) return;
+
         const handleKeyPress = (e: KeyboardEvent) => {
             if (e.key === 'Escape' && message.dismissible) {
                 onDismiss();
@@ -39,16 +37,14 @@ export default function MascotGuide({
             }
         };
 
-        if (isVisible) {
-            window.addEventListener('keydown', handleKeyPress);
-        }
-
-        return () => {
-            window.removeEventListener('keydown', handleKeyPress);
-        };
+        window.addEventListener('keydown', handleKeyPress);
+        return () => window.removeEventListener('keydown', handleKeyPress);
     }, [isVisible, message.dismissible, hasMore, onDismiss, onNext]);
 
-    if (!isVisible) return null;
+    // Early return AFTER hooks
+    if (!mascot || !isVisible) {
+        return null;
+    }
 
     // Get message type styling
     const getMessageTypeClass = () => {

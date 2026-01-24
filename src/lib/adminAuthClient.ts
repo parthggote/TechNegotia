@@ -3,17 +3,15 @@
  * These run in the browser and manage UI state only
  */
 
-const SESSION_COOKIE_NAME = 'admin-session';
-
 /**
  * Client-side helper to check if admin session exists
- * This only checks for cookie presence, actual validation is server-side
+ * Reads from localStorage since the actual session cookie is httpOnly and not accessible
  */
 export function checkAdminSession(): boolean {
     if (typeof window === 'undefined') return false;
 
-    // Check if session cookie exists (client can only check presence, not validate)
-    return document.cookie.includes(SESSION_COOKIE_NAME);
+    // Check localStorage flag set by setAdminSession after successful login
+    return localStorage.getItem('admin-logged-in') === 'true';
 }
 
 /**

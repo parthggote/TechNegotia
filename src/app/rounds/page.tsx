@@ -16,11 +16,13 @@ export default function RoundsPage() {
     useEffect(() => {
         const messages = MASCOT_MESSAGES.rounds;
         if (messages && messages.length > 0) {
-            setTimeout(() => {
+            const timerId = setTimeout(() => {
                 showMessage(messages[0]);
             }, 1500);
+
+            return () => clearTimeout(timerId);
         }
-    }, []);
+    }, [showMessage]);
 
     return (
         <>
