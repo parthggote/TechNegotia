@@ -90,15 +90,19 @@ export function useMascotGuide(pageId: string): UseMascotGuideReturn {
 
         setIsVisible(false);
         setTimeout(() => {
-            setCurrentMessage(null);
-            // Show next message in queue if any
-            if (messageQueue.length > 0) {
-                const [next, ...rest] = messageQueue;
-                setMessageQueue(rest);
+            // Use functional updater to get latest queue state
+            setMessageQueue(prev => {
+                if (prev.length === 0) {
+                    setCurrentMessage(null);
+                    return prev;
+                }
+
+                const [next, ...rest] = prev;
                 showMessage(next);
-            }
+                return rest;
+            });
         }, 300); // Wait for exit animation
-    }, [messageQueue, showMessage]);
+    }, [showMessage]);
 
     // Update ref when dismissMessage changes
     useEffect(() => {
