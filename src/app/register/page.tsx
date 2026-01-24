@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import styles from "./page.module.css";
 import MascotSuccessModal from "@/components/MascotSuccessModal/MascotSuccessModal";
 import { MASCOTS, MascotData } from "@/lib/mascotData";
+import { useAuth } from "@/hooks/useAuth";
+import { convertImageToBase64 } from "@/lib/firebaseStorage";
+import { checkExistingRegistration, saveRegistration, Registration } from "@/lib/registrationService";
 
 interface TeamMember {
     name: string;
@@ -14,17 +17,22 @@ interface TeamMember {
 }
 
 export default function RegisterPage() {
+    const { user, loading: authLoading } = useAuth();
     const [step, setStep] = useState(1);
     const [teamName, setTeamName] = useState("");
     const [members, setMembers] = useState<TeamMember[]>([
         { name: "", email: "", phone: "" },
-        { name: "", email: "", phone: "" },
     ]);
+    const [paymentProof, setPaymentProof] = useState<File | null>(null);
+    const [paymentProofPreview, setPaymentProofPreview] = useState<string>("");
     const [agreedToRules, setAgreedToRules] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [assignedMascot, setAssignedMascot] = useState<MascotData | null>(null);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [existingRegistration, setExistingRegistration] = useState<Registration | null>(null);
+    const [isCheckingRegistration, setIsCheckingRegistration] = useState(true);
+    const [uploadProgress, setUploadProgress] = useState(0);
 
     const updateMember = (index: number, field: keyof TeamMember, value: string) => {
         const newMembers = [...members];
@@ -39,30 +47,119 @@ export default function RegisterPage() {
     };
 
     const removeMember = (index: number) => {
-        if (members.length > 2) {
+        if (members.length > 1) {
             setMembers(members.filter((_, i) => i !== index));
         }
     };
 
+    // Check for existing registration on mount
+    useEffect(() => {
+        const checkRegistration = async () => {
+            if (authLoading) return;
+
+            if (!user) {
+                setIsCheckingRegistration(false);
+                return;
+            }
+
+            const result = await checkExistingRegistration(user.uid);
+            if (result.success && result.data) {
+                setExistingRegistration(result.data);
+            }
+            setIsCheckingRegistration(false);
+        };
+
+        checkRegistration();
+    }, [user, authLoading]);
+
+    // Handle file selection
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        // Validate file type
+        const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        if (!validTypes.includes(file.type)) {
+            alert('Please upload a valid image file (JPG, PNG, or WEBP)');
+            return;
+        }
+
+        // Validate file size (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('File size must be less than 5MB');
+            return;
+        }
+
+        setPaymentProof(file);
+
+        // Generate preview
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setPaymentProofPreview(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!user) {
+            alert('Please sign in to register');
+            return;
+        }
+
+        if (!paymentProof) {
+            alert('Please upload payment proof');
+            return;
+        }
+
         setIsSubmitting(true);
+        setUploadProgress(10);
 
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        try {
+            // Convert image to Base64
+            setUploadProgress(30);
+            const uploadResult = await convertImageToBase64(paymentProof);
 
-        // Assign Random Mascot
-        const randomMascot = MASCOTS[Math.floor(Math.random() * MASCOTS.length)];
-        setAssignedMascot(randomMascot);
+            if (!uploadResult.success || !uploadResult.data) {
+                throw new Error(uploadResult.error || 'Failed to process image');
+            }
 
-        setIsSubmitting(false);
-        setSubmitted(true);
-        setShowSuccessModal(true);
+            setUploadProgress(60);
+
+            // Save registration to Firestore with Base64 image
+            const saveResult = await saveRegistration(
+                user.uid,
+                user.email || '',
+                teamName,
+                members,
+                uploadResult.data
+            );
+
+            if (!saveResult.success) {
+                throw new Error(saveResult.error || 'Failed to save registration');
+            }
+
+            setUploadProgress(100);
+
+            // Assign Random Mascot
+            const randomMascot = MASCOTS[Math.floor(Math.random() * MASCOTS.length)];
+            setAssignedMascot(randomMascot);
+
+            setIsSubmitting(false);
+            setSubmitted(true);
+            setShowSuccessModal(true);
+        } catch (error: any) {
+            console.error('Registration error:', error);
+            alert(error.message || 'Failed to complete registration. Please try again.');
+            setIsSubmitting(false);
+            setUploadProgress(0);
+        }
     };
 
     const isStep1Valid = teamName.length >= 3;
-    const isStep2Valid = members.every(m => m.name && m.email);
-    const isStep3Valid = agreedToRules;
+    const isStep2Valid = members.every(m => m.name && m.email && m.phone && /^\d{10}$/.test(m.phone));
+    const isStep3Valid = agreedToRules && paymentProof !== null;
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === "Enter") {
@@ -109,6 +206,94 @@ export default function RegisterPage() {
                         mascot={assignedMascot}
                     />
                 )}
+            </>
+        );
+    }
+
+    // Show loading while checking registration
+    if (isCheckingRegistration || authLoading) {
+        return (
+            <>
+                <Header />
+                <main className={styles.main}>
+                    <section className={styles.hero}>
+                        <div className={styles.container}>
+                            <h1 className={styles.pageTitle}>Loading...</h1>
+                            <p className={styles.pageSubtitle}>Checking your registration status</p>
+                        </div>
+                    </section>
+                </main>
+                <Footer />
+            </>
+        );
+    }
+
+    // Show existing registration if found
+    if (existingRegistration) {
+        return (
+            <>
+                <Header />
+                <main className={styles.main}>
+                    <section className={styles.hero}>
+                        <div className={styles.container}>
+                            <h1 className={styles.pageTitle}>Already Registered ✓</h1>
+                            <p className={styles.pageSubtitle}>You have successfully registered for this event</p>
+                        </div>
+                    </section>
+
+                    <section className={styles.section}>
+                        <div className={styles.container}>
+                            <div className={styles.reviewCard}>
+                                <h2>Team: {existingRegistration.teamName}</h2>
+                                <div className={styles.reviewMembers}>
+                                    <h3 style={{ marginTop: '1.5rem', marginBottom: '1rem' }}>Team Members:</h3>
+                                    {existingRegistration.members.map((member, index) => (
+                                        <div key={index} className={styles.reviewMember}>
+                                            <span><strong>Member {index + 1}:</strong> {member.name}</span>
+                                            <span className={styles.reviewEmail}>{member.email}</span>
+                                            <span>{member.phone}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                                {existingRegistration.paymentProofURL && (
+                                    <div style={{ marginTop: '2rem' }}>
+                                        <h3>Payment Proof:</h3>
+                                        <img
+                                            src={existingRegistration.paymentProofURL}
+                                            alt="Payment proof"
+                                            style={{
+                                                maxWidth: '100%',
+                                                maxHeight: '400px',
+                                                marginTop: '1rem',
+                                                border: '2px solid #ccc',
+                                                borderRadius: '8px'
+                                            }}
+                                        />
+                                    </div>
+                                )}
+                                <div style={{ marginTop: '2rem', padding: '1rem', backgroundColor: '#f0f0f0', borderRadius: '8px' }}>
+                                    <p style={{ margin: 0, color: '#666' }}>
+                                        <strong>Registration Date:</strong> {existingRegistration.timestamp.toDate().toLocaleDateString('en-US', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric'
+                                        })}
+                                    </p>
+                                    <p style={{ margin: '0.5rem 0 0 0', color: '#666' }}>
+                                        <strong>Status:</strong> {existingRegistration.status === 'pending' ? '⏳ Pending Review' : existingRegistration.status === 'approved' ? '✅ Approved' : '❌ Rejected'}
+                                    </p>
+                                </div>
+                                <p style={{ marginTop: '1.5rem', fontSize: '0.95rem' }}>
+                                    To modify your registration, please contact the organizers.
+                                </p>
+                                <a href="/" className={styles.successButton} style={{ display: 'inline-block', marginTop: '1.5rem' }}>
+                                    Return Home
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+                <Footer />
             </>
         );
     }
@@ -186,13 +371,13 @@ export default function RegisterPage() {
                             {step === 2 && (
                                 <div className={styles.formStep}>
                                     <h2 className={styles.stepTitle}>Team Members</h2>
-                                    <p className={styles.stepDesc}>Add 2-4 team members</p>
+                                    <p className={styles.stepDesc}>Add 1-4 team members</p>
 
                                     {members.map((member, index) => (
                                         <div key={index} className={styles.memberCard}>
                                             <div className={styles.memberHeader}>
                                                 <span className={styles.memberNumber}>Member {index + 1}</span>
-                                                {members.length > 2 && (
+                                                {members.length > 1 && index > 0 && (
                                                     <button
                                                         type="button"
                                                         className={styles.removeBtn}
@@ -221,21 +406,33 @@ export default function RegisterPage() {
                                                     <input
                                                         type="email"
                                                         className={styles.input}
-                                                        placeholder="Enter email address"
+                                                        placeholder="Enter email address (e.g., user@example.com)"
                                                         value={member.email}
                                                         onChange={(e) => updateMember(index, "email", e.target.value)}
+                                                        pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                                                        title="Please enter a valid email address (e.g., user@example.com)"
                                                         required
                                                     />
                                                 </div>
 
                                                 <div className={styles.formGroup}>
-                                                    <label className={styles.label}>Phone</label>
+                                                    <label className={styles.label}>Phone *</label>
                                                     <input
                                                         type="tel"
                                                         className={styles.input}
-                                                        placeholder="Enter phone number"
+                                                        placeholder="Enter 10-digit phone number"
                                                         value={member.phone}
-                                                        onChange={(e) => updateMember(index, "phone", e.target.value)}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value.replace(/\D/g, '');
+                                                            if (value.length <= 10) {
+                                                                updateMember(index, "phone", value);
+                                                            }
+                                                        }}
+                                                        pattern="\d{10}"
+                                                        minLength={10}
+                                                        maxLength={10}
+                                                        title="Please enter a valid phone number"
+                                                        required
                                                     />
                                                 </div>
                                             </div>
@@ -287,6 +484,63 @@ export default function RegisterPage() {
                                                 </div>
                                             ))}
                                         </div>
+                                    </div>
+
+                                    {/* Payment Proof Upload */}
+                                    <div className={styles.reviewCard} style={{ marginTop: '2rem' }}>
+                                        <h3>Payment Proof *</h3>
+                                        <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '1rem' }}>
+                                            Upload a screenshot of your payment confirmation
+                                        </p>
+                                        <input
+                                            type="file"
+                                            accept="image/jpeg,image/png,image/webp"
+                                            onChange={handleFileChange}
+                                            required
+                                            style={{
+                                                padding: '0.5rem',
+                                                border: '2px dashed #ccc',
+                                                borderRadius: '4px',
+                                                width: '100%',
+                                                cursor: 'pointer'
+                                            }}
+                                        />
+                                        {paymentProofPreview && (
+                                            <div style={{ marginTop: '1rem' }}>
+                                                <p style={{ fontSize: '0.9rem', marginBottom: '0.5rem' }}>Preview:</p>
+                                                <img
+                                                    src={paymentProofPreview}
+                                                    alt="Payment proof preview"
+                                                    style={{
+                                                        maxWidth: '100%',
+                                                        maxHeight: '300px',
+                                                        border: '2px solid #ddd',
+                                                        borderRadius: '4px'
+                                                    }}
+                                                />
+                                            </div>
+                                        )}
+                                        {uploadProgress > 0 && uploadProgress < 100 && (
+                                            <div style={{ marginTop: '1rem' }}>
+                                                <div style={{
+                                                    width: '100%',
+                                                    height: '20px',
+                                                    backgroundColor: '#f0f0f0',
+                                                    borderRadius: '10px',
+                                                    overflow: 'hidden'
+                                                }}>
+                                                    <div style={{
+                                                        width: `${uploadProgress}%`,
+                                                        height: '100%',
+                                                        backgroundColor: '#4CAF50',
+                                                        transition: 'width 0.3s ease'
+                                                    }} />
+                                                </div>
+                                                <p style={{ fontSize: '0.8rem', marginTop: '0.5rem', textAlign: 'center' }}>
+                                                    Uploading... {uploadProgress}%
+                                                </p>
+                                            </div>
+                                        )}
                                     </div>
 
                                     <div className={styles.rulesCard}>

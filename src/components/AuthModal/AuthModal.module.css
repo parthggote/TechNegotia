@@ -1,0 +1,133 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal {
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.form {
+  margin-top: 1.5rem;
+}
+
+.buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.buttons button {
+  flex: 1;
+  min-width: 120px;
+}
+
+.error {
+  margin: 1rem 0;
+  padding: 0.5rem;
+  background: rgba(209, 17, 65, 0.2);
+  border: 2px solid #d11141;
+  image-rendering: pixelated;
+}
+
+.divider {
+  position: relative;
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #fff;
+  image-rendering: pixelated;
+}
+
+.divider span {
+  position: relative;
+  background: #212529;
+  padding: 0 1rem;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.75rem;
+  color: #fff;
+}
+
+.toggle {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+.toggleButton {
+  background: none;
+  border: none;
+  color: #92cc41;
+  cursor: pointer;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.75rem;
+  text-decoration: underline;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.toggleButton:hover {
+  color: #76c442;
+}
+
+.toggleButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modal {
+    width: 95%;
+  }
+
+  .buttons {
+    flex-direction: column;
+  }
+
+  .buttons button {
+    width: 100%;
+  }
+}

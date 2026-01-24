@@ -1,0 +1,347 @@
+.main {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Login Section */
+.loginSection {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    padding: 2rem;
+}
+
+.loginCard {
+    background: white;
+    padding: 3rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    width: 100%;
+}
+
+.loginCard h1 {
+    margin-bottom: 2rem;
+    color: #333;
+    text-align: center;
+}
+
+.loginForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.formGroup label {
+    font-weight: 600;
+    color: #555;
+}
+
+.formGroup input {
+    padding: 0.75rem;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.formGroup input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.loginButton {
+    padding: 1rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.loginButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+/* Admin Header */
+.adminHeader {
+    background: white;
+    padding: 2rem 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.headerTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.headerTop h1 {
+    color: #333;
+    font-size: 2rem;
+}
+
+.logoutButton {
+    padding: 0.75rem 1.5rem;
+    background: #ff4757;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+.logoutButton:hover {
+    background: #ff3838;
+}
+
+/* Controls */
+.controls {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filters {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.filters button {
+    padding: 0.5rem 1rem;
+    background: #f0f0f0;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.filters button:hover {
+    background: #e0e0e0;
+}
+
+.filterActive {
+    background: #667eea !important;
+    color: white !important;
+    border-color: #667eea !important;
+}
+
+.searchInput {
+    flex: 1;
+    min-width: 250px;
+    padding: 0.75rem;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+.searchInput:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+/* Registrations Section */
+.registrationsSection {
+    padding: 2rem 0;
+}
+
+.loading,
+.noResults {
+    text-align: center;
+    padding: 3rem;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.registrationGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+/* Registration Card */
+.registrationCard {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.registrationCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.cardHeader {
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cardHeader h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.statusBadge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.statusBadge.pending {
+    background: #ffa502;
+    color: white;
+}
+
+.statusBadge.approved {
+    background: #2ed573;
+    color: white;
+}
+
+.statusBadge.rejected {
+    background: #ff4757;
+    color: white;
+}
+
+.cardBody {
+    padding: 1.5rem;
+}
+
+.section {
+    margin-bottom: 1.5rem;
+}
+
+.section h3 {
+    color: #667eea;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.member {
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.member strong {
+    color: #333;
+}
+
+.member span {
+    color: #666;
+}
+
+.paymentProof {
+    width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.paymentProof:hover {
+    transform: scale(1.05);
+}
+
+.date {
+    color: #999;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.cardActions {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-top: 1px solid #eee;
+}
+
+.approveButton,
+.rejectButton {
+    flex: 1;
+    padding: 1rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.approveButton {
+    background: #2ed573;
+    color: white;
+}
+
+.approveButton:hover {
+    background: #26de81;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(46, 213, 115, 0.3);
+}
+
+.rejectButton {
+    background: #ff4757;
+    color: white;
+}
+
+.rejectButton:hover {
+    background: #ff3838;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .registrationGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .headerTop {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .controls {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .searchInput {
+        width: 100%;
+    }
+}

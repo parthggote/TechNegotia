@@ -130,8 +130,8 @@
     margin-left: 4px;
 }
 
-/* Custom Contact Button - smaller size */
-.contactBtn {
+/* Custom Auth Button - smaller size */
+.authBtn {
     font-family: var(--font-pixel) !important;
     font-size: 0.45rem !important;
     padding: 8px 12px !important;
@@ -145,6 +145,43 @@
     align-items: center;
     gap: var(--space-3);
     flex-shrink: 0;
+}
+
+/* User Menu */
+.userMenu {
+    position: relative;
+}
+
+.userButton {
+    font-family: var(--font-pixel) !important;
+    font-size: 0.45rem !important;
+    padding: 8px 12px !important;
+    min-height: auto !important;
+    line-height: 1.2 !important;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.userDropdown {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    min-width: 200px;
+    z-index: 1001;
+    animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .iconBtn {
