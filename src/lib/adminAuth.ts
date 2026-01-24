@@ -8,9 +8,9 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 const SESSION_COOKIE_NAME = 'admin-session';
 const SESSION_SECRET = process.env.ADMIN_SESSION_SECRET;
 
-// Validate SESSION_SECRET exists
-if (!SESSION_SECRET) {
-    console.error('ADMIN_SESSION_SECRET is not set! Admin authentication will not work.');
+// Warn if SESSION_SECRET is not set or is using default value
+if (!SESSION_SECRET || SESSION_SECRET === 'your-secret-key-change-this-in-production') {
+    console.warn('⚠️  ADMIN_SESSION_SECRET is not set or using default value! Please set a strong secret in production.');
 }
 
 /**
@@ -19,8 +19,10 @@ if (!SESSION_SECRET) {
  */
 export async function adminLogin(email: string, password: string): Promise<{ success: boolean; error?: string }> {
     try {
-        if (!SESSION_SECRET) {
-            return { success: false, error: 'Server configuration error' };
+        // Runtime validation
+        if (!SESSION_SECRET || SESSION_SECRET === 'your-secret-key-change-this-in-production') {
+            console.error('Admin login attempted with invalid SESSION_SECRET');
+            return { success: false, error: 'Server configuration error - please contact administrator' };
         }
 
         // Validate credentials on server
@@ -71,7 +73,9 @@ export async function adminLogout(): Promise<void> {
  */
 export async function isAdminAuthenticated(): Promise<boolean> {
     try {
-        if (!SESSION_SECRET) {
+        // Runtime validation
+        if (!SESSION_SECRET || SESSION_SECRET === 'your-secret-key-change-this-in-production') {
+            console.warn('Admin authentication check with invalid SESSION_SECRET');
             return false;
         }
 

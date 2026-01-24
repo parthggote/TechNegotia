@@ -21,7 +21,7 @@ export function useMascotGuide(pageId: string): UseMascotGuideReturn {
 
     // Ref to hold latest dismissMessage to avoid stale closures
     const dismissMessageRef = useRef<() => void>(() => { });
-    // Ref to track auto-dismiss timer for cleanup
+    // Ref to track timers (auto-dismiss AND dismiss transition) for cleanup
     const autoDismissTimerRef = useRef<NodeJS.Timeout | null>(null);
 
     // Load seen messages from localStorage (client-side only)
@@ -57,7 +57,7 @@ export function useMascotGuide(pageId: string): UseMascotGuideReturn {
             return;
         }
 
-        // Clear any existing auto-dismiss timer
+        // Clear any existing timer (auto-dismiss or dismiss transition)
         if (autoDismissTimerRef.current) {
             clearTimeout(autoDismissTimerRef.current);
             autoDismissTimerRef.current = null;
@@ -82,14 +82,16 @@ export function useMascotGuide(pageId: string): UseMascotGuideReturn {
 
     // Dismiss current message
     const dismissMessage = useCallback(() => {
-        // Clear auto-dismiss timer when manually dismissing
+        // Clear any existing timer (auto-dismiss or previous dismiss transition)
         if (autoDismissTimerRef.current) {
             clearTimeout(autoDismissTimerRef.current);
             autoDismissTimerRef.current = null;
         }
 
         setIsVisible(false);
-        setTimeout(() => {
+
+        // Track the 300ms transition timeout
+        autoDismissTimerRef.current = setTimeout(() => {
             // Use functional updater to get latest queue state
             setMessageQueue(prev => {
                 if (prev.length === 0) {
@@ -101,6 +103,9 @@ export function useMascotGuide(pageId: string): UseMascotGuideReturn {
                 showMessage(next);
                 return rest;
             });
+
+            // Clear the ref after timeout completes
+            autoDismissTimerRef.current = null;
         }, 300); // Wait for exit animation
     }, [showMessage]);
 
@@ -109,11 +114,12 @@ export function useMascotGuide(pageId: string): UseMascotGuideReturn {
         dismissMessageRef.current = dismissMessage;
     }, [dismissMessage]);
 
-    // Cleanup auto-dismiss timer on unmount
+    // Cleanup all timers on unmount
     useEffect(() => {
         return () => {
             if (autoDismissTimerRef.current) {
                 clearTimeout(autoDismissTimerRef.current);
+                autoDismissTimerRef.current = null;
             }
         };
     }, []);
