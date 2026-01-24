@@ -24,8 +24,10 @@ export function useMascotGuide(pageId: string): UseMascotGuideReturn {
     // Ref to track auto-dismiss timer for cleanup
     const autoDismissTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-    // Load seen messages from localStorage
+    // Load seen messages from localStorage (client-side only)
     useEffect(() => {
+        if (typeof window === 'undefined') return;
+
         const stored = localStorage.getItem('mascot-seen-messages');
         if (stored) {
             try {
@@ -38,6 +40,8 @@ export function useMascotGuide(pageId: string): UseMascotGuideReturn {
 
     // Save seen messages to localStorage
     const markAsSeen = useCallback((messageId: string) => {
+        if (typeof window === 'undefined') return;
+
         setSeenMessages(prev => {
             const updated = new Set(prev);
             updated.add(messageId);
