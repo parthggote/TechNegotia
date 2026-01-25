@@ -52,6 +52,15 @@ export default function Header() {
 
                 {/* Main Navigation - Desktop */}
                 <nav className={`${styles.nav} ${isMobileMenuOpen ? styles.navOpen : ""}`}>
+                    {/* Mobile Close Button */}
+                    <button
+                        className={styles.mobileCloseBtn}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        aria-label="Close menu"
+                    >
+                        ✕
+                    </button>
+
                     <ul className={styles.navList}>
                         {NAV_LINKS.map((link) => (
                             <li key={link.href} className={styles.navItem}>

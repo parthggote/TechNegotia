@@ -98,7 +98,7 @@ export default function MascotGuide({
                         onClick={onDismiss}
                         aria-label="Dismiss message"
                     >
-                        <i className="hn hn-close"></i>
+                        ✕
                     </button>
                 )}
 

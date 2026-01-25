@@ -88,7 +88,7 @@ export function ToastProvider({ children }: ToastProviderProps) {
                         <i className={`${getIconClass(toast.type)} ${styles.icon}`}></i>
                         <span className={styles.message}>{toast.message}</span>
                         <button className={styles.closeBtn} onClick={() => removeToast(toast.id)}>
-                            <i className="hn hn-close"></i>
+                            ✕
                         </button>
                     </div>
                 ))}

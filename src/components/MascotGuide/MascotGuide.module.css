@@ -140,24 +140,30 @@
     position: absolute;
     top: 12px;
     right: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 0.7rem;
+    background: rgba(244, 67, 54, 0.15);
+    border: 2px solid rgba(244, 67, 54, 0.5);
+    color: #f87171;
+    font-size: 1rem;
+    font-weight: bold;
     cursor: pointer;
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    border-radius: 6px;
+    border-radius: 50%;
+}
+
+.closeButton i {
+    font-size: 1rem;
+    line-height: 1;
 }
 
 .closeButton:hover {
-    background: rgba(244, 160, 32, 0.2);
-    border-color: var(--accent-gold, #f4a020);
-    color: var(--accent-gold, #f4a020);
+    background: rgba(244, 67, 54, 0.3);
+    border-color: #f87171;
+    color: #fff;
     transform: rotate(90deg);
 }
 
@@ -298,18 +304,18 @@
     }
 
     .mascotSprite {
-        width: 90px;
-        height: 90px;
-        margin: 0 0 -20px 0;
+        width: 120px;
+        height: 120px;
+        margin: 0 0 -25px 0;
         z-index: 3;
         order: -1;
     }
 
     .dialogueBox {
-        max-width: 320px;
+        max-width: 340px;
         min-width: auto;
         width: 100%;
-        padding: 20px 18px 16px;
+        padding: 24px 20px 18px;
         border-radius: 16px;
         border-width: 2px;
     }
@@ -348,12 +354,25 @@
     }
 
     .closeButton {
-        width: 30px;
-        height: 30px;
-        top: 8px;
-        right: 8px;
-        font-size: 0.7rem;
+        width: 38px;
+        height: 38px;
+        top: 10px;
+        right: 10px;
+        font-size: 1.1rem;
         border-radius: 50%;
+        background: rgba(244, 67, 54, 0.2);
+        border: 2px solid rgba(244, 67, 54, 0.6);
+        color: #f87171;
+    }
+
+    .closeButton i {
+        font-size: 1.1rem;
+    }
+
+    .closeButton:hover {
+        background: rgba(244, 67, 54, 0.4);
+        border-color: #f87171;
+        color: #fff;
     }
 
     .progressDots {
@@ -368,14 +387,14 @@
     }
 
     .mascotSprite {
-        width: 70px;
-        height: 70px;
-        margin-bottom: -15px;
+        width: 100px;
+        height: 100px;
+        margin-bottom: -20px;
     }
 
     .dialogueBox {
-        max-width: 300px;
-        padding: 18px 14px 14px;
+        max-width: 320px;
+        padding: 22px 16px 16px;
         border-radius: 14px;
     }
 
@@ -419,9 +438,15 @@
     }
 
     .closeButton {
-        width: 26px;
-        height: 26px;
-        font-size: 0.6rem;
+        width: 34px;
+        height: 34px;
+        font-size: 1rem;
+        top: 8px;
+        right: 8px;
+    }
+
+    .closeButton i {
+        font-size: 1rem;
     }
 
     .progressDots {
@@ -441,14 +466,14 @@
     }
 
     .mascotSprite {
-        width: 60px;
-        height: 60px;
-        margin-bottom: -12px;
+        width: 85px;
+        height: 85px;
+        margin-bottom: -15px;
     }
 
     .dialogueBox {
-        max-width: 280px;
-        padding: 16px 12px 12px;
+        max-width: 290px;
+        padding: 18px 14px 14px;
         border-radius: 12px;
     }
 
@@ -467,10 +492,15 @@
     }
 
     .closeButton {
-        width: 24px;
-        height: 24px;
-        top: 6px;
-        right: 6px;
+        width: 30px;
+        height: 30px;
+        top: 8px;
+        right: 8px;
+        font-size: 0.9rem;
+    }
+
+    .closeButton i {
+        font-size: 0.9rem;
     }
 }
 

@@ -227,73 +227,114 @@
 .mobileRegisterBtn {
     display: none;
     font-family: var(--font-pixel);
-    font-size: 0.6rem;
-    padding: var(--space-3) var(--space-6);
-    background: var(--gradient-gold);
-    color: var(--bg-darker);
-    border-radius: var(--radius-md);
+    font-size: 0.55rem;
+    padding: 14px 20px;
+    background: linear-gradient(180deg, #ffd700 0%, #f4a020 50%, #e86a17 100%);
+    color: #1a1a2e;
+    border: 3px solid #8b4513;
+    border-radius: 10px;
     text-decoration: none;
     text-transform: uppercase;
     text-align: center;
     margin-top: var(--space-4);
-    box-shadow: 0 3px 0 #b87a15;
+    box-shadow: 
+        0 4px 0 #8b4513,
+        0 6px 16px rgba(0, 0, 0, 0.3);
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 10px;
+    letter-spacing: 0.05em;
+    font-weight: bold;
+    transition: all var(--transition-fast);
+}
+
+.mobileRegisterBtn i {
+    font-size: 1rem;
+}
+
+.mobileRegisterBtn:hover {
+    background: linear-gradient(180deg, #ffe14d 0%, #f4b020 50%, #e87a17 100%);
+    transform: translateY(-2px);
+    box-shadow: 
+        0 6px 0 #8b4513,
+        0 8px 20px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(255, 215, 0, 0.3);
 }
 
 /* Mobile Sign In Button */
 .mobileSignInBtn {
     display: none;
     font-family: var(--font-pixel);
-    font-size: 0.6rem;
-    padding: var(--space-3) var(--space-6);
-    background: linear-gradient(180deg, #4ade80 0%, #22c55e 100%);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-md);
+    font-size: 0.55rem;
+    padding: 14px 20px;
+    background: linear-gradient(180deg, #ffd700 0%, #f4a020 50%, #e86a17 100%);
+    color: #1a1a2e;
+    border: 3px solid #8b4513;
+    border-radius: 10px;
     text-align: center;
     margin-top: var(--space-4);
     cursor: pointer;
     transition: all var(--transition-fast);
-    box-shadow: 0 3px 0 #16a34a;
+    box-shadow: 
+        0 4px 0 #8b4513,
+        0 6px 16px rgba(0, 0, 0, 0.3);
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: bold;
+}
+
+.mobileSignInBtn i {
+    font-size: 1rem;
 }
 
 .mobileSignInBtn:hover {
-    background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
-    transform: translateY(-1px);
+    background: linear-gradient(180deg, #ffe14d 0%, #f4b020 50%, #e87a17 100%);
+    transform: translateY(-2px);
+    box-shadow: 
+        0 6px 0 #8b4513,
+        0 8px 20px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(255, 215, 0, 0.3);
 }
 
 .mobileSignInBtn:active {
-    transform: translateY(1px);
-    box-shadow: 0 1px 0 #16a34a;
+    transform: translateY(2px);
+    box-shadow: 
+        0 2px 0 #8b4513,
+        0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* Mobile Sign Out Button */
 .mobileSignOutBtn {
     display: none;
     font-family: var(--font-pixel);
-    font-size: 0.55rem;
-    padding: var(--space-2) var(--space-4);
-    background: linear-gradient(180deg, #f87171 0%, #ef4444 100%);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-md);
+    font-size: 0.5rem;
+    padding: 12px 16px;
+    background: transparent;
+    color: #f87171;
+    border: 2px solid rgba(244, 67, 54, 0.5);
+    border-radius: 8px;
     text-align: center;
     margin-top: var(--space-3);
     cursor: pointer;
     transition: all var(--transition-fast);
-    box-shadow: 0 2px 0 #dc2626;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.mobileSignOutBtn i {
+    font-size: 0.9rem;
 }
 
 .mobileSignOutBtn:hover {
-    background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
+    background: rgba(244, 67, 54, 0.15);
+    border-color: #f87171;
+    color: #fff;
 }
 
 /* Mobile User Info */
@@ -301,18 +342,52 @@
     display: none;
     font-family: var(--font-pixel);
     font-size: 0.5rem;
-    color: var(--text-secondary);
-    padding: var(--space-3) var(--space-4);
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    padding: 14px 16px;
+    background: rgba(244, 160, 32, 0.1);
+    border-radius: 10px;
     margin-top: var(--space-4);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(244, 160, 32, 0.3);
     align-items: center;
-    gap: 0.5rem;
+    gap: 10px;
 }
 
 .mobileUserInfo i {
     color: var(--accent-gold);
+    font-size: 1rem;
+}
+
+/* Mobile Close Button - inside nav */
+.mobileCloseBtn {
+    display: none;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 44px;
+    height: 44px;
+    background: rgba(244, 67, 54, 0.2);
+    border: 2px solid rgba(244, 67, 54, 0.6);
+    border-radius: 50%;
+    color: #f87171;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+    z-index: 10;
+}
+
+.mobileCloseBtn i {
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+.mobileCloseBtn:hover {
+    background: rgba(244, 67, 54, 0.4);
+    border-color: #f87171;
+    color: #fff;
+    transform: rotate(90deg);
 }
 
 .mascotLogo {
@@ -462,6 +537,10 @@
         display: flex;
     }
 
+    .mobileCloseBtn {
+        display: flex;
+    }
+
     .overlay {
         display: block;
         position: fixed;
@@ -528,26 +607,64 @@
     }
 
     .mobileRegisterBtn {
-        font-size: 0.5rem;
-        padding: var(--space-2) var(--space-5);
+        font-size: 0.48rem;
+        padding: 12px 16px;
         margin-top: var(--space-3);
+        border-width: 2px;
+        box-shadow: 
+            0 3px 0 #8b4513,
+            0 5px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    .mobileRegisterBtn i {
+        font-size: 0.9rem;
     }
 
     .mobileSignInBtn {
-        font-size: 0.5rem;
-        padding: var(--space-2) var(--space-5);
+        font-size: 0.48rem;
+        padding: 12px 16px;
         margin-top: var(--space-3);
+        border-width: 2px;
+        box-shadow: 
+            0 3px 0 #8b4513,
+            0 5px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    .mobileSignInBtn i {
+        font-size: 0.9rem;
     }
 
     .mobileSignOutBtn {
         font-size: 0.45rem;
-        padding: var(--space-2) var(--space-3);
+        padding: 10px 14px;
+        gap: 6px;
+    }
+
+    .mobileSignOutBtn i {
+        font-size: 0.8rem;
     }
 
     .mobileUserInfo {
-        font-size: 0.42rem;
-        padding: var(--space-2) var(--space-3);
+        font-size: 0.45rem;
+        padding: 12px 14px;
         margin-top: var(--space-3);
+        gap: 8px;
+    }
+
+    .mobileUserInfo i {
+        font-size: 0.9rem;
+    }
+
+    .mobileCloseBtn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+        top: 14px;
+        right: 14px;
+    }
+
+    .mobileCloseBtn i {
+        font-size: 1.1rem;
     }
 }
 
@@ -563,5 +680,39 @@
 
     .container {
         padding: 0 var(--space-2);
+    }
+
+    .mobileRegisterBtn,
+    .mobileSignInBtn {
+        font-size: 0.44rem;
+        padding: 10px 14px;
+        gap: 8px;
+    }
+
+    .mobileRegisterBtn i,
+    .mobileSignInBtn i {
+        font-size: 0.85rem;
+    }
+
+    .mobileSignOutBtn {
+        font-size: 0.42rem;
+        padding: 8px 12px;
+    }
+
+    .mobileUserInfo {
+        font-size: 0.42rem;
+        padding: 10px 12px;
+    }
+
+    .mobileCloseBtn {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+        top: 12px;
+        right: 12px;
+    }
+
+    .mobileCloseBtn i {
+        font-size: 1rem;
     }
 }

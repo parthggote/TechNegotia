@@ -144,18 +144,34 @@
 }
 
 .closeBtn {
-    background: transparent;
-    border: none;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(244, 67, 54, 0.2);
+    border: 2px solid rgba(244, 67, 54, 0.5);
+    border-radius: 50%;
+    color: #f87171;
+    font-size: 1rem;
+    font-weight: bold;
     cursor: pointer;
-    padding: 4px;
+    padding: 0;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
     line-height: 1;
-    transition: color 0.2s ease;
+    transition: all 0.2s ease;
+}
+
+.closeBtn i {
+    font-size: 0.9rem;
+    line-height: 1;
 }
 
 .closeBtn:hover {
+    background: rgba(244, 67, 54, 0.4);
+    border-color: #f87171;
     color: #fff;
+    transform: scale(1.1);
 }
 
 /* ==================== TABLET (768px) ==================== */
@@ -196,8 +212,24 @@
     }
 
     .closeBtn {
-        font-size: 0.9rem;
-        padding: 6px;
+        width: 34px;
+        height: 34px;
+        font-size: 1.1rem;
+        padding: 0;
+        border-radius: 50%;
+        background: rgba(244, 67, 54, 0.25);
+        border: 2px solid rgba(244, 67, 54, 0.6);
+        color: #f87171;
+    }
+
+    .closeBtn i {
+        font-size: 1rem;
+    }
+
+    .closeBtn:hover {
+        background: rgba(244, 67, 54, 0.4);
+        border-color: #f87171;
+        color: #fff;
     }
 }
 
@@ -223,8 +255,14 @@
     }
 
     .closeBtn {
-        font-size: 0.8rem;
-        padding: 4px;
+        width: 30px;
+        height: 30px;
+        font-size: 1rem;
+        border-radius: 50%;
+    }
+
+    .closeBtn i {
+        font-size: 0.9rem;
     }
 }
 
@@ -245,5 +283,16 @@
         width: 20px;
         height: 20px;
         font-size: 0.7rem;
+    }
+
+    .closeBtn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.9rem;
+        border-radius: 50%;
+    }
+
+    .closeBtn i {
+        font-size: 0.8rem;
     }
 }

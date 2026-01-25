@@ -430,11 +430,12 @@
         right: auto;
         left: 50%;
         transform: translateX(-50%);
-        bottom: 80px;
+        bottom: 70px;
         width: calc(100% - 24px);
-        max-width: 340px;
-        padding: var(--space-3);
-        border-radius: 10px;
+        max-width: 380px;
+        padding: 16px 18px;
+        border-radius: 14px;
+        border-width: 2px;
         animation: cardSlideUp 0.4s ease-out;
     }
 
@@ -450,34 +451,53 @@
     }
 
     .actionButtons {
-        flex-direction: row;
-        gap: var(--space-2);
+        flex-direction: column;
+        gap: 10px;
     }
 
     .payButton,
     .registerButton {
-        flex: 1;
-        font-size: 0.38rem;
-        padding: 0.55rem 0.5rem;
-        gap: 0.25rem;
+        width: 100%;
+        font-size: 0.48rem;
+        padding: 14px 16px;
+        gap: 8px;
+        border-radius: 10px;
+        justify-content: center;
+    }
+
+    .payButton {
+        border-width: 3px;
+        box-shadow: 
+            0 4px 0 #8b4513,
+            0 6px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .payButton i,
+    .registerButton i {
+        font-size: 1rem;
+    }
+
+    .registerButton {
+        border-width: 2px;
     }
 
     .actionCardHeader {
-        margin-bottom: var(--space-2);
-        padding-bottom: var(--space-1);
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+        justify-content: center;
     }
 
     .actionCardHeader i {
-        font-size: 0.75rem;
+        font-size: 1rem;
     }
 
     .actionCardHeader span {
-        font-size: 0.42rem;
+        font-size: 0.5rem;
     }
 
     .actionHint {
-        font-size: 0.28rem;
-        margin-top: var(--space-1);
+        font-size: 0.36rem;
+        margin-top: 10px;
     }
 
     /* Mascot */
@@ -571,52 +591,62 @@
 
     /* Action Card */
     .actionCard {
-        bottom: 60px;
-        width: calc(100% - 20px);
-        max-width: 340px;
-        padding: 12px 14px;
-        border-width: 2px;
+        bottom: 55px;
+        width: calc(100% - 16px);
+        max-width: 360px;
+        padding: 14px 16px;
+        border-radius: 12px;
     }
 
     .actionCardHeader {
         gap: 8px;
         margin-bottom: 10px;
         padding-bottom: 8px;
+        justify-content: center;
     }
 
     .actionCardHeader i {
-        font-size: 0.8rem;
+        font-size: 0.9rem;
     }
 
     .actionCardHeader span {
-        font-size: 0.42rem;
+        font-size: 0.45rem;
     }
 
     .actionButtons {
         gap: 10px;
+        flex-direction: column;
     }
 
     .payButton,
     .registerButton {
-        font-size: 0.38rem;
-        padding: 0.6rem 0.5rem;
-        gap: 5px;
-        border-width: 2px;
-        border-radius: 6px;
+        width: 100%;
+        font-size: 0.44rem;
+        padding: 12px 14px;
+        gap: 6px;
+        border-radius: 8px;
+        justify-content: center;
     }
 
     .payButton {
-        box-shadow: 0 3px 0 #8b4513;
+        border-width: 3px;
+        box-shadow: 
+            0 3px 0 #8b4513,
+            0 5px 12px rgba(0, 0, 0, 0.25);
     }
 
     .payButton i,
     .registerButton i {
-        font-size: 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .registerButton {
+        border-width: 2px;
     }
 
     .actionHint {
-        font-size: 0.32rem;
-        margin-top: 8px;
+        font-size: 0.34rem;
+        margin-top: 10px;
     }
 
     /* Supporters */
@@ -667,10 +697,11 @@
     }
 
     .actionCard {
-        padding: 10px 12px;
-        bottom: 50px;
-        border-radius: 8px;
-        width: calc(100% - 16px);
+        padding: 12px 14px;
+        bottom: 45px;
+        border-radius: 10px;
+        width: calc(100% - 12px);
+        max-width: 320px;
     }
 
     .actionCardHeader {
@@ -678,19 +709,39 @@
         padding-bottom: 6px;
     }
 
+    .actionCardHeader i {
+        font-size: 0.8rem;
+    }
+
     .actionCardHeader span {
-        font-size: 0.38rem;
+        font-size: 0.4rem;
+    }
+
+    .actionButtons {
+        gap: 8px;
     }
 
     .payButton,
     .registerButton {
-        font-size: 0.34rem;
-        padding: 0.5rem 0.4rem;
-        gap: 4px;
+        font-size: 0.4rem;
+        padding: 10px 12px;
+        gap: 5px;
+        border-radius: 8px;
+    }
+
+    .payButton {
+        border-width: 2px;
+        box-shadow: 0 2px 0 #8b4513;
+    }
+
+    .payButton i,
+    .registerButton i {
+        font-size: 0.8rem;
     }
 
     .actionHint {
-        font-size: 0.28rem;
+        font-size: 0.3rem;
+        margin-top: 8px;
     }
 
     .supportersLabel {
@@ -733,9 +784,19 @@
         right: var(--space-3);
         left: auto;
         transform: none;
-        max-width: 220px;
-        padding: 8px 10px;
+        max-width: 240px;
+        padding: 10px 12px;
+        border-radius: 10px;
         animation: cardSlideIn 0.4s ease-out;
+    }
+
+    .actionCardHeader {
+        margin-bottom: 8px;
+        padding-bottom: 6px;
+    }
+
+    .actionCardHeader span {
+        font-size: 0.38rem;
     }
 
     .actionButtons {
@@ -745,8 +806,19 @@
 
     .payButton,
     .registerButton {
-        font-size: 0.3rem;
-        padding: 0.4rem 0.5rem;
+        font-size: 0.36rem;
+        padding: 8px 10px;
+        gap: 4px;
+        border-radius: 6px;
+    }
+
+    .payButton i,
+    .registerButton i {
+        font-size: 0.7rem;
+    }
+
+    .actionHint {
+        font-size: 0.26rem;
     }
 
     .supporters {

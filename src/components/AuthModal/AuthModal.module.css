@@ -56,13 +56,14 @@
     position: absolute;
     top: 1rem;
     right: 1rem;
-    width: 32px;
-    height: 32px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: 6px;
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 1rem;
+    width: 36px;
+    height: 36px;
+    background: rgba(244, 67, 54, 0.2);
+    border: 2px solid rgba(244, 67, 54, 0.6);
+    border-radius: 50%;
+    color: #f87171;
+    font-size: 1.1rem;
+    font-weight: bold;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
@@ -70,10 +71,15 @@
     justify-content: center;
 }
 
+.closeButton i {
+    font-size: 1rem;
+    line-height: 1;
+}
+
 .closeButton:hover {
-    background: rgba(244, 160, 32, 0.2);
-    border-color: #f4a020;
-    color: #f4a020;
+    background: rgba(244, 67, 54, 0.4);
+    border-color: #f87171;
+    color: #fff;
     transform: rotate(90deg);
 }
 
@@ -387,6 +393,18 @@
         margin: 0.5rem;
     }
 
+    .closeButton {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+        top: 12px;
+        right: 12px;
+    }
+
+    .closeButton i {
+        font-size: 1.1rem;
+    }
+
     .headerIcon {
         font-size: 2.5rem;
     }
@@ -412,5 +430,19 @@
     .googleButton {
         font-size: 0.5rem;
         padding: 0.75rem 0.875rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .closeButton {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+        top: 10px;
+        right: 10px;
+    }
+
+    .closeButton i {
+        font-size: 0.95rem;
     }
 }
