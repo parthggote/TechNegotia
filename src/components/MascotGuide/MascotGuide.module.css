@@ -280,31 +280,38 @@
     box-shadow: 0 0 8px rgba(244, 160, 32, 0.5);
 }
 
-/* Mobile Responsiveness */
+/* ==================== TABLET (768px) ==================== */
 @media (max-width: 768px) {
     .mascotContainer {
-        bottom: 80px; /* Above mobile navigation */
-        left: 12px;
-        right: 12px;
-        flex-direction: column-reverse;
-        align-items: flex-start;
+        bottom: auto;
+        top: 50%;
+        left: 50%;
+        right: auto;
+        transform: translate(-50%, -50%) scale(0.95);
+        flex-direction: column;
+        align-items: center;
+        max-width: calc(100% - 32px);
+    }
+
+    .mascotContainer.visible {
+        transform: translate(-50%, -50%) scale(1);
     }
 
     .mascotSprite {
-        width: 80px;
-        height: 80px;
-        margin-right: 0;
-        margin-bottom: 0;
-        margin-top: -20px;
-        margin-left: 16px;
+        width: 90px;
+        height: 90px;
+        margin: 0 0 -20px 0;
         z-index: 3;
+        order: -1;
     }
 
     .dialogueBox {
-        max-width: 100%;
+        max-width: 320px;
         min-width: auto;
         width: 100%;
-        padding: 14px 16px;
+        padding: 20px 18px 16px;
+        border-radius: 16px;
+        border-width: 2px;
     }
 
     .dialogueBox::before,
@@ -312,67 +319,196 @@
         display: none;
     }
 
+    .messageIcon {
+        font-size: 1.4rem;
+        margin-bottom: 10px;
+    }
+
+    .messageText {
+        margin-bottom: 14px;
+    }
+
     .messageText p {
-        font-size: 0.5rem;
-        line-height: 1.6;
+        font-size: 0.52rem;
+        line-height: 1.7;
+        text-align: center;
+    }
+
+    .actions {
+        gap: 10px;
+        padding-top: 14px;
+        justify-content: center;
     }
 
     .actionButton {
-        font-size: 0.4rem;
-        padding: 8px 12px;
+        font-size: 0.42rem;
+        padding: 10px 16px;
+        flex: 1;
+        justify-content: center;
+    }
+
+    .closeButton {
+        width: 30px;
+        height: 30px;
+        top: 8px;
+        right: 8px;
+        font-size: 0.7rem;
+        border-radius: 50%;
+    }
+
+    .progressDots {
+        margin-top: 10px;
+    }
+}
+
+/* ==================== MOBILE (480px) ==================== */
+@media (max-width: 480px) {
+    .mascotContainer {
+        max-width: calc(100% - 24px);
+    }
+
+    .mascotSprite {
+        width: 70px;
+        height: 70px;
+        margin-bottom: -15px;
+    }
+
+    .dialogueBox {
+        max-width: 300px;
+        padding: 18px 14px 14px;
+        border-radius: 14px;
     }
 
     .messageIcon {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
         margin-bottom: 8px;
+    }
+
+    .messageText {
+        margin-bottom: 12px;
+    }
+
+    .messageText p {
+        font-size: 0.46rem;
+        line-height: 1.65;
     }
 
     .actions {
         gap: 8px;
+        padding-top: 12px;
+        flex-direction: column;
+    }
+
+    .actionButton {
+        font-size: 0.38rem;
+        padding: 10px 14px;
+        width: 100%;
+    }
+
+    .nextButton {
+        border-width: 2px;
+        box-shadow: 0 2px 0 #8b4513;
+    }
+
+    .dismissButton {
+        order: 1;
+    }
+
+    .nextButton {
+        order: 0;
     }
 
     .closeButton {
-        width: 24px;
-        height: 24px;
-        top: 10px;
-        right: 10px;
+        width: 26px;
+        height: 26px;
         font-size: 0.6rem;
+    }
+
+    .progressDots {
+        gap: 5px;
+    }
+
+    .progressDot {
+        width: 5px;
+        height: 5px;
     }
 }
 
-@media (max-width: 480px) {
+/* ==================== VERY SMALL (360px) ==================== */
+@media (max-width: 360px) {
     .mascotContainer {
-        bottom: 70px;
-        left: 8px;
-        right: 8px;
+        max-width: calc(100% - 16px);
     }
 
     .mascotSprite {
         width: 60px;
         height: 60px;
-        margin-top: -15px;
-        margin-left: 12px;
+        margin-bottom: -12px;
     }
 
     .dialogueBox {
+        max-width: 280px;
+        padding: 16px 12px 12px;
+        border-radius: 12px;
+    }
+
+    .messageIcon {
+        font-size: 1rem;
+    }
+
+    .messageText p {
+        font-size: 0.4rem;
+        line-height: 1.6;
+    }
+
+    .actionButton {
+        font-size: 0.34rem;
+        padding: 8px 12px;
+    }
+
+    .closeButton {
+        width: 24px;
+        height: 24px;
+        top: 6px;
+        right: 6px;
+    }
+}
+
+/* ==================== LANDSCAPE MOBILE ==================== */
+@media (orientation: landscape) and (max-height: 500px) {
+    .mascotContainer {
+        top: 50%;
+        bottom: auto;
+        flex-direction: row;
+        align-items: center;
+        max-width: 80%;
+    }
+
+    .mascotSprite {
+        width: 80px;
+        height: 80px;
+        margin: 0 -15px 0 0;
+        order: 0;
+    }
+
+    .dialogueBox {
+        max-width: 400px;
         padding: 12px 14px;
     }
 
     .messageText p {
-        font-size: 0.45rem;
+        font-size: 0.4rem;
+    }
+
+    .actions {
+        flex-direction: row;
+        padding-top: 8px;
     }
 
     .actionButton {
         font-size: 0.35rem;
         padding: 6px 10px;
-    }
-
-    .messageIcon {
-        font-size: 1.1rem;
-    }
-
-    .actions {
-        padding-top: 10px;
+        flex: 0;
     }
 }
 
@@ -387,7 +523,7 @@
 
     .mascotContainer.visible {
         opacity: 1;
-        transform: none;
+        transform: translate(-50%, -50%);
     }
 }
 
