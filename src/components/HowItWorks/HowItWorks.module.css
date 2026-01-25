@@ -846,3 +846,124 @@
         min-height: auto;
     }
 }
+
+@media (max-width: 768px) {
+    .section {
+        padding: var(--space-8) 0;
+    }
+
+    .sectionHeader {
+        margin-bottom: var(--space-6);
+    }
+
+    .sectionTitle {
+        font-size: clamp(1rem, 5vw, 1.5rem);
+    }
+
+    .sectionDesc {
+        font-size: 0.95rem;
+    }
+
+    .roundCard {
+        padding: var(--space-3);
+        min-height: 120px;
+    }
+
+    .roundTitle {
+        font-size: 0.75rem;
+    }
+
+    .roundSubtitle {
+        font-size: 0.6rem;
+    }
+
+    .learnMoreBtn {
+        font-size: 0.6rem;
+        padding: var(--space-2);
+    }
+
+    .modalOverlay {
+        padding: var(--space-2);
+    }
+
+    .modalContainer {
+        gap: var(--space-4);
+    }
+
+    .visualWrapper {
+        width: 150px;
+    }
+
+    .visualContainer {
+        height: 150px;
+    }
+
+    .helperText {
+        font-size: 0.5rem;
+        padding: var(--space-2);
+        max-width: 140px;
+        left: 40px;
+        top: 15px;
+    }
+
+    .infoCard {
+        padding: var(--space-4);
+    }
+
+    .modalTitle {
+        font-size: 1rem;
+    }
+
+    .modalSubtitle {
+        font-size: 0.75rem;
+    }
+
+    .detailsList li {
+        font-size: 0.9rem;
+        padding-left: var(--space-4);
+    }
+
+    .closeButton {
+        top: var(--space-2);
+        right: var(--space-2);
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .sectionTitle {
+        font-size: 0.9rem;
+    }
+
+    .sectionDesc {
+        font-size: 0.85rem;
+    }
+
+    .roundCard {
+        max-width: 100%;
+    }
+
+    .roundTitle {
+        font-size: 0.65rem;
+    }
+
+    .visualWrapper {
+        width: 120px;
+    }
+
+    .visualContainer {
+        height: 120px;
+    }
+
+    .helperText {
+        display: none;
+    }
+
+    .modalTitle {
+        font-size: 0.85rem;
+    }
+
+    .detailsList li {
+        font-size: 0.85rem;
+    }
+}

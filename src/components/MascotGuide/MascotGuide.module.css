@@ -283,20 +283,20 @@
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
     .mascotContainer {
-        bottom: 16px;
-        left: 16px;
-        right: 16px;
+        bottom: 80px; /* Above mobile navigation */
+        left: 12px;
+        right: 12px;
         flex-direction: column-reverse;
         align-items: flex-start;
     }
 
     .mascotSprite {
-        width: 100px;
-        height: 100px;
+        width: 80px;
+        height: 80px;
         margin-right: 0;
         margin-bottom: 0;
-        margin-top: -30px;
-        margin-left: 20px;
+        margin-top: -20px;
+        margin-left: 16px;
         z-index: 3;
     }
 
@@ -304,7 +304,7 @@
         max-width: 100%;
         min-width: auto;
         width: 100%;
-        padding: 16px 20px;
+        padding: 14px 16px;
     }
 
     .dialogueBox::before,
@@ -313,42 +313,66 @@
     }
 
     .messageText p {
-        font-size: 0.55rem;
+        font-size: 0.5rem;
+        line-height: 1.6;
     }
 
     .actionButton {
-        font-size: 0.45rem;
+        font-size: 0.4rem;
         padding: 8px 12px;
     }
 
     .messageIcon {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
+        margin-bottom: 8px;
+    }
+
+    .actions {
+        gap: 8px;
+    }
+
+    .closeButton {
+        width: 24px;
+        height: 24px;
+        top: 10px;
+        right: 10px;
+        font-size: 0.6rem;
     }
 }
 
 @media (max-width: 480px) {
     .mascotContainer {
-        bottom: 12px;
-        left: 12px;
-        right: 12px;
+        bottom: 70px;
+        left: 8px;
+        right: 8px;
     }
 
     .mascotSprite {
-        width: 80px;
-        height: 80px;
+        width: 60px;
+        height: 60px;
+        margin-top: -15px;
+        margin-left: 12px;
     }
 
     .dialogueBox {
-        padding: 14px 16px;
+        padding: 12px 14px;
     }
 
     .messageText p {
-        font-size: 0.5rem;
+        font-size: 0.45rem;
     }
 
     .actionButton {
-        font-size: 0.4rem;
+        font-size: 0.35rem;
         padding: 6px 10px;
+    }
+
+    .messageIcon {
+        font-size: 1.1rem;
+    }
+
+    .actions {
+        padding-top: 10px;
     }
 }
 

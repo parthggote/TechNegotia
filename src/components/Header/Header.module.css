@@ -369,11 +369,79 @@
 }
 
 @media (max-width: 480px) {
+    .header {
+        padding: var(--space-2) 0;
+    }
+
     .logoText {
+        font-size: 0.55rem;
+    }
+
+    .logoIcon {
         font-size: 0.6rem;
+        padding: 4px 6px;
+    }
+
+    .mascotLogo {
+        min-width: 45px;
+        height: 45px;
     }
 
     .container {
-        padding: 0 var(--space-4);
+        padding: 0 var(--space-3);
+        gap: var(--space-3);
+    }
+
+    .mobileMenuBtn {
+        width: 32px;
+        height: 32px;
+    }
+
+    .hamburger {
+        width: 18px;
+    }
+
+    .hamburger::before,
+    .hamburger::after {
+        width: 18px;
+    }
+
+    .hamburger::before {
+        top: -5px;
+    }
+
+    .hamburger::after {
+        bottom: -5px;
+    }
+
+    .nav {
+        width: 260px;
+        padding: 80px var(--space-4) var(--space-4);
+    }
+
+    .navLink {
+        font-size: 0.85rem;
+        padding: var(--space-2) var(--space-3);
+    }
+
+    .mobileRegisterBtn {
+        font-size: 0.5rem;
+        padding: var(--space-3) var(--space-6);
+        margin-top: var(--space-4);
+    }
+}
+
+@media (max-width: 360px) {
+    .logoText {
+        font-size: 0.5rem;
+    }
+
+    .mascotLogo {
+        min-width: 40px;
+        height: 40px;
+    }
+
+    .container {
+        padding: 0 var(--space-2);
     }
 }
