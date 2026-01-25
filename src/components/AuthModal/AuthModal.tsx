@@ -94,7 +94,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         {/* Close Button */}
         <button className={styles.closeButton} onClick={onClose} aria-label="Close">
-          <i className="hn hn-close"></i>
+          ✕
         </button>
 
         {/* Header with Icon */}
