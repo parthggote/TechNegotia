@@ -3,8 +3,7 @@
 import { useEffect } from 'react';
 import styles from './MascotGuide.module.css';
 import NextImage from 'next/image';
-import { MascotMessage } from '@/lib/mascotData';
-import { MASCOTS } from '@/lib/mascotData';
+import { MascotMessage, MascotData, MASCOTS } from '@/lib/mascotData';
 
 interface MascotGuideProps {
     message: MascotMessage;
@@ -12,6 +11,7 @@ interface MascotGuideProps {
     onDismiss: () => void;
     onNext?: () => void;
     hasMore?: boolean;
+    mascot?: MascotData | null;
 }
 
 export default function MascotGuide({
@@ -19,10 +19,11 @@ export default function MascotGuide({
     isVisible,
     onDismiss,
     onNext,
-    hasMore = false
+    hasMore = false,
+    mascot: propMascot
 }: MascotGuideProps) {
-    // Use consistent mascot (first one) with safety check
-    const mascot = MASCOTS.length > 0 ? MASCOTS[0] : null;
+    // Use provided mascot or fallback to first one
+    const mascot = propMascot ?? (MASCOTS.length > 0 ? MASCOTS[0] : null);
 
     // Keyboard shortcuts - MUST run before any early returns
     useEffect(() => {
@@ -59,6 +60,21 @@ export default function MascotGuide({
         }
     };
 
+    /**
+     * Get the appropriate icon class for message type
+     */
+    const getTypeIcon = () => {
+        switch (message.type) {
+            case 'greeting': return 'hn hn-heart';
+            case 'help': return 'hn hn-question';
+            case 'tip': return 'hn hn-lightbulb';
+            case 'celebration': return 'hn hn-sparkles';
+            case 'warning': return 'hn hn-warning';
+            case 'info': return 'hn hn-info';
+            default: return 'hn hn-info';
+        }
+    };
+
     return (
         <div className={`${styles.mascotContainer} ${isVisible ? styles.visible : ''}`}>
             {/* Mascot Character */}
@@ -66,8 +82,8 @@ export default function MascotGuide({
                 <NextImage
                     src={mascot.src}
                     alt="Guide Mascot"
-                    width={180}
-                    height={180}
+                    width={140}
+                    height={140}
                     className={styles.mascotImage}
                     unoptimized
                 />
@@ -82,41 +98,36 @@ export default function MascotGuide({
                         onClick={onDismiss}
                         aria-label="Dismiss message"
                     >
-                        ✕
+                        <i className="hn hn-close"></i>
                     </button>
                 )}
 
                 {/* Message Type Icon */}
                 <div className={styles.messageIcon}>
-                    {message.type === 'greeting' && '👋'}
-                    {message.type === 'help' && '❓'}
-                    {message.type === 'tip' && '💡'}
-                    {message.type === 'celebration' && '🎉'}
-                    {message.type === 'warning' && '⚠️'}
-                    {message.type === 'info' && 'ℹ️'}
+                    <i className={getTypeIcon()}></i>
                 </div>
 
-                {/* Message Text with Typewriter Effect */}
+                {/* Message Text */}
                 <div className={styles.messageText}>
-                    <p className={styles.typewriter}>{message.text}</p>
+                    <p>{message.text}</p>
                 </div>
 
                 {/* Action Buttons */}
                 <div className={styles.actions}>
-                    {hasMore && onNext && (
-                        <button
-                            className={`${styles.actionButton} ${styles.nextButton}`}
-                            onClick={onNext}
-                        >
-                            Next →
-                        </button>
-                    )}
                     {message.dismissible && (
                         <button
                             className={`${styles.actionButton} ${styles.dismissButton}`}
                             onClick={onDismiss}
                         >
                             {hasMore ? 'Skip' : 'Got it!'}
+                        </button>
+                    )}
+                    {hasMore && onNext && (
+                        <button
+                            className={`${styles.actionButton} ${styles.nextButton}`}
+                            onClick={onNext}
+                        >
+                            Next <i className="hn hn-arrow-right"></i>
                         </button>
                     )}
                 </div>

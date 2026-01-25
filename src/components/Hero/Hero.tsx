@@ -5,32 +5,49 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
-import PaymentButton from "@/components/PaymentButton/PaymentButton";
+import { useToast } from "@/components/Toast";
 import styles from "./Hero.module.css";
+
+/** Razorpay payment portal link */
+const PAYMENT_LINK = "https://pages.razorpay.com/pl_S6rLrbGpmxkKPx/view";
 
 export default function Hero() {
     const router = useRouter();
     const { user, loading: authLoading } = useAuth();
+    const { showWarning, showInfo, showSuccess } = useToast();
     const heroRef = useRef<HTMLDivElement>(null);
     const [displayText, setDisplayText] = useState("");
     const [showCursor, setShowCursor] = useState(true);
-    const fullText = "Start the Quest";
+    const fullText = "Begin Your Quest";
 
+    /**
+     * Handles click on locked quest button - shows toast notification
+     */
+    const handleLockedClick = () => {
+        showWarning("Please sign in to begin your quest!");
+    };
+
+    /**
+     * Handles click on the main CTA button when authenticated
+     * Opens payment portal
+     */
+    const handleBeginQuest = () => {
+        showInfo("Opening payment portal...");
+        window.open(PAYMENT_LINK, "_blank", "noopener,noreferrer");
+    };
+
+    // Parallax scroll effect for background video
     useEffect(() => {
         const handleScroll = () => {
             if (!heroRef.current) return;
 
             const scrollY = window.scrollY;
-            const sky = heroRef.current.querySelector(`.${styles.layerSky}`) as HTMLElement;
-            const mountains = heroRef.current.querySelector(`.${styles.layerMountains}`) as HTMLElement;
-            const hills = heroRef.current.querySelector(`.${styles.layerHills}`) as HTMLElement;
-            const grass = heroRef.current.querySelector(`.${styles.layerGrass}`) as HTMLElement;
+            const video = heroRef.current.querySelector(`.${styles.backgroundVideo}`) as HTMLElement;
 
-            // Adjusted parallax speeds
-            if (sky) sky.style.transform = `translateY(${scrollY * 0.1}px)`;
-            if (mountains) mountains.style.transform = `translateY(${scrollY * 0.15}px)`;
-            if (hills) hills.style.transform = `translateY(${scrollY * 0.25}px)`;
-            if (grass) grass.style.transform = `translateY(${scrollY * 0.4}px)`;
+            // Parallax effect - video moves slower than scroll
+            if (video) {
+                video.style.transform = `translate(-50%, calc(-50% + ${scrollY * 0.3}px))`;
+            }
         };
 
         window.addEventListener("scroll", handleScroll);
@@ -68,19 +85,18 @@ export default function Hero() {
 
     return (
         <section className={styles.hero} ref={heroRef}>
-            {/* Parallax Layers */}
-            <div className={styles.parallaxContainer}>
-                {/* Layer 1: Sky - Background */}
-                <div className={`${styles.layer} ${styles.layerSky}`}></div>
-
-                {/* Layer 2: Mountains */}
-                <div className={`${styles.layer} ${styles.layerMountains}`}></div>
-
-                {/* Layer 3: Hills */}
-                <div className={`${styles.layer} ${styles.layerHills}`}></div>
-
-                {/* Layer 4: Grass */}
-                <div className={`${styles.layer} ${styles.layerGrass}`}></div>
+            {/* Animated Background Video with Parallax */}
+            <div className={styles.animatedBackground}>
+                <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    preload="auto"
+                    className={styles.backgroundVideo}
+                >
+                    <source src="/video (2).mp4" type="video/mp4" />
+                </video>
             </div>
 
             {/* Gradient Overlay - subtle bottom fade */}
@@ -99,53 +115,66 @@ export default function Hero() {
                         Fortune favors the strategic.
                     </p>
 
-                    <div className={styles.cta}>
-                        {/* Start the Quest Button - Conditional based on auth */}
-                        {authLoading ? (
-                            <button className={`nes-btn is-warning ${styles.typewriterBtn}`} disabled>
-                                <span className={styles.typewriterText}>Loading...</span>
-                            </button>
-                        ) : user ? (
-                            <Link href="/register" className={`nes-btn is-warning ${styles.typewriterBtn}`}>
-                                <span className={styles.typewriterText}>
-                                    {displayText}
-                                    {showCursor && <span className={styles.cursor}>|</span>}
-                                </span>
-                            </Link>
-                        ) : (
-                            <div className={styles.lockedButtonWrapper}>
-                                <button
-                                    className={`nes-btn is-warning ${styles.typewriterBtn} ${styles.questButtonDisabled}`}
-                                    disabled
-                                    title="Please sign in to start the quest"
-                                >
-                                    <span className={styles.typewriterText}>
-                                        🔒 {displayText}
-                                    </span>
-                                </button>
-                                <div className={styles.lockedTooltip}>
-                                    Please sign in to start the quest
-                                </div>
-                            </div>
-                        )}
+                </div>
+            </div>
 
-                        {/* Payment Button */}
-                        <div className={styles.paymentButtonWrapper}>
-                            <PaymentButton paymentLink="#" isAuthenticated={!!user && !authLoading} />
-                        </div>
-                    </div>
+            {/* Floating Action Card - Bottom Right */}
+            <div className={styles.actionCard}>
+                <div className={styles.actionCardHeader}>
+                    <i className="hn hn-sparkles"></i>
+                    <span>Join the Quest</span>
+                </div>
+                
+                <div className={styles.actionButtons}>
+                    {/* Pay Registration Fee Button */}
+                    {authLoading ? (
+                        <button className={`${styles.payButton} ${styles.payButtonLoading}`} disabled>
+                            <i className="hn hn-loading"></i>
+                            Loading...
+                        </button>
+                    ) : user ? (
+                        <button
+                            className={styles.payButton}
+                            onClick={handleBeginQuest}
+                        >
+                            <i className="hn hn-coin"></i>
+                            Pay Registration Fee
+                        </button>
+                    ) : (
+                        <button
+                            className={`${styles.payButton} ${styles.payButtonLocked}`}
+                            onClick={handleLockedClick}
+                        >
+                            <i className="hn hn-lock"></i>
+                            Pay Registration Fee
+                        </button>
+                    )}
+
+                    {/* Register Button */}
+                    {authLoading ? (
+                        <button className={`${styles.registerButton} ${styles.registerButtonLoading}`} disabled>
+                            <i className="hn hn-loading"></i>
+                            Loading...
+                        </button>
+                    ) : user ? (
+                        <Link href="/register" className={styles.registerButton}>
+                            <i className="hn hn-sword"></i>
+                            Register Team
+                        </Link>
+                    ) : (
+                        <button
+                            className={`${styles.registerButton} ${styles.registerButtonLocked}`}
+                            onClick={handleLockedClick}
+                        >
+                            <i className="hn hn-lock"></i>
+                            Register Team
+                        </button>
+                    )}
                 </div>
 
-                {/* Mascot - positioned like reference */}
-                <div className={styles.mascot}>
-                    <Image
-                        src="/LandingPage_Mascot.webp"
-                        alt="TechNegotia Mascot"
-                        width={180}
-                        height={180}
-                        priority
-                    />
-                </div>
+                <p className={styles.actionHint}>
+                    {user ? "Pay first, then register" : "Sign in to continue"}
+                </p>
             </div>
 
             {/* Supported By Section - at bottom like reference */}

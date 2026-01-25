@@ -28,6 +28,10 @@ export default function AdminPage() {
     const [totalCount, setTotalCount] = useState(0);
     const [hasMore, setHasMore] = useState(false);
 
+    // Detail modal state
+    const [selectedRegistration, setSelectedRegistration] = useState<Registration | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     // Initialize EmailJS
     useEffect(() => {
         initEmailJS();
@@ -50,16 +54,17 @@ export default function AdminPage() {
         }
     }, [currentPage, filter, searchTerm]);
 
+    /**
+     * Handles admin login form submission
+     */
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Check if user is signed in with Firebase
         if (!user) {
             alert("Please sign in with your Firebase account first, then access /admin");
             return;
         }
 
-        // Call server-side login action
         const result = await adminLogin(email, password);
 
         if (result.success) {
@@ -71,6 +76,9 @@ export default function AdminPage() {
         }
     };
 
+    /**
+     * Handles admin logout
+     */
     const handleLogout = async () => {
         await adminLogout();
         clearAdminSession();
@@ -78,11 +86,13 @@ export default function AdminPage() {
         setRegistrations([]);
     };
 
+    /**
+     * Loads paginated registrations from the database
+     */
     const loadRegistrations = async () => {
         setLoading(true);
         setError(null);
 
-        // Use server-side pagination
         const result = await getPaginatedRegistrations(
             currentPage,
             pageSize,
@@ -106,68 +116,76 @@ export default function AdminPage() {
         setLoading(false);
     };
 
+    /**
+     * Opens detail modal for a registration
+     */
+    const handleViewDetails = (reg: Registration) => {
+        setSelectedRegistration(reg);
+        setIsModalOpen(true);
+    };
+
+    /**
+     * Closes the detail modal
+     */
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedRegistration(null);
+    };
+
+    /**
+     * Handles approval of a registration
+     */
     const handleApprove = async (reg: Registration) => {
         if (!confirm(`Approve registration for team "${reg.teamName}"?`)) return;
 
-        console.log('Approving registration:', reg.userId);
-
         try {
             const result = await updateRegistrationStatus(reg.userId, 'approved');
-            console.log('Update result:', result);
 
             if (result.success) {
-                // Send approval email to user's sign-in email
-                console.log('Sending approval email to:', reg.userEmail);
-
-                // Safely extract first member name
                 const firstMemberName = Array.isArray(reg.members) && reg.members.length > 0
                     ? reg.members[0].name
                     : reg.userEmail || 'Team Member';
 
                 const emailSent = await sendApprovalEmail(
                     reg.teamName,
-                    reg.userEmail, // Use sign-in email
+                    reg.userEmail,
                     firstMemberName
                 );
 
                 if (emailSent) {
                     alert(`Registration approved! Email sent to ${reg.userEmail}`);
                 } else {
-                    alert("Registration approved, but email failed to send. Check console for details.");
+                    alert("Registration approved, but email failed to send.");
                 }
 
+                closeModal();
                 loadRegistrations();
             } else {
                 alert("Failed to approve registration: " + result.error);
             }
         } catch (error: any) {
-            console.error('Error in handleApprove:', error);
             alert("Error approving registration: " + error.message);
         }
     };
 
+    /**
+     * Handles rejection of a registration
+     */
     const handleReject = async (reg: Registration) => {
         const reason = prompt(`Reject registration for team "${reg.teamName}"?\n\nOptional reason:`);
-        if (reason === null) return; // User cancelled
-
-        console.log('Rejecting registration:', reg.userId);
+        if (reason === null) return;
 
         try {
             const result = await updateRegistrationStatus(reg.userId, 'rejected');
-            console.log('Update result:', result);
 
             if (result.success) {
-                // Send rejection email to user's sign-in email
-                console.log('Sending rejection email to:', reg.userEmail);
-
-                // Safely extract first member name
                 const firstMemberName = Array.isArray(reg.members) && reg.members.length > 0
                     ? reg.members[0].name
                     : reg.userEmail || 'Team Member';
 
                 const emailSent = await sendRejectionEmail(
                     reg.teamName,
-                    reg.userEmail, // Use sign-in email
+                    reg.userEmail,
                     firstMemberName,
                     reason || undefined
                 );
@@ -175,37 +193,32 @@ export default function AdminPage() {
                 if (emailSent) {
                     alert(`Registration rejected. Email sent to ${reg.userEmail}`);
                 } else {
-                    alert("Registration rejected, but email failed to send. Check console for details.");
+                    alert("Registration rejected, but email failed to send.");
                 }
 
+                closeModal();
                 loadRegistrations();
             } else {
                 alert("Failed to reject registration: " + result.error);
             }
         } catch (error: any) {
-            console.error('Error in handleReject:', error);
             alert("Error rejecting registration: " + error.message);
         }
     };
 
     // Pagination handlers
     const handleNextPage = () => {
-        if (hasMore) {
-            setCurrentPage(prev => prev + 1);
-        }
+        if (hasMore) setCurrentPage(prev => prev + 1);
     };
 
     const handlePrevPage = () => {
-        if (currentPage > 1) {
-            setCurrentPage(prev => prev - 1);
-        }
+        if (currentPage > 1) setCurrentPage(prev => prev - 1);
     };
 
     const handlePageJump = (page: number) => {
         setCurrentPage(page);
     };
 
-    // Reset to page 1 when filter or search changes
     const handleFilterChange = (newFilter: 'all' | 'pending' | 'approved' | 'rejected') => {
         setFilter(newFilter);
         setCurrentPage(1);
@@ -216,20 +229,33 @@ export default function AdminPage() {
         setCurrentPage(1);
     };
 
-
+    /**
+     * Exports current registrations to Excel
+     */
     const handleExportToExcel = () => {
         if (registrations.length === 0) {
             alert('No registrations to export!');
             return;
         }
 
-        // Export based on current filter
         exportFilteredRegistrations(registrations, filter);
-
         const statusText = filter === 'all' ? 'all' : filter;
         alert(`Exported ${totalCount} ${statusText} registration(s) to Excel!`);
     };
 
+    /**
+     * Gets stats for dashboard cards
+     */
+    const getStats = () => {
+        const pending = registrations.filter(r => r.status === 'pending').length;
+        const approved = registrations.filter(r => r.status === 'approved').length;
+        const rejected = registrations.filter(r => r.status === 'rejected').length;
+        return { total: totalCount, pending, approved, rejected };
+    };
+
+    const stats = getStats();
+
+    // ==================== LOGIN PAGE ====================
     if (!isAdminAuth) {
         return (
             <>
@@ -237,33 +263,35 @@ export default function AdminPage() {
                 <main className={styles.main}>
                     <section className={styles.loginSection}>
                         <div className={styles.loginCard}>
-                            <h1>Admin Login</h1>
+                            <div className={styles.loginHeader}>
+                                <i className="hn hn-shield"></i>
+                                <h1>Admin Portal</h1>
+                            </div>
+                            
                             {!user && (
-                                <div style={{
-                                    padding: '1rem',
-                                    backgroundColor: '#fff3cd',
-                                    borderRadius: '6px',
-                                    marginBottom: '1rem',
-                                    border: '2px solid #ffc107'
-                                }}>
-                                    <p style={{ margin: 0, color: '#856404', fontSize: '0.9rem' }}>
-                                        ⚠️ Please sign in with your Firebase account first using the header, then come back to /admin
-                                    </p>
+                                <div className={styles.warningBanner}>
+                                    <i className="hn hn-warning"></i>
+                                    <p>Please sign in with Firebase first using the header menu</p>
                                 </div>
                             )}
+                            
                             <form onSubmit={handleLogin} className={styles.loginForm}>
                                 <div className={styles.formGroup}>
-                                    <label>Email</label>
+                                    <label>
+                                        <i className="hn hn-email"></i> Admin Email
+                                    </label>
                                     <input
                                         type="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         required
-                                        placeholder="admin@gmail.com"
+                                        placeholder="admin@example.com"
                                     />
                                 </div>
                                 <div className={styles.formGroup}>
-                                    <label>Password</label>
+                                    <label>
+                                        <i className="hn hn-lock"></i> Password
+                                    </label>
                                     <input
                                         type="password"
                                         value={password}
@@ -272,8 +300,8 @@ export default function AdminPage() {
                                         placeholder="Enter password"
                                     />
                                 </div>
-                                <button type="submit" className={styles.loginButton}>
-                                    Login
+                                <button type="submit" className={styles.loginButton} disabled={!user}>
+                                    <i className="hn hn-arrow-right"></i> Access Dashboard
                                 </button>
                             </form>
                         </div>
@@ -284,189 +312,220 @@ export default function AdminPage() {
         );
     }
 
+    // ==================== DASHBOARD ====================
     return (
         <>
             <Header />
             <main className={styles.main}>
-                <section className={styles.adminHeader}>
+                {/* Dashboard Header */}
+                <section className={styles.dashboardHeader}>
                     <div className={styles.container}>
                         <div className={styles.headerTop}>
-                            <h1>Admin Dashboard</h1>
+                            <div className={styles.headerTitle}>
+                                <i className="hn hn-dashboard"></i>
+                                <h1>Admin Dashboard</h1>
+                            </div>
                             <button onClick={handleLogout} className={styles.logoutButton}>
-                                Logout
+                                <i className="hn hn-logout"></i> Logout
                             </button>
                         </div>
 
+                        {/* Stats Cards */}
+                        <div className={styles.statsGrid}>
+                            <div className={`${styles.statCard} ${styles.statTotal}`}>
+                                <div className={styles.statIcon}>
+                                    <i className="hn hn-users"></i>
+                                </div>
+                                <div className={styles.statInfo}>
+                                    <span className={styles.statNumber}>{stats.total}</span>
+                                    <span className={styles.statLabel}>Total Teams</span>
+                                </div>
+                            </div>
+                            <div className={`${styles.statCard} ${styles.statPending}`}>
+                                <div className={styles.statIcon}>
+                                    <i className="hn hn-clock"></i>
+                                </div>
+                                <div className={styles.statInfo}>
+                                    <span className={styles.statNumber}>{stats.pending}</span>
+                                    <span className={styles.statLabel}>Pending</span>
+                                </div>
+                            </div>
+                            <div className={`${styles.statCard} ${styles.statApproved}`}>
+                                <div className={styles.statIcon}>
+                                    <i className="hn hn-check"></i>
+                                </div>
+                                <div className={styles.statInfo}>
+                                    <span className={styles.statNumber}>{stats.approved}</span>
+                                    <span className={styles.statLabel}>Approved</span>
+                                </div>
+                            </div>
+                            <div className={`${styles.statCard} ${styles.statRejected}`}>
+                                <div className={styles.statIcon}>
+                                    <i className="hn hn-close"></i>
+                                </div>
+                                <div className={styles.statInfo}>
+                                    <span className={styles.statNumber}>{stats.rejected}</span>
+                                    <span className={styles.statLabel}>Rejected</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Controls Section */}
+                <section className={styles.controlsSection}>
+                    <div className={styles.container}>
                         <div className={styles.controls}>
                             <div className={styles.filters}>
                                 <button
                                     className={filter === 'all' ? styles.filterActive : ''}
                                     onClick={() => handleFilterChange('all')}
                                 >
-                                    All ({registrations.length})
+                                    All
                                 </button>
                                 <button
                                     className={filter === 'pending' ? styles.filterActive : ''}
                                     onClick={() => handleFilterChange('pending')}
                                 >
-                                    Pending ({registrations.filter(r => r.status === 'pending').length})
+                                    Pending
                                 </button>
                                 <button
                                     className={filter === 'approved' ? styles.filterActive : ''}
                                     onClick={() => handleFilterChange('approved')}
                                 >
-                                    Approved ({registrations.filter(r => r.status === 'approved').length})
+                                    Approved
                                 </button>
                                 <button
                                     className={filter === 'rejected' ? styles.filterActive : ''}
                                     onClick={() => handleFilterChange('rejected')}
                                 >
-                                    Rejected ({registrations.filter(r => r.status === 'rejected').length})
+                                    Rejected
                                 </button>
                             </div>
 
                             <div className={styles.rightControls}>
-                                <input
-                                    type="text"
-                                    placeholder="Search by team or member name..."
-                                    value={searchTerm}
-                                    onChange={(e) => handleSearchChange(e.target.value)}
-                                    className={styles.searchInput}
-                                />
+                                <div className={styles.searchWrapper}>
+                                    <i className="hn hn-search"></i>
+                                    <input
+                                        type="text"
+                                        placeholder="Search teams..."
+                                        value={searchTerm}
+                                        onChange={(e) => handleSearchChange(e.target.value)}
+                                        className={styles.searchInput}
+                                    />
+                                </div>
 
                                 <button
                                     onClick={handleExportToExcel}
                                     className={styles.exportButton}
                                     disabled={registrations.length === 0}
                                 >
-                                    📊 Export to Excel
+                                    <i className="hn hn-download"></i> Export Excel
                                 </button>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <section className={styles.registrationsSection}>
+                {/* Table Section */}
+                <section className={styles.tableSection}>
                     <div className={styles.container}>
                         {loading ? (
-                            <p className={styles.loading}>Loading registrations...</p>
+                            <div className={styles.loadingState}>
+                                <i className="hn hn-loading"></i>
+                                <p>Loading registrations...</p>
+                            </div>
                         ) : registrations.length === 0 ? (
-                            <p className={styles.noResults}>No registrations found.</p>
+                            <div className={styles.emptyState}>
+                                <i className="hn hn-inbox"></i>
+                                <p>No registrations found</p>
+                            </div>
                         ) : (
                             <>
-                                <div className={styles.registrationList}>
-                                    {registrations.map((reg: Registration) => (
-                                        <div key={reg.userId} className={styles.registrationCard}>
-                                            <div className={styles.cardHeader}>
-                                                <h2>{reg.teamName}</h2>
-                                                <span className={`${styles.statusBadge} ${styles[reg.status]}`}>
-                                                    {reg.status === 'pending' && '⏳ Pending'}
-                                                    {reg.status === 'approved' && '✅ Approved'}
-                                                    {reg.status === 'rejected' && '❌ Rejected'}
-                                                </span>
-                                            </div>
-
-                                            <div className={styles.cardBody}>
-                                                <div className={styles.section}>
-                                                    <h3>Team Members</h3>
-                                                    <div className={styles.membersGrid}>
-                                                        {reg.members.map((member: TeamMember, idx: number) => (
-                                                            <div key={idx} className={styles.member}>
-                                                                <strong>Member {idx + 1}</strong>
-                                                                <span>👤 {member.name}</span>
-                                                                <span>📧 {member.email}</span>
-                                                                <span>📱 {member.phone}</span>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-
-                                                <div className={styles.section}>
-                                                    <h3>Payment Proof</h3>
-                                                    <img
-                                                        src={reg.paymentProofURL}
-                                                        alt="Payment proof"
-                                                        className={styles.paymentProof}
-                                                    />
-                                                    <p className={styles.date}>
-                                                        Registered: {reg.timestamp.toDate().toLocaleDateString()}
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            {reg.status === 'pending' && (
-                                                <div className={styles.cardActions}>
-                                                    <button
-                                                        onClick={() => handleApprove(reg)}
-                                                        className={styles.approveButton}
-                                                    >
-                                                        ✅ Approve
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleReject(reg)}
-                                                        className={styles.rejectButton}
-                                                    >
-                                                        ❌ Reject
-                                                    </button>
-                                                </div>
-                                            )}
-                                        </div>
-                                    ))}
+                                <div className={styles.tableWrapper}>
+                                    <table className={styles.dataTable}>
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Team Name</th>
+                                                <th>Members</th>
+                                                <th>Contact Email</th>
+                                                <th>Registered</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {registrations.map((reg, index) => (
+                                                <tr key={reg.userId}>
+                                                    <td className={styles.rowNum}>
+                                                        {((currentPage - 1) * pageSize) + index + 1}
+                                                    </td>
+                                                    <td className={styles.teamName}>{reg.teamName}</td>
+                                                    <td>{reg.members.length}</td>
+                                                    <td className={styles.email}>{reg.userEmail}</td>
+                                                    <td className={styles.date}>
+                                                        {reg.timestamp.toDate().toLocaleDateString()}
+                                                    </td>
+                                                    <td>
+                                                        <span className={`${styles.statusBadge} ${styles[reg.status]}`}>
+                                                            {reg.status}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <button
+                                                            className={styles.viewButton}
+                                                            onClick={() => handleViewDetails(reg)}
+                                                        >
+                                                            <i className="hn hn-eye"></i> View
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 </div>
 
-                                {/* Pagination Controls */}
-                                {!loading && totalCount > pageSize && (
-                                    <div className={styles.paginationControls}>
-                                        <div className={styles.paginationInfo}>
-                                            Showing {((currentPage - 1) * pageSize) + 1}-{Math.min(currentPage * pageSize, totalCount)} of {totalCount} registrations
-                                        </div>
-
+                                {/* Pagination */}
+                                {totalCount > pageSize && (
+                                    <div className={styles.pagination}>
+                                        <span className={styles.paginationInfo}>
+                                            Showing {((currentPage - 1) * pageSize) + 1}-{Math.min(currentPage * pageSize, totalCount)} of {totalCount}
+                                        </span>
                                         <div className={styles.paginationButtons}>
                                             <button
                                                 onClick={handlePrevPage}
                                                 disabled={currentPage === 1}
-                                                className={styles.paginationButton}
+                                                className={styles.paginationBtn}
                                             >
-                                                ◀ Previous
+                                                <i className="hn hn-arrow-left"></i>
                                             </button>
-
-                                            {/* Page numbers */}
-                                            <div className={styles.pageNumbers}>
-                                                {Array.from({ length: Math.ceil(totalCount / pageSize) }, (_, i) => i + 1)
-                                                    .filter(page => {
-                                                        // Show first, last, current, and 2 pages around current
-                                                        const totalPages = Math.ceil(totalCount / pageSize);
-                                                        return (
-                                                            page === 1 ||
-                                                            page === totalPages ||
-                                                            Math.abs(page - currentPage) <= 2
-                                                        );
-                                                    })
-                                                    .map((page, idx, arr) => {
-                                                        // Add ellipsis if there's a gap
-                                                        const prevPage = arr[idx - 1];
-                                                        const showEllipsis = prevPage && page - prevPage > 1;
-
-                                                        return (
-                                                            <div key={page} style={{ display: 'flex', gap: '0.5rem' }}>
-                                                                {showEllipsis && <span className={styles.ellipsis}>...</span>}
-                                                                <button
-                                                                    onClick={() => handlePageJump(page)}
-                                                                    className={`${styles.pageNumber} ${page === currentPage ? styles.pageNumberActive : ''}`}
-                                                                >
-                                                                    {page}
-                                                                </button>
-                                                            </div>
-                                                        );
-                                                    })}
-                                            </div>
-
+                                            {Array.from({ length: Math.ceil(totalCount / pageSize) }, (_, i) => i + 1)
+                                                .filter(page => {
+                                                    const totalPages = Math.ceil(totalCount / pageSize);
+                                                    return page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1;
+                                                })
+                                                .map((page, idx, arr) => {
+                                                    const prevPage = arr[idx - 1];
+                                                    const showEllipsis = prevPage && page - prevPage > 1;
+                                                    return (
+                                                        <span key={page} style={{ display: 'flex', alignItems: 'center' }}>
+                                                            {showEllipsis && <span className={styles.ellipsis}>...</span>}
+                                                            <button
+                                                                onClick={() => handlePageJump(page)}
+                                                                className={`${styles.pageBtn} ${page === currentPage ? styles.pageBtnActive : ''}`}
+                                                            >
+                                                                {page}
+                                                            </button>
+                                                        </span>
+                                                    );
+                                                })}
                                             <button
                                                 onClick={handleNextPage}
                                                 disabled={!hasMore}
-                                                className={styles.paginationButton}
+                                                className={styles.paginationBtn}
                                             >
-                                                Next ▶
+                                                <i className="hn hn-arrow-right"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -477,6 +536,96 @@ export default function AdminPage() {
                 </section>
             </main>
             <Footer />
+
+            {/* Detail Modal */}
+            {isModalOpen && selectedRegistration && (
+                <div className={styles.modalOverlay} onClick={closeModal}>
+                    <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+                        <div className={styles.modalHeader}>
+                            <h2>
+                                <i className="hn hn-users"></i> {selectedRegistration.teamName}
+                            </h2>
+                            <button className={styles.modalClose} onClick={closeModal}>
+                                <i className="hn hn-close"></i>
+                            </button>
+                        </div>
+
+                        <div className={styles.modalBody}>
+                            {/* Status Badge */}
+                            <div className={styles.modalStatus}>
+                                <span className={`${styles.statusBadgeLarge} ${styles[selectedRegistration.status]}`}>
+                                    {selectedRegistration.status === 'pending' && <i className="hn hn-clock"></i>}
+                                    {selectedRegistration.status === 'approved' && <i className="hn hn-check"></i>}
+                                    {selectedRegistration.status === 'rejected' && <i className="hn hn-close"></i>}
+                                    {selectedRegistration.status.toUpperCase()}
+                                </span>
+                                <span className={styles.modalDate}>
+                                    Registered: {selectedRegistration.timestamp.toDate().toLocaleDateString()}
+                                </span>
+                            </div>
+
+                            {/* Team Members */}
+                            <div className={styles.modalSection}>
+                                <h3><i className="hn hn-user"></i> Team Members</h3>
+                                <div className={styles.membersList}>
+                                    {selectedRegistration.members.map((member: TeamMember, idx: number) => (
+                                        <div key={idx} className={styles.memberCard}>
+                                            <div className={styles.memberNumber}>#{idx + 1}</div>
+                                            <div className={styles.memberDetails}>
+                                                <span className={styles.memberName}>{member.name}</span>
+                                                <span className={styles.memberInfo}>
+                                                    <i className="hn hn-email"></i> {member.email}
+                                                </span>
+                                                <span className={styles.memberInfo}>
+                                                    <i className="hn hn-phone"></i> {member.phone}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Payment Proof */}
+                            <div className={styles.modalSection}>
+                                <h3><i className="hn hn-coin"></i> Payment Proof</h3>
+                                <div className={styles.paymentProofWrapper}>
+                                    <img
+                                        src={selectedRegistration.paymentProofURL}
+                                        alt="Payment proof"
+                                        className={styles.paymentProofImage}
+                                        onClick={() => window.open(selectedRegistration.paymentProofURL, '_blank')}
+                                    />
+                                    <p className={styles.clickToEnlarge}>Click to enlarge</p>
+                                </div>
+                            </div>
+
+                            {/* Contact Info */}
+                            <div className={styles.modalSection}>
+                                <h3><i className="hn hn-email"></i> Registration Email</h3>
+                                <p className={styles.contactEmail}>{selectedRegistration.userEmail}</p>
+                            </div>
+                        </div>
+
+                        {/* Modal Actions */}
+                        {selectedRegistration.status === 'pending' && (
+                            <div className={styles.modalActions}>
+                                <button
+                                    className={styles.approveBtn}
+                                    onClick={() => handleApprove(selectedRegistration)}
+                                >
+                                    <i className="hn hn-check"></i> Approve
+                                </button>
+                                <button
+                                    className={styles.rejectBtn}
+                                    onClick={() => handleReject(selectedRegistration)}
+                                >
+                                    <i className="hn hn-close"></i> Reject
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </>
     );
 }

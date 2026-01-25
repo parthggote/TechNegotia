@@ -447,6 +447,249 @@
     box-shadow: var(--shadow-glow), 0 5px 0 #b87a15;
 }
 
+/* WhatsApp Group Button - Primary CTA after registration */
+.whatsappButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    font-family: var(--font-pixel), 'Press Start 2P', monospace;
+    font-size: 0.7rem;
+    padding: 1rem 2rem;
+    background: linear-gradient(180deg, #25D366 0%, #128C7E 100%);
+    color: white;
+    border: 4px solid #075E54;
+    border-radius: 8px;
+    text-decoration: none;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 
+        0 4px 0 #075E54,
+        0 6px 15px rgba(0, 0, 0, 0.3);
+    animation: whatsappPulse 2s ease-in-out infinite;
+}
+
+.whatsappButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 6px 0 #075E54,
+        0 8px 20px rgba(0, 0, 0, 0.4),
+        0 0 30px rgba(37, 211, 102, 0.4);
+    animation: none;
+}
+
+.whatsappButton:active {
+    transform: translateY(2px);
+    box-shadow: 
+        0 2px 0 #075E54,
+        0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes whatsappPulse {
+    0%, 100% {
+        box-shadow: 
+            0 4px 0 #075E54,
+            0 6px 15px rgba(0, 0, 0, 0.3),
+            0 0 15px rgba(37, 211, 102, 0.2);
+    }
+    50% {
+        box-shadow: 
+            0 4px 0 #075E54,
+            0 6px 15px rgba(0, 0, 0, 0.3),
+            0 0 30px rgba(37, 211, 102, 0.5);
+    }
+}
+
+/* Secondary button for return home */
+.successButtonSecondary {
+    display: inline-block;
+    font-family: var(--font-pixel);
+    font-size: 0.55rem;
+    padding: var(--space-3) var(--space-6);
+    background: transparent;
+    color: var(--text-primary);
+    border: 2px solid var(--text-muted);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all var(--transition-fast);
+    opacity: 0.8;
+}
+
+.successButtonSecondary:hover {
+    opacity: 1;
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+}
+
+/* Payment Card in Step 3 */
+.paymentCard {
+    background: var(--bg-darker);
+    border: 2px solid var(--accent-gold);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+    margin-bottom: var(--space-5);
+}
+
+.paymentHeader {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-5);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.paymentHeader i {
+    font-size: 2rem;
+    color: var(--accent-gold);
+}
+
+.paymentHeader h3 {
+    font-family: var(--font-pixel);
+    font-size: 0.8rem;
+    color: var(--accent-gold);
+    margin: 0 0 var(--space-1) 0;
+}
+
+.paymentHeader p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.paymentUpload {
+    margin-top: var(--space-5);
+    padding-top: var(--space-4);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.uploadLabel {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-pixel);
+    font-size: 0.7rem;
+    color: var(--text-primary);
+    margin-bottom: var(--space-3);
+}
+
+.uploadLabel i {
+    font-size: 1rem;
+    color: var(--accent-gold);
+}
+
+.fileInput {
+    width: 100%;
+    padding: var(--space-3);
+    background: var(--bg-card);
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.fileInput:hover {
+    border-color: var(--accent-gold);
+}
+
+.previewContainer {
+    margin-top: var(--space-4);
+}
+
+.previewLabel {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: var(--space-2);
+}
+
+.previewImage {
+    max-width: 100%;
+    max-height: 250px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+}
+
+.progressContainer {
+    margin-top: var(--space-4);
+}
+
+.progressBarUpload {
+    width: 100%;
+    height: 16px;
+    background: var(--bg-card);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-gold), #e86a17);
+    transition: width 0.3s ease;
+}
+
+.progressText {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: var(--space-2);
+}
+
+.payNowButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    font-family: var(--font-pixel);
+    font-size: 0.75rem;
+    padding: 1.25rem 2rem;
+    background: linear-gradient(180deg, #ffd700 0%, #f4a020 50%, #e86a17 100%);
+    color: var(--bg-darker);
+    border: 4px solid #8b4513;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 
+        0 4px 0 #8b4513,
+        0 6px 15px rgba(0, 0, 0, 0.3);
+    animation: payNowPulse 2s ease-in-out infinite;
+}
+
+.payNowButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 6px 0 #8b4513,
+        0 8px 20px rgba(0, 0, 0, 0.4),
+        0 0 30px rgba(255, 215, 0, 0.4);
+    animation: none;
+}
+
+.payNowButton:active {
+    transform: translateY(2px);
+    box-shadow: 
+        0 2px 0 #8b4513,
+        0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes payNowPulse {
+    0%, 100% {
+        box-shadow: 
+            0 4px 0 #8b4513,
+            0 6px 15px rgba(0, 0, 0, 0.3),
+            0 0 15px rgba(255, 215, 0, 0.2);
+    }
+    50% {
+        box-shadow: 
+            0 4px 0 #8b4513,
+            0 6px 15px rgba(0, 0, 0, 0.3),
+            0 0 30px rgba(255, 215, 0, 0.5);
+    }
+}
+
+
 /* Responsive */
 @media (max-width: 576px) {
     .formStep {
@@ -468,5 +711,26 @@
 
     .btnSecondary {
         order: 2;
+    }
+
+    .paymentInfoCard {
+        padding: var(--space-5);
+    }
+
+    .paymentTitle {
+        font-size: 0.85rem;
+    }
+
+    .paymentSteps {
+        padding: var(--space-4);
+    }
+
+    .payNowButton {
+        font-size: 0.65rem;
+        padding: 1rem 1.5rem;
+    }
+
+    .confirmPaymentButton {
+        font-size: 0.55rem;
     }
 }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "./nes.css";
 import "@hackernoon/pixel-icon-library/fonts/iconfont.css";
+import { ToastProvider } from "@/components/Toast";
 
 export const metadata: Metadata = {
   title: "TechNegotia | Multi-Round Hackathon Event",
@@ -39,7 +40,9 @@ export default function RootLayout({
         <meta name="theme-color" content="#1a1a2e" />
       </head>
       <body>
-        {children}
+        <ToastProvider>
+          {children}
+        </ToastProvider>
       </body>
     </html>
   );

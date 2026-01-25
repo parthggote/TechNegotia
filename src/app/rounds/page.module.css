@@ -170,6 +170,36 @@
     box-shadow: var(--shadow-glow), 0 6px 0 #b87a15;
 }
 
+.ctaButton i {
+    margin-right: var(--space-2);
+}
+
+/* Locked button state - not signed in */
+.ctaButtonLocked {
+    background: linear-gradient(180deg, #6b7280 0%, #4b5563 100%);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #374151;
+}
+
+.ctaButtonLocked:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #374151, 0 0 15px rgba(251, 191, 36, 0.2);
+}
+
+/* Loading button state */
+.ctaButtonLoading {
+    background: linear-gradient(180deg, #a78bfa 0%, #7c3aed 100%);
+    border: none;
+    cursor: wait;
+    box-shadow: 0 4px 0 #5b21b6;
+}
+
+.ctaButtonLoading:hover {
+    transform: none;
+    box-shadow: 0 4px 0 #5b21b6;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
 
