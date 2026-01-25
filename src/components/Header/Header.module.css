@@ -228,16 +228,91 @@
     display: none;
     font-family: var(--font-pixel);
     font-size: 0.6rem;
-    padding: var(--space-4) var(--space-8);
+    padding: var(--space-3) var(--space-6);
     background: var(--gradient-gold);
     color: var(--bg-darker);
     border-radius: var(--radius-md);
     text-decoration: none;
     text-transform: uppercase;
     text-align: center;
-    margin-top: var(--space-6);
+    margin-top: var(--space-4);
     box-shadow: 0 3px 0 #b87a15;
-    margin-bottom: var(--space-4);
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+/* Mobile Sign In Button */
+.mobileSignInBtn {
+    display: none;
+    font-family: var(--font-pixel);
+    font-size: 0.6rem;
+    padding: var(--space-3) var(--space-6);
+    background: linear-gradient(180deg, #4ade80 0%, #22c55e 100%);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-md);
+    text-align: center;
+    margin-top: var(--space-4);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    box-shadow: 0 3px 0 #16a34a;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.mobileSignInBtn:hover {
+    background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
+    transform: translateY(-1px);
+}
+
+.mobileSignInBtn:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 0 #16a34a;
+}
+
+/* Mobile Sign Out Button */
+.mobileSignOutBtn {
+    display: none;
+    font-family: var(--font-pixel);
+    font-size: 0.55rem;
+    padding: var(--space-2) var(--space-4);
+    background: linear-gradient(180deg, #f87171 0%, #ef4444 100%);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-md);
+    text-align: center;
+    margin-top: var(--space-3);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    box-shadow: 0 2px 0 #dc2626;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.mobileSignOutBtn:hover {
+    background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
+}
+
+/* Mobile User Info */
+.mobileUserInfo {
+    display: none;
+    font-family: var(--font-pixel);
+    font-size: 0.5rem;
+    color: var(--text-secondary);
+    padding: var(--space-3) var(--space-4);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-md);
+    margin-top: var(--space-4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.mobileUserInfo i {
+    color: var(--accent-gold);
 }
 
 .mascotLogo {
@@ -324,6 +399,15 @@
         display: none;
     }
 
+    /* Hide desktop auth buttons on mobile */
+    .authBtn {
+        display: none !important;
+    }
+
+    .userMenu {
+        display: none;
+    }
+
     .nav {
         position: fixed;
         top: 0;
@@ -336,6 +420,7 @@
         justify-content: flex-start;
         transition: right var(--transition-base);
         z-index: 999;
+        overflow-y: auto;
     }
 
     .nav.navOpen {
@@ -350,13 +435,31 @@
     }
 
     .navLink {
-        font-size: 1rem;
+        font-size: 0.75rem;
         padding: var(--space-3) var(--space-4);
         justify-content: flex-start;
+        color: var(--text-primary);
     }
 
+    .navLink i {
+        font-size: 1rem;
+    }
+
+    /* Show mobile-only buttons */
     .mobileRegisterBtn {
-        display: block;
+        display: flex;
+    }
+
+    .mobileSignInBtn {
+        display: flex;
+    }
+
+    .mobileSignOutBtn {
+        display: flex;
+    }
+
+    .mobileUserInfo {
+        display: flex;
     }
 
     .overlay {
@@ -420,14 +523,31 @@
     }
 
     .navLink {
-        font-size: 0.85rem;
+        font-size: 0.65rem;
         padding: var(--space-2) var(--space-3);
     }
 
     .mobileRegisterBtn {
         font-size: 0.5rem;
-        padding: var(--space-3) var(--space-6);
-        margin-top: var(--space-4);
+        padding: var(--space-2) var(--space-5);
+        margin-top: var(--space-3);
+    }
+
+    .mobileSignInBtn {
+        font-size: 0.5rem;
+        padding: var(--space-2) var(--space-5);
+        margin-top: var(--space-3);
+    }
+
+    .mobileSignOutBtn {
+        font-size: 0.45rem;
+        padding: var(--space-2) var(--space-3);
+    }
+
+    .mobileUserInfo {
+        font-size: 0.42rem;
+        padding: var(--space-2) var(--space-3);
+        margin-top: var(--space-3);
     }
 }
 

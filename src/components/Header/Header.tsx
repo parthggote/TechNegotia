@@ -67,14 +67,49 @@ export default function Header() {
                         ))}
                     </ul>
 
-                    {/* Mobile Register Button */}
-                    <Link
-                        href="/register"
-                        className={styles.mobileRegisterBtn}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                        Register Now
-                    </Link>
+                    {/* Mobile Sign In Button - only show when not logged in */}
+                    {!user ? (
+                        <button
+                            onClick={() => {
+                                setIsAuthModalOpen(true);
+                                setIsMobileMenuOpen(false);
+                            }}
+                            className={styles.mobileSignInBtn}
+                        >
+                            <i className="hn hn-user"></i>
+                            Sign In / Sign Up
+                        </button>
+                    ) : (
+                        <>
+                            {/* Mobile Register Button - only show when logged in */}
+                            <Link
+                                href="/register"
+                                className={styles.mobileRegisterBtn}
+                                onClick={() => setIsMobileMenuOpen(false)}
+                            >
+                                <i className="hn hn-sword"></i>
+                                Register Now
+                            </Link>
+
+                            {/* Mobile Sign Out Button */}
+                            <button
+                                onClick={() => {
+                                    handleSignOut();
+                                    setIsMobileMenuOpen(false);
+                                }}
+                                className={styles.mobileSignOutBtn}
+                            >
+                                <i className="hn hn-logout"></i>
+                                Sign Out
+                            </button>
+
+                            {/* Mobile User Info */}
+                            <div className={styles.mobileUserInfo}>
+                                <i className="hn hn-user"></i>
+                                <span>{user.displayName || user.email?.split('@')[0]}</span>
+                            </div>
+                        </>
+                    )}
                 </nav>
 
                 {/* Right Side Actions */}
