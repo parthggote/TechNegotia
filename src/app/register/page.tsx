@@ -14,8 +14,6 @@ import { checkExistingRegistration, saveRegistration, Registration } from "@/lib
 /** WhatsApp group invite link */
 const WHATSAPP_GROUP_LINK = "https://chat.whatsapp.com/HKLQ5112Cg5AySyJ9uWFZG";
 
-/** Razorpay payment portal link */
-const PAYMENT_LINK = "https://pages.razorpay.com/pl_S6rLrbGpmxkKPx/view";
 
 interface TeamMember {
     name: string;
@@ -51,13 +49,6 @@ export default function RegisterPage() {
         window.open(WHATSAPP_GROUP_LINK, "_blank", "noopener,noreferrer");
     };
 
-    /**
-     * Opens Razorpay payment portal in new tab
-     */
-    const handlePayNow = () => {
-        showInfo("Opening payment portal...");
-        window.open(PAYMENT_LINK, "_blank", "noopener,noreferrer");
-    };
 
     const updateMember = (index: number, field: keyof TeamMember, value: string) => {
         const newMembers = [...members];
@@ -445,7 +436,7 @@ export default function RegisterPage() {
                     <div className={styles.container}>
                         <h1 className={styles.pageTitle}>Register Your Team</h1>
                         <p className={styles.pageSubtitle}>
-                            Join 150+ teams competing for glory | Registration Fee: Rs 199
+                            Join 150+ teams competing for glory
                         </p>
                     </div>
                 </section>
@@ -625,30 +616,20 @@ export default function RegisterPage() {
                                         </div>
                                     </div>
 
-                                    {/* Payment Section */}
+                                    {/* Payment Screenshot Upload Section */}
                                     <div className={styles.paymentCard}>
                                         <div className={styles.paymentHeader}>
-                                            <i className="hn hn-coin"></i>
+                                            <i className="hn hn-upload"></i>
                                             <div>
-                                                <h3>Registration Fee: Rs 199</h3>
-                                                <p>Pay and upload screenshot as proof</p>
+                                                <h3>Upload Payment Proof</h3>
+                                                <p>Upload screenshot of your payment</p>
                                             </div>
                                         </div>
-                                        
-                                        <button
-                                            type="button"
-                                            onClick={handlePayNow}
-                                            className={styles.payNowButton}
-                                        >
-                                            <i className="hn hn-coin"></i>
-                                            Pay Now
-                                            <i className="hn hn-arrow-right"></i>
-                                        </button>
 
                                         <div className={styles.paymentUpload}>
                                             <label className={styles.uploadLabel}>
-                                                <i className="hn hn-upload"></i>
-                                                Upload Payment Screenshot *
+                                                <i className="hn hn-image"></i>
+                                                Payment Screenshot *
                                             </label>
                                             <input
                                                 type="file"
