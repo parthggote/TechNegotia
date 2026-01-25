@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/components/Toast";
 import styles from "./Hero.module.css";
@@ -11,14 +10,19 @@ import styles from "./Hero.module.css";
 /** Razorpay payment portal link */
 const PAYMENT_LINK = "https://pages.razorpay.com/pl_S6rLrbGpmxkKPx/view";
 
+/** Video sources */
+const DESKTOP_VIDEO = "/video (2).mp4";
+const MOBILE_VIDEO = "/video (3).mp4";
+
+/** Mobile breakpoint in pixels */
+const MOBILE_BREAKPOINT = 768;
+
 export default function Hero() {
-    const router = useRouter();
     const { user, loading: authLoading } = useAuth();
-    const { showWarning, showInfo, showSuccess } = useToast();
+    const { showWarning, showInfo } = useToast();
     const heroRef = useRef<HTMLDivElement>(null);
-    const [displayText, setDisplayText] = useState("");
-    const [showCursor, setShowCursor] = useState(true);
-    const fullText = "Begin Your Quest";
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const [isMobile, setIsMobile] = useState(false);
 
     /**
      * Handles click on locked quest button - shows toast notification
@@ -36,10 +40,41 @@ export default function Hero() {
         window.open(PAYMENT_LINK, "_blank", "noopener,noreferrer");
     };
 
-    // Parallax scroll effect for background video
+    // Detect mobile viewport and switch video source
+    useEffect(() => {
+        const checkMobile = () => {
+            const mobile = window.innerWidth <= MOBILE_BREAKPOINT;
+            setIsMobile(mobile);
+        };
+
+        // Initial check
+        checkMobile();
+
+        // Listen for resize events
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
+
+    // Update video source when mobile state changes
+    useEffect(() => {
+        if (videoRef.current) {
+            const newSrc = isMobile ? MOBILE_VIDEO : DESKTOP_VIDEO;
+            const currentSrc = videoRef.current.querySelector("source")?.src || "";
+            
+            // Only reload if source actually changed
+            if (!currentSrc.endsWith(newSrc.replace("/", ""))) {
+                videoRef.current.load();
+                videoRef.current.play().catch(() => {
+                    // Autoplay might be blocked, that's okay
+                });
+            }
+        }
+    }, [isMobile]);
+
+    // Parallax scroll effect for background video (desktop only)
     useEffect(() => {
         const handleScroll = () => {
-            if (!heroRef.current) return;
+            if (!heroRef.current || isMobile) return;
 
             const scrollY = window.scrollY;
             const video = heroRef.current.querySelector(`.${styles.backgroundVideo}`) as HTMLElement;
@@ -52,50 +87,26 @@ export default function Hero() {
 
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
-
-    // Typewriter effect
-    useEffect(() => {
-        let timeoutId: NodeJS.Timeout;
-
-        const startTyping = () => {
-            let currentIndex = 0;
-
-            const typeNextChar = () => {
-                if (currentIndex < fullText.length) {
-                    setDisplayText(fullText.slice(0, currentIndex + 1));
-                    currentIndex++;
-                    timeoutId = setTimeout(typeNextChar, 200); // 200ms per character
-                } else {
-                    // Stop cursor blinking after typing is complete
-                    setTimeout(() => setShowCursor(false), 1000);
-                }
-            };
-
-            typeNextChar();
-        };
-
-        // Start typing after 1 second delay
-        timeoutId = setTimeout(startTyping, 1000);
-
-        return () => {
-            if (timeoutId) clearTimeout(timeoutId);
-        };
-    }, [fullText]);
+    }, [isMobile]);
 
     return (
         <section className={styles.hero} ref={heroRef}>
             {/* Animated Background Video with Parallax */}
             <div className={styles.animatedBackground}>
                 <video
+                    ref={videoRef}
                     autoPlay
                     loop
                     muted
                     playsInline
                     preload="auto"
                     className={styles.backgroundVideo}
+                    key={isMobile ? "mobile" : "desktop"}
                 >
-                    <source src="/video (2).mp4" type="video/mp4" />
+                    <source 
+                        src={isMobile ? MOBILE_VIDEO : DESKTOP_VIDEO} 
+                        type="video/mp4" 
+                    />
                 </video>
             </div>
 
