@@ -10,7 +10,7 @@ const SESSION_SECRET = process.env.ADMIN_SESSION_SECRET;
 
 // Warn if SESSION_SECRET is not set or is using default value
 if (!SESSION_SECRET || SESSION_SECRET === 'your-secret-key-change-this-in-production') {
-    console.warn('⚠️  ADMIN_SESSION_SECRET is not set or using default value! Please set a strong secret in production.');
+    console.warn('[WARNING] ADMIN_SESSION_SECRET is not set or using default value! Please set a strong secret in production.');
 }
 
 /**

@@ -13,7 +13,7 @@ const PRIZES = [
     {
         position: "1st",
         title: "Grand Champion",
-        prize: "₹7,000",
+        prize: "₹5,000",
         perks: [
             "Cash Prize",
             "Winner Trophy",
@@ -25,7 +25,7 @@ const PRIZES = [
     {
         position: "2nd",
         title: "First Runner-up",
-        prize: "₹5,000",
+        prize: "₹3,000",
         perks: [
             "Cash Prize",
             "Runner-up Trophy",
@@ -38,7 +38,7 @@ const PRIZES = [
     {
         position: "3rd",
         title: "Second Runner-up",
-        prize: "₹3,000",
+        prize: "₹2,000",
         perks: [
             "Cash Prize",
             "Trophy",
@@ -52,7 +52,7 @@ const PRIZES = [
 
 
 export default function PrizesPage() {
-    const { isVisible, currentMessage, showMessage, dismissMessage, nextMessage, messageQueue } = useMascotGuide('prizes');
+    const { isVisible, currentMessage, currentMascot, showMessage, dismissMessage, nextMessage, messageQueue } = useMascotGuide('prizes');
 
     useEffect(() => {
         const messages = MASCOT_MESSAGES.prizes;
@@ -156,6 +156,7 @@ export default function PrizesPage() {
                     onDismiss={dismissMessage}
                     onNext={nextMessage}
                     hasMore={messageQueue.length > 0}
+                    mascot={currentMascot}
                 />
             )}
         </>

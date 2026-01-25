@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { MascotMessage } from '@/lib/mascotData';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { MascotMessage, MascotData, MASCOTS } from '@/lib/mascotData';
 
 interface UseMascotGuideReturn {
     isVisible: boolean;
     currentMessage: MascotMessage | null;
+    currentMascot: MascotData | null;
     showMessage: (message: MascotMessage) => void;
     dismissMessage: () => void;
     nextMessage: () => void;
@@ -13,11 +14,43 @@ interface UseMascotGuideReturn {
     queueMessages: (messages: MascotMessage[]) => void;
 }
 
+/**
+ * Generates a consistent random index based on page ID
+ * Uses simple hash to ensure same page always gets same mascot during session
+ * @param pageId - The page identifier
+ * @param mascotCount - Total number of available mascots
+ * @returns Index of mascot to use
+ */
+function getPageMascotIndex(pageId: string, mascotCount: number): number {
+    if (mascotCount === 0) return 0;
+    
+    // Simple hash function to convert pageId to a number
+    let hash = 0;
+    for (let i = 0; i < pageId.length; i++) {
+        const char = pageId.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    
+    // Use absolute value and modulo to get index
+    return Math.abs(hash) % mascotCount;
+}
+
 export function useMascotGuide(pageId: string): UseMascotGuideReturn {
     const [isVisible, setIsVisible] = useState(false);
     const [currentMessage, setCurrentMessage] = useState<MascotMessage | null>(null);
     const [messageQueue, setMessageQueue] = useState<MascotMessage[]>([]);
     const [seenMessages, setSeenMessages] = useState<Set<string>>(new Set());
+
+    /**
+     * Select mascot based on page ID - each page gets a different mascot
+     * Memoized to prevent unnecessary recalculations
+     */
+    const currentMascot = useMemo((): MascotData | null => {
+        if (MASCOTS.length === 0) return null;
+        const index = getPageMascotIndex(pageId, MASCOTS.length);
+        return MASCOTS[index];
+    }, [pageId]);
 
     // Ref to hold latest dismissMessage to avoid stale closures
     const dismissMessageRef = useRef<() => void>(() => { });
@@ -148,6 +181,7 @@ export function useMascotGuide(pageId: string): UseMascotGuideReturn {
     return {
         isVisible,
         currentMessage,
+        currentMascot,
         showMessage,
         dismissMessage,
         nextMessage,

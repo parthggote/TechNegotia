@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import Link from 'next/link';
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import { ROUNDS_DATA } from "@/lib/constants";
@@ -8,9 +9,20 @@ import styles from "./page.module.css";
 import MascotGuide from "@/components/MascotGuide";
 import { useMascotGuide } from "@/hooks/useMascotGuide";
 import { MASCOT_MESSAGES } from "@/lib/mascotData";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/components/Toast";
 
 export default function RoundsPage() {
-    const { isVisible, currentMessage, showMessage, dismissMessage, nextMessage, messageQueue } = useMascotGuide('rounds');
+    const { isVisible, currentMessage, currentMascot, showMessage, dismissMessage, nextMessage, messageQueue } = useMascotGuide('rounds');
+    const { user, loading: authLoading } = useAuth();
+    const { showWarning } = useToast();
+
+    /**
+     * Handles click on locked register button - shows toast notification
+     */
+    const handleLockedClick = () => {
+        showWarning("Please sign in to register your team!");
+    };
 
     // Show info messages on first visit
     useEffect(() => {
@@ -194,9 +206,22 @@ export default function RoundsPage() {
                         <p className={styles.ctaDesc}>
                             Register now and get ready for an exciting journey ahead.
                         </p>
-                        <a href="/register" className={styles.ctaButton}>
-                            REGISTER YOUR TEAM
-                        </a>
+                        {authLoading ? (
+                            <button className={`${styles.ctaButton} ${styles.ctaButtonLoading}`} disabled>
+                                <i className="hn hn-loading"></i> Loading...
+                            </button>
+                        ) : user ? (
+                            <Link href="/register" className={styles.ctaButton}>
+                                <i className="hn hn-sword"></i> REGISTER YOUR TEAM
+                            </Link>
+                        ) : (
+                            <button 
+                                className={`${styles.ctaButton} ${styles.ctaButtonLocked}`}
+                                onClick={handleLockedClick}
+                            >
+                                <i className="hn hn-lock"></i> REGISTER YOUR TEAM
+                            </button>
+                        )}
                     </div>
                 </section>
             </main>
@@ -210,6 +235,7 @@ export default function RoundsPage() {
                     onDismiss={dismissMessage}
                     onNext={nextMessage}
                     hasMore={messageQueue.length > 0}
+                    mascot={currentMascot}
                 />
             )}
         </>

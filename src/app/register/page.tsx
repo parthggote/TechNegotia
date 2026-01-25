@@ -7,8 +7,15 @@ import styles from "./page.module.css";
 import MascotSuccessModal from "@/components/MascotSuccessModal/MascotSuccessModal";
 import { MASCOTS, MascotData } from "@/lib/mascotData";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/components/Toast";
 import { convertImageToBase64 } from "@/lib/firebaseStorage";
 import { checkExistingRegistration, saveRegistration, Registration } from "@/lib/registrationService";
+
+/** WhatsApp group invite link */
+const WHATSAPP_GROUP_LINK = "https://chat.whatsapp.com/HKLQ5112Cg5AySyJ9uWFZG";
+
+/** Razorpay payment portal link */
+const PAYMENT_LINK = "https://pages.razorpay.com/pl_S6rLrbGpmxkKPx/view";
 
 interface TeamMember {
     name: string;
@@ -18,6 +25,7 @@ interface TeamMember {
 
 export default function RegisterPage() {
     const { user, loading: authLoading } = useAuth();
+    const { showSuccess, showError, showInfo } = useToast();
     const [step, setStep] = useState(1);
     const [teamName, setTeamName] = useState("");
     const [members, setMembers] = useState<TeamMember[]>([
@@ -34,6 +42,22 @@ export default function RegisterPage() {
     const [isCheckingRegistration, setIsCheckingRegistration] = useState(true);
     const [registrationCheckError, setRegistrationCheckError] = useState<string | null>(null);
     const [uploadProgress, setUploadProgress] = useState(0);
+
+    /**
+     * Opens WhatsApp group link in new tab
+     */
+    const handleJoinWhatsApp = () => {
+        showInfo("Opening WhatsApp group...");
+        window.open(WHATSAPP_GROUP_LINK, "_blank", "noopener,noreferrer");
+    };
+
+    /**
+     * Opens Razorpay payment portal in new tab
+     */
+    const handlePayNow = () => {
+        showInfo("Opening payment portal...");
+        window.open(PAYMENT_LINK, "_blank", "noopener,noreferrer");
+    };
 
     const updateMember = (index: number, field: keyof TeamMember, value: string) => {
         const newMembers = [...members];
@@ -150,12 +174,12 @@ export default function RegisterPage() {
         e.preventDefault();
 
         if (!user) {
-            alert('Please sign in to register');
+            showError('Please sign in to register');
             return;
         }
 
         if (!paymentProof) {
-            alert('Please upload payment proof');
+            showError('Please upload payment proof');
             return;
         }
 
@@ -195,9 +219,10 @@ export default function RegisterPage() {
             setIsSubmitting(false);
             setSubmitted(true);
             setShowSuccessModal(true);
+            showSuccess('Registration completed successfully!');
         } catch (error: any) {
             console.error('Registration error:', error);
-            alert(error.message || 'Failed to complete registration. Please try again.');
+            showError(error.message || 'Failed to complete registration. Please try again.');
             setIsSubmitting(false);
             setUploadProgress(0);
         }
@@ -239,7 +264,18 @@ export default function RegisterPage() {
                                 <p>You will receive a confirmation email with further instructions.</p>
                                 <p>Problem statements will be released 1 day before the event via our social media channels.</p>
                             </div>
-                            <a href="/" className={styles.successButton}>
+
+                            {/* WhatsApp Group Join Button - Primary CTA */}
+                            <button
+                                onClick={handleJoinWhatsApp}
+                                className={styles.whatsappButton}
+                            >
+                                <i className="hn hn-chat"></i>
+                                Join WhatsApp Group
+                                <i className="hn hn-arrow-right"></i>
+                            </button>
+
+                            <a href="/" className={styles.successButtonSecondary}>
                                 Return Home
                             </a>
                         </div>
@@ -282,7 +318,7 @@ export default function RegisterPage() {
                 <main className={styles.main}>
                     <section className={styles.hero}>
                         <div className={styles.container}>
-                            <h1 className={styles.pageTitle}>Already Registered ✓</h1>
+                            <h1 className={styles.pageTitle}>Already Registered <i className="hn hn-check"></i></h1>
                             <p className={styles.pageSubtitle}>You have successfully registered for this event</p>
                         </div>
                     </section>
@@ -326,7 +362,7 @@ export default function RegisterPage() {
                                         })}
                                     </p>
                                     <p style={{ margin: '0.5rem 0 0 0', color: '#666' }}>
-                                        <strong>Status:</strong> {existingRegistration.status === 'pending' ? '⏳ Pending Review' : existingRegistration.status === 'approved' ? '✅ Approved' : '❌ Rejected'}
+                                        <strong>Status:</strong> {existingRegistration.status === 'pending' ? 'Pending Review' : existingRegistration.status === 'approved' ? 'Approved' : 'Rejected'}
                                     </p>
                                 </div>
                                 <p style={{ marginTop: '1.5rem', fontSize: '0.95rem' }}>
@@ -352,7 +388,7 @@ export default function RegisterPage() {
                 <main className={styles.main}>
                     <section className={styles.hero}>
                         <div className={styles.container}>
-                            <h1 className={styles.pageTitle}>⚠️ Error</h1>
+                            <h1 className={styles.pageTitle}><i className="hn hn-warning"></i> Error</h1>
                             <p className={styles.pageSubtitle}>Unable to verify registration status</p>
                         </div>
                     </section>
@@ -381,7 +417,7 @@ export default function RegisterPage() {
                                         className={styles.btnPrimary}
                                         style={{ minWidth: '150px' }}
                                     >
-                                        🔄 Retry
+                                        <i className="hn hn-refresh"></i> Retry
                                     </button>
                                     <a
                                         href="/"
@@ -409,7 +445,7 @@ export default function RegisterPage() {
                     <div className={styles.container}>
                         <h1 className={styles.pageTitle}>Register Your Team</h1>
                         <p className={styles.pageSubtitle}>
-                            Join 150+ teams competing for glory
+                            Join 150+ teams competing for glory | Registration Fee: Rs 199
                         </p>
                     </div>
                 </section>
@@ -431,7 +467,7 @@ export default function RegisterPage() {
                             <div className={styles.progressLine} />
                             <div className={`${styles.progressStep} ${step >= 3 ? styles.active : ""}`}>
                                 <span className={styles.progressNumber}>3</span>
-                                <span className={styles.progressLabel}>Confirm</span>
+                                <span className={styles.progressLabel}>Payment</span>
                             </div>
                         </div>
 
@@ -571,11 +607,12 @@ export default function RegisterPage() {
                                 </div>
                             )}
 
-                            {/* Step 3: Confirm */}
+                            {/* Step 3: Payment & Confirm */}
                             {step === 3 && (
                                 <div className={styles.formStep}>
-                                    <h2 className={styles.stepTitle}>Review & Confirm</h2>
+                                    <h2 className={styles.stepTitle}>Payment & Confirm</h2>
 
+                                    {/* Team Review */}
                                     <div className={styles.reviewCard}>
                                         <h3>Team: {teamName}</h3>
                                         <div className={styles.reviewMembers}>
@@ -588,61 +625,62 @@ export default function RegisterPage() {
                                         </div>
                                     </div>
 
-                                    {/* Payment Proof Upload */}
-                                    <div className={styles.reviewCard} style={{ marginTop: '2rem' }}>
-                                        <h3>Payment Proof *</h3>
-                                        <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '1rem' }}>
-                                            Upload a screenshot of your payment confirmation
-                                        </p>
-                                        <input
-                                            type="file"
-                                            accept="image/jpeg,image/png,image/webp"
-                                            onChange={handleFileChange}
-                                            required
-                                            style={{
-                                                padding: '0.5rem',
-                                                border: '2px dashed #ccc',
-                                                borderRadius: '4px',
-                                                width: '100%',
-                                                cursor: 'pointer'
-                                            }}
-                                        />
-                                        {paymentProofPreview && (
-                                            <div style={{ marginTop: '1rem' }}>
-                                                <p style={{ fontSize: '0.9rem', marginBottom: '0.5rem' }}>Preview:</p>
-                                                <img
-                                                    src={paymentProofPreview}
-                                                    alt="Payment proof preview"
-                                                    style={{
-                                                        maxWidth: '100%',
-                                                        maxHeight: '300px',
-                                                        border: '2px solid #ddd',
-                                                        borderRadius: '4px'
-                                                    }}
-                                                />
+                                    {/* Payment Section */}
+                                    <div className={styles.paymentCard}>
+                                        <div className={styles.paymentHeader}>
+                                            <i className="hn hn-coin"></i>
+                                            <div>
+                                                <h3>Registration Fee: Rs 199</h3>
+                                                <p>Pay and upload screenshot as proof</p>
                                             </div>
-                                        )}
-                                        {uploadProgress > 0 && uploadProgress < 100 && (
-                                            <div style={{ marginTop: '1rem' }}>
-                                                <div style={{
-                                                    width: '100%',
-                                                    height: '20px',
-                                                    backgroundColor: '#f0f0f0',
-                                                    borderRadius: '10px',
-                                                    overflow: 'hidden'
-                                                }}>
-                                                    <div style={{
-                                                        width: `${uploadProgress}%`,
-                                                        height: '100%',
-                                                        backgroundColor: '#4CAF50',
-                                                        transition: 'width 0.3s ease'
-                                                    }} />
+                                        </div>
+                                        
+                                        <button
+                                            type="button"
+                                            onClick={handlePayNow}
+                                            className={styles.payNowButton}
+                                        >
+                                            <i className="hn hn-coin"></i>
+                                            Pay Now
+                                            <i className="hn hn-arrow-right"></i>
+                                        </button>
+
+                                        <div className={styles.paymentUpload}>
+                                            <label className={styles.uploadLabel}>
+                                                <i className="hn hn-upload"></i>
+                                                Upload Payment Screenshot *
+                                            </label>
+                                            <input
+                                                type="file"
+                                                accept="image/jpeg,image/png,image/webp"
+                                                onChange={handleFileChange}
+                                                required
+                                                className={styles.fileInput}
+                                            />
+                                            {paymentProofPreview && (
+                                                <div className={styles.previewContainer}>
+                                                    <p className={styles.previewLabel}>Preview:</p>
+                                                    <img
+                                                        src={paymentProofPreview}
+                                                        alt="Payment proof preview"
+                                                        className={styles.previewImage}
+                                                    />
                                                 </div>
-                                                <p style={{ fontSize: '0.8rem', marginTop: '0.5rem', textAlign: 'center' }}>
-                                                    Uploading... {uploadProgress}%
-                                                </p>
-                                            </div>
-                                        )}
+                                            )}
+                                            {uploadProgress > 0 && uploadProgress < 100 && (
+                                                <div className={styles.progressContainer}>
+                                                    <div className={styles.progressBarUpload}>
+                                                        <div 
+                                                            className={styles.progressFill}
+                                                            style={{ width: `${uploadProgress}%` }}
+                                                        />
+                                                    </div>
+                                                    <p className={styles.progressText}>
+                                                        Uploading... {uploadProgress}%
+                                                    </p>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
 
                                     <div className={styles.rulesCard}>

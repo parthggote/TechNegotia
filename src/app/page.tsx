@@ -15,25 +15,25 @@ import { useMascotGuide } from "@/hooks/useMascotGuide";
 import { MASCOT_MESSAGES } from "@/lib/mascotData";
 
 export default function Home() {
-  const { isVisible, currentMessage, showMessage, dismissMessage, nextMessage, messageQueue } = useMascotGuide('home');
+  const { isVisible, currentMessage, currentMascot, showMessage, dismissMessage, nextMessage, messageQueue } = useMascotGuide('home');
 
   // Show welcome messages on first visit
   useEffect(() => {
     const messages = MASCOT_MESSAGES.home;
     if (messages && messages.length > 0) {
-      // Store timeout IDs for cleanup
+      // Store timeout IDs for cleanup - increased delay for better UX
       const timer1 = setTimeout(() => {
         showMessage(messages[0]);
         // Queue second message if it exists
         if (messages[1]) {
           const timer2 = setTimeout(() => {
             showMessage(messages[1]);
-          }, 6000); // Show after first message auto-dismisses
+          }, 10000); // Increased: Show after 10 seconds
 
           // Store timer2 for cleanup
           return () => clearTimeout(timer2);
         }
-      }, 1000);
+      }, 3000); // Increased: Wait 3 seconds before showing first message
 
       // Cleanup on unmount
       return () => clearTimeout(timer1);
@@ -66,6 +66,7 @@ export default function Home() {
           onDismiss={dismissMessage}
           onNext={nextMessage}
           hasMore={messageQueue.length > 0}
+          mascot={currentMascot}
         />
       )}
     </>

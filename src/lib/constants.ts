@@ -18,7 +18,7 @@ export const EVENT_CONFIG = {
         totalTeams: 150,
         round2Teams: 40,
         round3Teams: 10,
-        prizePool: "₹15,000+",
+        prizePool: "₹10,000+",
     }
 };
 

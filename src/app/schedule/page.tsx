@@ -13,7 +13,7 @@ import { useMascotGuide } from "@/hooks/useMascotGuide";
 import { MASCOT_MESSAGES } from "@/lib/mascotData";
 
 export default function SchedulePage() {
-    const { isVisible, currentMessage, showMessage, dismissMessage, nextMessage, messageQueue } = useMascotGuide('schedule');
+    const { isVisible, currentMessage, currentMascot, showMessage, dismissMessage, nextMessage, messageQueue } = useMascotGuide('schedule');
 
     useEffect(() => {
         const messages = MASCOT_MESSAGES.schedule;
@@ -94,6 +94,7 @@ export default function SchedulePage() {
                     onDismiss={dismissMessage}
                     onNext={nextMessage}
                     hasMore={messageQueue.length > 0}
+                    mascot={currentMascot}
                 />
             )}
         </>
