@@ -15,6 +15,7 @@ export interface Registration {
     teamName: string;
     members: TeamMember[];
     paymentProofURL: string;
+    reference?: string; // Volunteer/referrer name (optional)
     timestamp: Timestamp; // Created timestamp
     updatedAt?: Timestamp; // Updated timestamp (set when status changes)
     status: 'pending' | 'approved' | 'rejected';
@@ -64,7 +65,8 @@ export const saveRegistration = async (
     userEmail: string,
     teamName: string,
     members: TeamMember[],
-    paymentProofURL: string
+    paymentProofURL: string,
+    reference?: string
 ): Promise<FirebaseResult<void>> => {
     try {
         if (!db) {
@@ -80,6 +82,11 @@ export const saveRegistration = async (
             timestamp: Timestamp.now(),
             status: 'pending',
         };
+
+        // Add reference if provided
+        if (reference) {
+            registration.reference = reference;
+        }
 
         // Use setDoc with user ID as document ID
         // This ensures one registration per user

@@ -25,6 +25,7 @@ export default function RegisterPage() {
     ]);
     const [paymentProof, setPaymentProof] = useState<File | null>(null);
     const [paymentProofPreview, setPaymentProofPreview] = useState<string>("");
+    const [reference, setReference] = useState<string>("");
     const [agreedToRules, setAgreedToRules] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
@@ -179,7 +180,8 @@ export default function RegisterPage() {
                 user.email || '',
                 teamName,
                 members,
-                uploadResult.data
+                uploadResult.data,
+                reference || undefined
             );
 
             if (!saveResult.success) {
@@ -594,6 +596,20 @@ export default function RegisterPage() {
                                         <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '1rem' }}>
                                             Upload a screenshot of your payment confirmation
                                         </p>
+
+                                        {/* Reference Field */}
+                                        <div className={styles.formGroup} style={{ marginBottom: '1rem' }}>
+                                            <label className={styles.label}>Reference (Optional)</label>
+                                            <input
+                                                type="text"
+                                                className={styles.input}
+                                                placeholder="Volunteer name Referred by: "
+                                                value={reference}
+                                                onChange={(e) => setReference(e.target.value)}
+                                                maxLength={100}
+                                            />
+                                            <span className={styles.hint}>Enter the name of the volunteer who referred you (if any)</span>
+                                        </div>
                                         <input
                                             type="file"
                                             accept="image/jpeg,image/png,image/webp"

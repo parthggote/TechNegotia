@@ -388,6 +388,11 @@ export default function AdminPage() {
                                                         alt="Payment proof"
                                                         className={styles.paymentProof}
                                                     />
+                                                    {reg.reference && (
+                                                        <p style={{ marginTop: '1rem', fontSize: '0.95rem' }}>
+                                                            <strong>Referred by:</strong> {reg.reference}
+                                                        </p>
+                                                    )}
                                                     <p className={styles.date}>
                                                         Registered: {reg.timestamp.toDate().toLocaleDateString()}
                                                     </p>
