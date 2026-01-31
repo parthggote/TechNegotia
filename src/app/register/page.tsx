@@ -31,6 +31,7 @@ export default function RegisterPage() {
     ]);
     const [paymentProof, setPaymentProof] = useState<File | null>(null);
     const [paymentProofPreview, setPaymentProofPreview] = useState<string>("");
+    const [reference, setReference] = useState("");
     const [agreedToRules, setAgreedToRules] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
@@ -194,7 +195,8 @@ export default function RegisterPage() {
                 user.email || '',
                 teamName,
                 members,
-                uploadResult.data
+                uploadResult.data,
+                reference.trim() || undefined
             );
 
             if (!saveResult.success) {
@@ -303,64 +305,114 @@ export default function RegisterPage() {
 
     // Show existing registration if found
     if (existingRegistration) {
+        const getStatusIcon = () => {
+            switch (existingRegistration.status) {
+                case 'approved': return 'hn-check';
+                case 'rejected': return 'hn-close';
+                default: return 'hn-clock';
+            }
+        };
+
+        const getStatusText = () => {
+            switch (existingRegistration.status) {
+                case 'approved': return 'Approved';
+                case 'rejected': return 'Rejected';
+                default: return 'Pending Review';
+            }
+        };
+
         return (
             <>
                 <Header />
                 <main className={styles.main}>
-                    <section className={styles.hero}>
+                    {/* Hero Section */}
+                    <section className={styles.alreadyRegisteredHero}>
                         <div className={styles.container}>
-                            <h1 className={styles.pageTitle}>Already Registered <i className="hn hn-check"></i></h1>
-                            <p className={styles.pageSubtitle}>You have successfully registered for this event</p>
+                            <div className={styles.registeredIcon}>
+                                <i className="hn hn-check"></i>
+                            </div>
+                            <h1 className={styles.registeredTitle}>Quest Registered!</h1>
+                            <p className={styles.registeredSubtitle}>Your team has been enrolled in the adventure</p>
                         </div>
                     </section>
 
+                    {/* Registration Details */}
                     <section className={styles.section}>
                         <div className={styles.container}>
-                            <div className={styles.reviewCard}>
-                                <h2>Team: {existingRegistration.teamName}</h2>
-                                <div className={styles.reviewMembers}>
-                                    <h3 style={{ marginTop: '1.5rem', marginBottom: '1rem' }}>Team Members:</h3>
+                            <div className={styles.registrationCard}>
+                                {/* Team Header */}
+                                <div className={styles.teamHeader}>
+                                    <div className={styles.teamIcon}>
+                                        <i className="hn hn-users"></i>
+                                    </div>
+                                    <h2 className={styles.teamName}>{existingRegistration.teamName}</h2>
+                                </div>
+
+                                {/* Team Members */}
+                                <h3 className={styles.sectionHeader}>
+                                    <i className="hn hn-user"></i> Party Members
+                                </h3>
+                                <div className={styles.memberList}>
                                     {existingRegistration.members.map((member, index) => (
-                                        <div key={index} className={styles.reviewMember}>
-                                            <span><strong>Member {index + 1}:</strong> {member.name}</span>
-                                            <span className={styles.reviewEmail}>{member.email}</span>
-                                            <span>{member.phone}</span>
+                                        <div key={index} className={styles.memberItem}>
+                                            <div className={styles.memberBadge}>P{index + 1}</div>
+                                            <div className={styles.memberInfo}>
+                                                <span className={styles.memberName}>{member.name}</span>
+                                                <div className={styles.memberContact}>
+                                                    <span><i className="hn hn-email"></i> {member.email}</span>
+                                                    <span><i className="hn hn-phone"></i> {member.phone}</span>
+                                                </div>
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
+
+                                {/* Payment Proof */}
                                 {existingRegistration.paymentProofURL && (
-                                    <div style={{ marginTop: '2rem' }}>
-                                        <h3>Payment Proof:</h3>
+                                    <div className={styles.paymentProofSection}>
+                                        <h3 className={styles.sectionHeader}>
+                                            <i className="hn hn-coin"></i> Payment Proof
+                                        </h3>
                                         <img
                                             src={existingRegistration.paymentProofURL}
                                             alt="Payment proof"
-                                            style={{
-                                                maxWidth: '100%',
-                                                maxHeight: '400px',
-                                                marginTop: '1rem',
-                                                border: '2px solid #ccc',
-                                                borderRadius: '8px'
-                                            }}
+                                            className={styles.paymentProofImage}
+                                            onClick={() => window.open(existingRegistration.paymentProofURL, '_blank')}
                                         />
                                     </div>
                                 )}
-                                <div style={{ marginTop: '2rem', padding: '1rem', backgroundColor: '#f0f0f0', borderRadius: '8px' }}>
-                                    <p style={{ margin: 0, color: '#666' }}>
-                                        <strong>Registration Date:</strong> {existingRegistration.timestamp.toDate().toLocaleDateString('en-US', {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric'
-                                        })}
-                                    </p>
-                                    <p style={{ margin: '0.5rem 0 0 0', color: '#666' }}>
-                                        <strong>Status:</strong> {existingRegistration.status === 'pending' ? 'Pending Review' : existingRegistration.status === 'approved' ? 'Approved' : 'Rejected'}
-                                    </p>
+
+                                {/* Status Box */}
+                                <div className={styles.statusBox}>
+                                    <div className={styles.statusItem}>
+                                        <span className={styles.statusLabel}>Registration Date</span>
+                                        <span className={styles.statusValue}>
+                                            {existingRegistration.timestamp.toDate().toLocaleDateString('en-US', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric'
+                                            })}
+                                        </span>
+                                    </div>
+                                    <div className={styles.statusItem}>
+                                        <span className={styles.statusLabel}>Status</span>
+                                        <span className={`${styles.statusBadge} ${styles[existingRegistration.status]}`}>
+                                            <i className={`hn ${getStatusIcon()}`}></i>
+                                            {getStatusText()}
+                                        </span>
+                                    </div>
                                 </div>
-                                <p style={{ marginTop: '1.5rem', fontSize: '0.95rem' }}>
-                                    To modify your registration, please contact the organizers.
-                                </p>
-                                <a href="/" className={styles.successButton} style={{ display: 'inline-block', marginTop: '1.5rem' }}>
-                                    Return Home
+
+                                {/* Contact Note */}
+                                <div className={styles.contactNote}>
+                                    <i className="hn hn-info"></i>
+                                    <p>To modify your registration, please contact the organizers.</p>
+                                </div>
+
+                                {/* Return Button */}
+                                <a href="/" className={styles.returnButton}>
+                                    <i className="hn hn-home"></i>
+                                    Return to Base
                                 </a>
                             </div>
                         </div>
@@ -651,7 +703,7 @@ export default function RegisterPage() {
                                             {uploadProgress > 0 && uploadProgress < 100 && (
                                                 <div className={styles.progressContainer}>
                                                     <div className={styles.progressBarUpload}>
-                                                        <div 
+                                                        <div
                                                             className={styles.progressFill}
                                                             style={{ width: `${uploadProgress}%` }}
                                                         />
@@ -662,6 +714,22 @@ export default function RegisterPage() {
                                                 </div>
                                             )}
                                         </div>
+                                    </div>
+
+                                    {/* Reference/Volunteer Field */}
+                                    <div className={styles.formGroup} style={{ marginTop: '1.5rem' }}>
+                                        <label className={styles.label}>
+                                            <i className="hn hn-user"></i> Reference (Optional)
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className={styles.input}
+                                            placeholder="Volunteer name Referred by:"
+                                            value={reference}
+                                            onChange={(e) => setReference(e.target.value)}
+                                            maxLength={100}
+                                        />
+                                        <span className={styles.hint}>If someone referred you, enter their name here</span>
                                     </div>
 
                                     <div className={styles.rulesCard}>

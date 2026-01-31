@@ -1158,3 +1158,460 @@
         padding: 0.75rem 1rem;
     }
 }
+
+/* ==================== ALREADY REGISTERED PAGE - RETRO THEME ==================== */
+
+/* Already Registered Hero */
+.alreadyRegisteredHero {
+    padding: calc(var(--header-height) + var(--space-8)) 0 var(--space-6);
+    background: linear-gradient(180deg, var(--bg-darker) 0%, rgba(244, 160, 32, 0.05) 100%);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.alreadyRegisteredHero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(244, 160, 32, 0.03) 2px,
+            rgba(244, 160, 32, 0.03) 4px
+        );
+    pointer-events: none;
+}
+
+.registeredIcon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto var(--space-4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, #4ade80 0%, #22c55e 100%);
+    border: 4px solid #166534;
+    border-radius: 8px;
+    box-shadow: 
+        0 4px 0 #166534,
+        0 0 20px rgba(74, 222, 128, 0.4),
+        inset 0 2px 0 rgba(255, 255, 255, 0.3);
+    animation: registeredPulse 2s ease-in-out infinite;
+}
+
+.registeredIcon i {
+    font-size: 2.5rem;
+    color: white;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+@keyframes registeredPulse {
+    0%, 100% {
+        box-shadow: 
+            0 4px 0 #166534,
+            0 0 20px rgba(74, 222, 128, 0.4),
+            inset 0 2px 0 rgba(255, 255, 255, 0.3);
+    }
+    50% {
+        box-shadow: 
+            0 4px 0 #166534,
+            0 0 40px rgba(74, 222, 128, 0.6),
+            inset 0 2px 0 rgba(255, 255, 255, 0.3);
+    }
+}
+
+.registeredTitle {
+    font-family: var(--font-pixel);
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    color: #4ade80;
+    text-shadow: 0 0 20px rgba(74, 222, 128, 0.5);
+    margin-bottom: var(--space-2);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.registeredSubtitle {
+    font-size: 1rem;
+    color: var(--text-secondary);
+}
+
+/* Registration Details Card */
+.registrationCard {
+    background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-darker) 100%);
+    border: 3px solid var(--accent-gold);
+    border-radius: 12px;
+    padding: var(--space-6);
+    margin-bottom: var(--space-5);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+        0 4px 0 rgba(244, 160, 32, 0.3),
+        0 8px 30px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.registrationCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-gold);
+}
+
+/* Team Header */
+.teamHeader {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+    padding-bottom: var(--space-4);
+    border-bottom: 2px dashed rgba(244, 160, 32, 0.3);
+}
+
+.teamIcon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gradient-gold);
+    border: 3px solid #b87a15;
+    border-radius: 8px;
+    box-shadow: 0 3px 0 #b87a15;
+}
+
+.teamIcon i {
+    font-size: 1.5rem;
+    color: var(--bg-darker);
+}
+
+.teamName {
+    font-family: var(--font-pixel);
+    font-size: clamp(0.8rem, 2vw, 1.1rem);
+    color: var(--accent-gold);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Section Headers */
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-pixel);
+    font-size: 0.7rem;
+    color: var(--accent-gold);
+    margin-bottom: var(--space-4);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.sectionHeader i {
+    font-size: 1rem;
+}
+
+/* Member List */
+.memberList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+}
+
+.memberItem {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    border-left: 4px solid var(--accent-gold);
+    transition: all 0.2s ease;
+}
+
+.memberItem:hover {
+    border-color: var(--accent-gold);
+    background: rgba(244, 160, 32, 0.05);
+}
+
+.memberBadge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--bg-darker);
+    border: 2px solid var(--accent-gold);
+    border-radius: 6px;
+    font-family: var(--font-pixel);
+    font-size: 0.6rem;
+    color: var(--accent-gold);
+}
+
+.memberInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.memberName {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.memberContact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.memberContact span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.memberContact i {
+    font-size: 0.75rem;
+    color: var(--accent-gold);
+    opacity: 0.7;
+}
+
+/* Payment Proof Section */
+.paymentProofSection {
+    margin-bottom: var(--space-5);
+}
+
+.paymentProofImage {
+    max-width: 100%;
+    max-height: 300px;
+    border: 3px solid var(--accent-gold);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.paymentProofImage:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 30px rgba(244, 160, 32, 0.3);
+}
+
+/* Status Box */
+.statusBox {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    margin-bottom: var(--space-5);
+}
+
+.statusItem {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 150px;
+}
+
+.statusLabel {
+    font-family: var(--font-pixel);
+    font-size: 0.55rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.statusValue {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* Status Badges */
+.statusBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    font-family: var(--font-pixel);
+    font-size: 0.6rem;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: 2px solid;
+}
+
+.statusBadge.pending {
+    background: rgba(251, 191, 36, 0.15);
+    color: #fbbf24;
+    border-color: #b45309;
+    box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
+    animation: pendingBlink 1.5s ease-in-out infinite;
+}
+
+.statusBadge.approved {
+    background: rgba(74, 222, 128, 0.15);
+    color: #4ade80;
+    border-color: #166534;
+    box-shadow: 0 0 15px rgba(74, 222, 128, 0.3);
+}
+
+.statusBadge.rejected {
+    background: rgba(248, 113, 113, 0.15);
+    color: #f87171;
+    border-color: #b91c1c;
+    box-shadow: 0 0 15px rgba(248, 113, 113, 0.2);
+}
+
+@keyframes pendingBlink {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* Contact Note */
+.contactNote {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    background: rgba(244, 160, 32, 0.1);
+    border: 1px dashed rgba(244, 160, 32, 0.4);
+    border-radius: 8px;
+    margin-bottom: var(--space-5);
+}
+
+.contactNote i {
+    color: var(--accent-gold);
+    font-size: 1rem;
+}
+
+.contactNote p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* Return Home Button */
+.returnButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: var(--font-pixel);
+    font-size: 0.65rem;
+    padding: var(--space-4) var(--space-8);
+    background: var(--gradient-gold);
+    color: var(--bg-darker);
+    border: 3px solid #b87a15;
+    border-radius: 8px;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 0 #b87a15;
+}
+
+.returnButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 6px 0 #b87a15,
+        0 0 25px rgba(244, 160, 32, 0.4);
+}
+
+.returnButton:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #b87a15;
+}
+
+/* Responsive for Already Registered */
+@media (max-width: 768px) {
+    .alreadyRegisteredHero {
+        padding: calc(var(--header-height) + var(--space-6)) 0 var(--space-4);
+    }
+
+    .registeredIcon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .registeredIcon i {
+        font-size: 1.8rem;
+    }
+
+    .registrationCard {
+        padding: var(--space-4);
+    }
+
+    .teamHeader {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .statusBox {
+        flex-direction: column;
+    }
+
+    .statusItem {
+        min-width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .registeredTitle {
+        font-size: 0.9rem;
+    }
+
+    .teamIcon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .teamIcon i {
+        font-size: 1.2rem;
+    }
+
+    .teamName {
+        font-size: 0.75rem;
+    }
+
+    .sectionHeader {
+        font-size: 0.6rem;
+    }
+
+    .memberItem {
+        grid-template-columns: 1fr;
+    }
+
+    .memberBadge {
+        width: 100%;
+        height: auto;
+        padding: 4px;
+    }
+
+    .returnButton {
+        width: 100%;
+        font-size: 0.6rem;
+    }
+}
