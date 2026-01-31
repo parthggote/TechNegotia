@@ -31,6 +31,7 @@ export default function RegisterPage() {
     ]);
     const [paymentProof, setPaymentProof] = useState<File | null>(null);
     const [paymentProofPreview, setPaymentProofPreview] = useState<string>("");
+    const [reference, setReference] = useState("");
     const [agreedToRules, setAgreedToRules] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
@@ -194,7 +195,8 @@ export default function RegisterPage() {
                 user.email || '',
                 teamName,
                 members,
-                uploadResult.data
+                uploadResult.data,
+                reference.trim() || undefined
             );
 
             if (!saveResult.success) {
@@ -651,7 +653,7 @@ export default function RegisterPage() {
                                             {uploadProgress > 0 && uploadProgress < 100 && (
                                                 <div className={styles.progressContainer}>
                                                     <div className={styles.progressBarUpload}>
-                                                        <div 
+                                                        <div
                                                             className={styles.progressFill}
                                                             style={{ width: `${uploadProgress}%` }}
                                                         />
@@ -662,6 +664,22 @@ export default function RegisterPage() {
                                                 </div>
                                             )}
                                         </div>
+                                    </div>
+
+                                    {/* Reference/Volunteer Field */}
+                                    <div className={styles.formGroup} style={{ marginTop: '1.5rem' }}>
+                                        <label className={styles.label}>
+                                            <i className="hn hn-user"></i> Reference (Optional)
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className={styles.input}
+                                            placeholder="Volunteer name Referred by:"
+                                            value={reference}
+                                            onChange={(e) => setReference(e.target.value)}
+                                            maxLength={100}
+                                        />
+                                        <span className={styles.hint}>If someone referred you, enter their name here</span>
                                     </div>
 
                                     <div className={styles.rulesCard}>

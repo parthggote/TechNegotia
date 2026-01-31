@@ -27,6 +27,7 @@ export function exportRegistrationsToExcel(registrations: Registration[], filena
             'Sr. No.': index + 1,
             'Team Name': reg.teamName,
             'Status': reg.status.toUpperCase(),
+            'Reference': reg.reference || '',
         };
 
         // Add team members data
@@ -51,6 +52,7 @@ export function exportRegistrationsToExcel(registrations: Registration[], filena
         { wch: 8 },  // Sr. No.
         { wch: 25 }, // Team Name
         { wch: 12 }, // Status
+        { wch: 25 }, // Reference
         { wch: 25 }, // Member 1 Name
         { wch: 30 }, // Member 1 Email
         { wch: 15 }, // Member 1 Phone

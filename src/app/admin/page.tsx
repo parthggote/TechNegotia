@@ -267,14 +267,14 @@ export default function AdminPage() {
                                 <i className="hn hn-shield"></i>
                                 <h1>Admin Portal</h1>
                             </div>
-                            
+
                             {!user && (
                                 <div className={styles.warningBanner}>
                                     <i className="hn hn-warning"></i>
                                     <p>Please sign in with Firebase first using the header menu</p>
                                 </div>
                             )}
-                            
+
                             <form onSubmit={handleLogin} className={styles.loginForm}>
                                 <div className={styles.formGroup}>
                                     <label>
@@ -604,6 +604,14 @@ export default function AdminPage() {
                                 <h3><i className="hn hn-email"></i> Registration Email</h3>
                                 <p className={styles.contactEmail}>{selectedRegistration.userEmail}</p>
                             </div>
+
+                            {/* Reference/Referred By */}
+                            {selectedRegistration.reference && (
+                                <div className={styles.modalSection}>
+                                    <h3><i className="hn hn-user"></i> Referred By</h3>
+                                    <p className={styles.contactEmail}>{selectedRegistration.reference}</p>
+                                </div>
+                            )}
                         </div>
 
                         {/* Modal Actions */}
