@@ -30,7 +30,6 @@ const PRIZES = [
             "Cash Prize",
             "Runner-up Trophy",
             "Certificates for all members",
-            "Mentorship sessions",
             "Exclusive merchandise"
         ],
         color: "#C0C0C0"
