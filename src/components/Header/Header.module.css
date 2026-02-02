@@ -399,6 +399,14 @@
     height: 55px;
 }
 
+/* Mobile Header Auth - Sign In/Auth outside sidebar, visible in header bar */
+.mobileHeaderAuth {
+    display: none;
+    align-items: center;
+    gap: var(--space-2);
+    flex-shrink: 0;
+}
+
 /* Mobile Menu Button */
 .mobileMenuBtn {
     display: none;
@@ -483,6 +491,49 @@
         display: none;
     }
 
+    /* Show mobile auth in header bar (outside sidebar) */
+    .mobileHeaderAuth {
+        display: flex;
+        margin-right: var(--space-1);
+    }
+
+    /* Compact auth buttons in header bar for UX */
+    .mobileHeaderAuth .mobileSignInBtn,
+    .mobileHeaderAuth .mobileRegisterBtn {
+        margin-top: 0;
+        padding: 10px 14px;
+        font-size: 0.5rem;
+        display: flex;
+    }
+
+    .mobileHeaderAuth .mobileSignInBtn i,
+    .mobileHeaderAuth .mobileRegisterBtn i {
+        font-size: 0.9rem;
+    }
+
+    .mobileHeaderAuth .mobileSignOutBtn {
+        margin-top: 0;
+        padding: 10px 14px;
+        font-size: 0.5rem;
+        display: flex;
+        color: #fff;
+        border: 2px solid #b91c1c;
+        background: linear-gradient(180deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%);
+        font-weight: bold;
+        box-shadow: 0 2px 0 #7f1d1d, 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .mobileHeaderAuth .mobileSignOutBtn:hover {
+        background: linear-gradient(180deg, #ef4444 0%, #dc2626 50%, #b91c1b 100%);
+        border-color: #f87171;
+        color: #fff;
+        box-shadow: 0 3px 0 #7f1d1d, 0 6px 16px rgba(0, 0, 0, 0.35);
+    }
+
+    .mobileHeaderAuth .mobileSignOutBtn i {
+        font-size: 0.9rem;
+    }
+
     .nav {
         position: fixed;
         top: 0;
@@ -520,21 +571,17 @@
         font-size: 1rem;
     }
 
-    /* Show mobile-only buttons */
+    /* Mobile-only buttons shown only inside .mobileHeaderAuth (see above) */
     .mobileRegisterBtn {
-        display: flex;
+        display: none;
     }
 
     .mobileSignInBtn {
-        display: flex;
+        display: none;
     }
 
     .mobileSignOutBtn {
-        display: flex;
-    }
-
-    .mobileUserInfo {
-        display: flex;
+        display: none;
     }
 
     .mobileCloseBtn {
@@ -606,53 +653,25 @@
         padding: var(--space-2) var(--space-3);
     }
 
-    .mobileRegisterBtn {
+    /* Compact header auth on small screens */
+    .mobileHeaderAuth .mobileSignInBtn,
+    .mobileHeaderAuth .mobileRegisterBtn {
+        padding: 8px 12px;
         font-size: 0.48rem;
-        padding: 12px 16px;
-        margin-top: var(--space-3);
-        border-width: 2px;
-        box-shadow: 
-            0 3px 0 #8b4513,
-            0 5px 12px rgba(0, 0, 0, 0.25);
     }
 
-    .mobileRegisterBtn i {
-        font-size: 0.9rem;
+    .mobileHeaderAuth .mobileSignInBtn i,
+    .mobileHeaderAuth .mobileRegisterBtn i {
+        font-size: 0.85rem;
     }
 
-    .mobileSignInBtn {
-        font-size: 0.48rem;
-        padding: 12px 16px;
-        margin-top: var(--space-3);
-        border-width: 2px;
-        box-shadow: 
-            0 3px 0 #8b4513,
-            0 5px 12px rgba(0, 0, 0, 0.25);
-    }
-
-    .mobileSignInBtn i {
-        font-size: 0.9rem;
-    }
-
-    .mobileSignOutBtn {
+    .mobileHeaderAuth .mobileSignOutBtn {
+        padding: 8px 12px;
         font-size: 0.45rem;
-        padding: 10px 14px;
-        gap: 6px;
     }
 
-    .mobileSignOutBtn i {
-        font-size: 0.8rem;
-    }
-
-    .mobileUserInfo {
-        font-size: 0.45rem;
-        padding: 12px 14px;
-        margin-top: var(--space-3);
-        gap: 8px;
-    }
-
-    .mobileUserInfo i {
-        font-size: 0.9rem;
+    .mobileHeaderAuth .mobileSignOutBtn i {
+        font-size: 0.85rem;
     }
 
     .mobileCloseBtn {
@@ -682,26 +701,29 @@
         padding: 0 var(--space-2);
     }
 
-    .mobileRegisterBtn,
-    .mobileSignInBtn {
+    .mobileHeaderAuth {
+        gap: var(--space-1);
+        margin-right: 0;
+    }
+
+    .mobileHeaderAuth .mobileSignInBtn,
+    .mobileHeaderAuth .mobileRegisterBtn {
         font-size: 0.44rem;
-        padding: 10px 14px;
-        gap: 8px;
+        padding: 6px 10px;
     }
 
-    .mobileRegisterBtn i,
-    .mobileSignInBtn i {
-        font-size: 0.85rem;
+    .mobileHeaderAuth .mobileSignInBtn i,
+    .mobileHeaderAuth .mobileRegisterBtn i {
+        font-size: 0.8rem;
     }
 
-    .mobileSignOutBtn {
+    .mobileHeaderAuth .mobileSignOutBtn {
         font-size: 0.42rem;
-        padding: 8px 12px;
+        padding: 6px 10px;
     }
 
-    .mobileUserInfo {
-        font-size: 0.42rem;
-        padding: 10px 12px;
+    .mobileHeaderAuth .mobileSignOutBtn i {
+        font-size: 0.8rem;
     }
 
     .mobileCloseBtn {

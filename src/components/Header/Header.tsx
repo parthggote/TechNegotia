@@ -75,54 +75,43 @@ export default function Header() {
                             </li>
                         ))}
                     </ul>
-
-                    {/* Mobile Sign In Button - only show when not logged in */}
-                    {!user ? (
-                        <button
-                            onClick={() => {
-                                setIsAuthModalOpen(true);
-                                setIsMobileMenuOpen(false);
-                            }}
-                            className={styles.mobileSignInBtn}
-                        >
-                            <i className="hn hn-user"></i>
-                            Sign In / Sign Up
-                        </button>
-                    ) : (
-                        <>
-                            {/* Mobile Register Button - only show when logged in */}
-                            <Link
-                                href="/register"
-                                className={styles.mobileRegisterBtn}
-                                onClick={() => setIsMobileMenuOpen(false)}
-                            >
-                                <i className="hn hn-sword"></i>
-                                Register Now
-                            </Link>
-
-                            {/* Mobile Sign Out Button */}
-                            <button
-                                onClick={() => {
-                                    handleSignOut();
-                                    setIsMobileMenuOpen(false);
-                                }}
-                                className={styles.mobileSignOutBtn}
-                            >
-                                <i className="hn hn-logout"></i>
-                                Sign Out
-                            </button>
-
-                            {/* Mobile User Info */}
-                            <div className={styles.mobileUserInfo}>
-                                <i className="hn hn-user"></i>
-                                <span>{user.displayName || user.email?.split('@')[0]}</span>
-                            </div>
-                        </>
-                    )}
                 </nav>
 
                 {/* Right Side Actions */}
                 <div className={styles.actions}>
+                    {/* Mobile Sign In / Auth - visible in header bar (outside sidebar) */}
+                    <div className={styles.mobileHeaderAuth}>
+                        {!user ? (
+                            <button
+                                onClick={() => setIsAuthModalOpen(true)}
+                                className={styles.mobileSignInBtn}
+                                aria-label="Sign in or sign up"
+                            >
+                                <i className="hn hn-user"></i>
+                                Sign In / Sign Up
+                            </button>
+                        ) : (
+                            <>
+                                <Link
+                                    href="/register"
+                                    className={styles.mobileRegisterBtn}
+                                    aria-label="Register now"
+                                >
+                                    <i className="hn hn-sword"></i>
+                                    Register
+                                </Link>
+                                <button
+                                    onClick={handleSignOut}
+                                    className={styles.mobileSignOutBtn}
+                                    aria-label="Sign out"
+                                >
+                                    <i className="hn hn-logout"></i>
+                                    Sign Out
+                                </button>
+                            </>
+                        )}
+                    </div>
+
                     {/* Authentication Buttons - Desktop */}
                     {!user ? (
                         <button
