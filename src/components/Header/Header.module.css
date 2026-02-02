@@ -7,6 +7,7 @@
     padding: var(--space-3) 0;
     transition: all var(--transition-base);
     background: transparent;
+    overflow: visible;
 }
 
 .header.scrolled {
@@ -24,6 +25,7 @@
     align-items: center;
     justify-content: space-between;
     gap: var(--space-6);
+    min-width: 0;
 }
 
 /* Logo */
@@ -470,8 +472,35 @@
 
 /* Mobile Styles */
 @media (max-width: 900px) {
+    .container {
+        padding: 0 var(--space-3);
+        padding-right: 52px; /* Reserve space for fixed hamburger so it's always visible */
+        gap: var(--space-2);
+        overflow: visible;
+    }
+
+    /* Fix hamburger to viewport right so it's always visible */
     .mobileMenuBtn {
         display: flex;
+        flex-shrink: 0;
+        position: fixed;
+        top: var(--space-3);
+        right: var(--space-3);
+        z-index: 1002;
+        width: 40px;
+        height: 40px;
+        align-items: center;
+        justify-content: center;
+        background: rgba(15, 21, 36, 0.85);
+        border-radius: 8px;
+        border: 1px solid rgba(244, 160, 32, 0.4);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .mobileMenuBtn .hamburger,
+    .mobileMenuBtn .hamburger::before,
+    .mobileMenuBtn .hamburger::after {
+        background: var(--accent-gold);
     }
 
     .registerBtn {
@@ -491,47 +520,105 @@
         display: none;
     }
 
-    /* Show mobile auth in header bar (outside sidebar) */
-    .mobileHeaderAuth {
-        display: flex;
-        margin-right: var(--space-1);
+    /* Hide Sign In / Sign Up in header on mobile (redundant with Join the Quest card) */
+    .mobileHeaderAuth.mobileHeaderAuthSignInHidden {
+        display: none !important;
     }
 
-    /* Compact auth buttons in header bar for UX */
+    /* Hide entire mobile header auth when logged in (Sign Out is inside hamburger menu) */
+    .mobileHeaderAuth.mobileHeaderAuthLoggedInHidden {
+        display: none !important;
+    }
+
+    /* Hide Register in header on mobile (use Join the Quest card instead) */
+    .mobileHeaderAuth .mobileRegisterBtn {
+        display: none !important;
+    }
+
+    /* Sign Out inside hamburger menu - visible on mobile only */
+    .mobileNavSignOutBtn {
+        display: none;
+    }
+
+    .nav .mobileNavSignOutBtn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        margin-top: var(--space-4);
+        padding: 12px 16px;
+        font-family: var(--font-pixel);
+        font-size: 0.5rem;
+        color: #fff;
+        border: 2px solid #b91c1c;
+        background: linear-gradient(180deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%);
+        border-radius: 8px;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: bold;
+        box-shadow: 0 2px 0 #7f1d1d, 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    .nav .mobileNavSignOutBtn i {
+        font-size: 0.9rem;
+    }
+
+    .nav .mobileNavSignOutBtn:hover {
+        background: linear-gradient(180deg, #ef4444 0%, #dc2626 50%, #b91c1b 100%);
+        border-color: #f87171;
+    }
+
+    /* Show mobile auth in header bar when needed */
+    .mobileHeaderAuth {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-right: 4px;
+        flex-shrink: 1;
+        min-width: 0;
+    }
+
+    /* Compact auth buttons in header bar */
     .mobileHeaderAuth .mobileSignInBtn,
     .mobileHeaderAuth .mobileRegisterBtn {
         margin-top: 0;
-        padding: 10px 14px;
-        font-size: 0.5rem;
+        padding: 6px 10px;
+        font-size: 0.45rem;
         display: flex;
+        border-width: 2px;
+        min-height: auto;
+        gap: 4px;
     }
 
     .mobileHeaderAuth .mobileSignInBtn i,
     .mobileHeaderAuth .mobileRegisterBtn i {
-        font-size: 0.9rem;
+        font-size: 0.75rem;
     }
 
     .mobileHeaderAuth .mobileSignOutBtn {
         margin-top: 0;
-        padding: 10px 14px;
-        font-size: 0.5rem;
+        padding: 6px 10px;
+        font-size: 0.45rem;
         display: flex;
+        gap: 4px;
         color: #fff;
-        border: 2px solid #b91c1c;
+        border: 1px solid #b91c1c;
         background: linear-gradient(180deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%);
         font-weight: bold;
-        box-shadow: 0 2px 0 #7f1d1d, 0 4px 12px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 1px 0 #7f1d1d, 0 2px 8px rgba(0, 0, 0, 0.25);
     }
 
     .mobileHeaderAuth .mobileSignOutBtn:hover {
         background: linear-gradient(180deg, #ef4444 0%, #dc2626 50%, #b91c1b 100%);
         border-color: #f87171;
         color: #fff;
-        box-shadow: 0 3px 0 #7f1d1d, 0 6px 16px rgba(0, 0, 0, 0.35);
+        box-shadow: 0 2px 0 #7f1d1d, 0 4px 10px rgba(0, 0, 0, 0.3);
     }
 
     .mobileHeaderAuth .mobileSignOutBtn i {
-        font-size: 0.9rem;
+        font-size: 0.75rem;
     }
 
     .nav {
@@ -602,6 +689,17 @@
         padding: var(--space-2) 0;
     }
 
+    .container {
+        padding-right: 48px;
+    }
+
+    .mobileMenuBtn {
+        top: var(--space-2);
+        right: var(--space-2);
+        width: 36px;
+        height: 36px;
+    }
+
     .logoText {
         font-size: 0.55rem;
     }
@@ -619,11 +717,6 @@
     .container {
         padding: 0 var(--space-3);
         gap: var(--space-3);
-    }
-
-    .mobileMenuBtn {
-        width: 32px;
-        height: 32px;
     }
 
     .hamburger {
@@ -656,22 +749,22 @@
     /* Compact header auth on small screens */
     .mobileHeaderAuth .mobileSignInBtn,
     .mobileHeaderAuth .mobileRegisterBtn {
-        padding: 8px 12px;
-        font-size: 0.48rem;
+        padding: 5px 8px;
+        font-size: 0.42rem;
     }
 
     .mobileHeaderAuth .mobileSignInBtn i,
     .mobileHeaderAuth .mobileRegisterBtn i {
-        font-size: 0.85rem;
+        font-size: 0.7rem;
     }
 
     .mobileHeaderAuth .mobileSignOutBtn {
-        padding: 8px 12px;
-        font-size: 0.45rem;
+        padding: 5px 8px;
+        font-size: 0.42rem;
     }
 
     .mobileHeaderAuth .mobileSignOutBtn i {
-        font-size: 0.85rem;
+        font-size: 0.7rem;
     }
 
     .mobileCloseBtn {
@@ -688,6 +781,17 @@
 }
 
 @media (max-width: 360px) {
+    .container {
+        padding-right: 44px;
+    }
+
+    .mobileMenuBtn {
+        top: var(--space-2);
+        right: var(--space-2);
+        width: 34px;
+        height: 34px;
+    }
+
     .logoText {
         font-size: 0.5rem;
     }
@@ -702,28 +806,28 @@
     }
 
     .mobileHeaderAuth {
-        gap: var(--space-1);
-        margin-right: 0;
+        gap: 4px;
+        margin-right: 2px;
     }
 
     .mobileHeaderAuth .mobileSignInBtn,
     .mobileHeaderAuth .mobileRegisterBtn {
-        font-size: 0.44rem;
-        padding: 6px 10px;
+        font-size: 0.4rem;
+        padding: 4px 6px;
     }
 
     .mobileHeaderAuth .mobileSignInBtn i,
     .mobileHeaderAuth .mobileRegisterBtn i {
-        font-size: 0.8rem;
+        font-size: 0.65rem;
     }
 
     .mobileHeaderAuth .mobileSignOutBtn {
-        font-size: 0.42rem;
-        padding: 6px 10px;
+        font-size: 0.4rem;
+        padding: 4px 6px;
     }
 
     .mobileHeaderAuth .mobileSignOutBtn i {
-        font-size: 0.8rem;
+        font-size: 0.65rem;
     }
 
     .mobileCloseBtn {

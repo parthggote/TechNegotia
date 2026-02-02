@@ -17,16 +17,19 @@ const MOBILE_VIDEO = "/video (3).mp4";
 /** Mobile breakpoint in pixels */
 const MOBILE_BREAKPOINT = 768;
 
-export default function Hero() {
+type HeroProps = {
+    /** Called when user taps "Sign In / Sign Up" in the hero (opens auth modal on home) */
+    onSignInClick?: () => void;
+};
+
+export default function Hero({ onSignInClick }: HeroProps = {}) {
     const { user, loading: authLoading } = useAuth();
-    const { showWarning, showInfo } = useToast();
+    const { showInfo, showWarning } = useToast();
     const heroRef = useRef<HTMLDivElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isMobile, setIsMobile] = useState(false);
 
-    /**
-     * Handles click on locked quest button - shows toast notification
-     */
+    /** Desktop: click on locked Pay/Register shows toast */
     const handleLockedClick = () => {
         showWarning("Please sign in to begin your quest!");
     };
@@ -125,67 +128,93 @@ export default function Hero() {
                     <p className={styles.tagline}>
                         Fortune favors the strategic.
                     </p>
-
                 </div>
             </div>
 
-            {/* Floating Action Card - Bottom Right */}
+            {/* Join the Quest card: desktop = always Pay + Register (locked if !user); mobile = Sign In when !user, then Pay + Register */}
             <div className={styles.actionCard}>
                 <div className={styles.actionCardHeader}>
                     <i className="hn hn-sparkles"></i>
                     <span>Join the Quest</span>
                 </div>
-                
-                <div className={styles.actionButtons}>
-                    {/* Pay Registration Fee Button */}
-                    {authLoading ? (
+
+                {authLoading ? (
+                    <div className={styles.actionButtons}>
                         <button className={`${styles.payButton} ${styles.payButtonLoading}`} disabled>
                             <i className="hn hn-loading"></i>
                             Loading...
                         </button>
-                    ) : user ? (
-                        <button
-                            className={styles.payButton}
-                            onClick={handleBeginQuest}
-                        >
-                            <i className="hn hn-coin"></i>
-                            Pay Registration Fee
-                        </button>
-                    ) : (
-                        <button
-                            className={`${styles.payButton} ${styles.payButtonLocked}`}
-                            onClick={handleLockedClick}
-                        >
-                            <i className="hn hn-lock"></i>
-                            Pay Registration Fee
-                        </button>
-                    )}
-
-                    {/* Register Button */}
-                    {authLoading ? (
-                        <button className={`${styles.registerButton} ${styles.registerButtonLoading}`} disabled>
-                            <i className="hn hn-loading"></i>
-                            Loading...
-                        </button>
-                    ) : user ? (
-                        <Link href="/register" className={styles.registerButton}>
-                            <i className="hn hn-sword"></i>
-                            Register Team
-                        </Link>
-                    ) : (
-                        <button
-                            className={`${styles.registerButton} ${styles.registerButtonLocked}`}
-                            onClick={handleLockedClick}
-                        >
-                            <i className="hn hn-lock"></i>
-                            Register Team
-                        </button>
-                    )}
-                </div>
-
-                <p className={styles.actionHint}>
-                    {user ? "Pay first, then register" : "Sign in to continue"}
-                </p>
+                    </div>
+                ) : !isMobile ? (
+                    /* Desktop: always show Pay + Register; locked until logged in */
+                    <>
+                        <div className={styles.actionButtons}>
+                            {user ? (
+                                <button className={styles.payButton} onClick={handleBeginQuest}>
+                                    <i className="hn hn-coin"></i>
+                                    Pay Registration Fee
+                                </button>
+                            ) : (
+                                <button
+                                    className={`${styles.payButton} ${styles.payButtonLocked}`}
+                                    onClick={handleLockedClick}
+                                >
+                                    <i className="hn hn-lock"></i>
+                                    Pay Registration Fee
+                                </button>
+                            )}
+                            {user ? (
+                                <Link href="/register" className={styles.registerButton}>
+                                    <i className="hn hn-sword"></i>
+                                    Register Team
+                                </Link>
+                            ) : (
+                                <button
+                                    className={`${styles.registerButton} ${styles.registerButtonLocked}`}
+                                    onClick={handleLockedClick}
+                                >
+                                    <i className="hn hn-lock"></i>
+                                    Register Team
+                                </button>
+                            )}
+                        </div>
+                        <p className={styles.actionHint}>
+                            {user ? "Pay first, then register" : "Sign in to continue"}
+                        </p>
+                    </>
+                ) : !user ? (
+                    /* Mobile, not logged in: show only Sign In / Sign Up */
+                    <>
+                        <div className={styles.actionButtons}>
+                            <button
+                                type="button"
+                                className={styles.heroAuthCta}
+                                onClick={onSignInClick ?? (() => {})}
+                                aria-label="Sign in or create account"
+                            >
+                                <i className="hn hn-user"></i>
+                                Sign In / Sign Up
+                            </button>
+                        </div>
+                    </>
+                ) : (
+                    /* Mobile, logged in: show Pay and Register */
+                    <>
+                        <div className={styles.actionButtons}>
+                            <button className={styles.payButton} onClick={handleBeginQuest}>
+                                <i className="hn hn-coin"></i>
+                                Pay Registration Fee
+                            </button>
+                            <Link href="/register" className={styles.registerButton}>
+                                <i className="hn hn-sword"></i>
+                                Register Team
+                            </Link>
+                        </div>
+                        <p className={styles.actionHint}>
+                            Pay first, then register
+                        </p>
+                    </>
+                )}
             </div>
 
             {/* Supported By Section - at bottom like reference */}

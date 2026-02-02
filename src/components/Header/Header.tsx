@@ -8,11 +8,21 @@ import { useAuth } from "@/hooks/useAuth";
 import AuthModal from "@/components/AuthModal/AuthModal";
 import styles from "./Header.module.css";
 
-export default function Header() {
+type HeaderProps = {
+    isAuthModalOpen?: boolean;
+    onOpenAuthModal?: () => void;
+    onCloseAuthModal?: () => void;
+};
+
+export default function Header({ isAuthModalOpen: controlledAuthOpen, onOpenAuthModal, onCloseAuthModal }: HeaderProps = {}) {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+    const [internalAuthOpen, setInternalAuthOpen] = useState(false);
     const [showUserMenu, setShowUserMenu] = useState(false);
+
+    const isAuthModalOpen = onOpenAuthModal ? (controlledAuthOpen ?? false) : internalAuthOpen;
+    const openAuthModal = onOpenAuthModal ?? (() => setInternalAuthOpen(true));
+    const closeAuthModal = onCloseAuthModal ?? (() => setInternalAuthOpen(false));
 
     const { user, signOut } = useAuth();
 
@@ -75,15 +85,30 @@ export default function Header() {
                             </li>
                         ))}
                     </ul>
+
+                    {/* Mobile: Sign Out inside hamburger menu when logged in */}
+                    {user && (
+                        <button
+                            onClick={() => {
+                                handleSignOut();
+                                setIsMobileMenuOpen(false);
+                            }}
+                            className={styles.mobileNavSignOutBtn}
+                            aria-label="Sign out"
+                        >
+                            <i className="hn hn-logout"></i>
+                            Sign Out
+                        </button>
+                    )}
                 </nav>
 
                 {/* Right Side Actions */}
                 <div className={styles.actions}>
-                    {/* Mobile Sign In / Auth - visible in header bar (outside sidebar) */}
-                    <div className={styles.mobileHeaderAuth}>
+                    {/* Mobile auth: hidden when not logged in (Sign In in Join the Quest card); hidden when logged in (Sign Out is in hamburger menu) */}
+                    <div className={`${styles.mobileHeaderAuth} ${!user ? styles.mobileHeaderAuthSignInHidden : ""} ${user ? styles.mobileHeaderAuthLoggedInHidden : ""}`}>
                         {!user ? (
                             <button
-                                onClick={() => setIsAuthModalOpen(true)}
+                                onClick={openAuthModal}
                                 className={styles.mobileSignInBtn}
                                 aria-label="Sign in or sign up"
                             >
@@ -115,7 +140,7 @@ export default function Header() {
                     {/* Authentication Buttons - Desktop */}
                     {!user ? (
                         <button
-                            onClick={() => setIsAuthModalOpen(true)}
+                            onClick={openAuthModal}
                             className={`nes-btn is-primary ${styles.authBtn}`}
                         >
                             Sign In / Sign Up
@@ -172,7 +197,7 @@ export default function Header() {
             {/* Authentication Modal */}
             <AuthModal
                 isOpen={isAuthModalOpen}
-                onClose={() => setIsAuthModalOpen(false)}
+                onClose={closeAuthModal}
             />
         </header>
     );
