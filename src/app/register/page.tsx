@@ -225,6 +225,31 @@ export default function RegisterPage() {
     const isStep2Valid = members.every(m => m.name && m.email && m.phone && /^\d{10}$/.test(m.phone));
     const isStep3Valid = agreedToRules && paymentProof !== null;
 
+    // Validation helpers for inline feedback
+    const isValidEmail = (email: string): boolean => {
+        if (!email) return true; // Empty is valid (show no warning until user types)
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return emailRegex.test(email);
+    };
+
+    const isValidPhone = (phone: string): boolean => {
+        if (!phone) return true; // Empty is valid (show no warning until user types)
+        return /^\d{10}$/.test(phone);
+    };
+
+    const getPhoneWarning = (phone: string): string | null => {
+        if (!phone) return null;
+        if (phone.length < 10) return `Phone number must be 10 digits (${phone.length}/10)`;
+        if (phone.length > 10) return 'Phone number cannot exceed 10 digits';
+        return null;
+    };
+
+    const getEmailWarning = (email: string): string | null => {
+        if (!email) return null;
+        if (!isValidEmail(email)) return 'Please enter a valid email address (e.g., user@example.com)';
+        return null;
+    };
+
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === "Enter") {
             // Allow default submission only on the final step
@@ -586,21 +611,26 @@ export default function RegisterPage() {
                                                     <label className={styles.label}>Email *</label>
                                                     <input
                                                         type="email"
-                                                        className={styles.input}
+                                                        className={`${styles.input} ${getEmailWarning(member.email) ? styles.inputError : ''}`}
                                                         placeholder="Enter email address (e.g., user@example.com)"
                                                         value={member.email}
                                                         onChange={(e) => updateMember(index, "email", e.target.value)}
-                                                        pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
                                                         title="Please enter a valid email address (e.g., user@example.com)"
                                                         required
                                                     />
+                                                    {getEmailWarning(member.email) && (
+                                                        <div className={styles.validationWarning}>
+                                                            <i className="hn hn-warning"></i>
+                                                            {getEmailWarning(member.email)}
+                                                        </div>
+                                                    )}
                                                 </div>
 
                                                 <div className={styles.formGroup}>
                                                     <label className={styles.label}>Phone *</label>
                                                     <input
                                                         type="tel"
-                                                        className={styles.input}
+                                                        className={`${styles.input} ${getPhoneWarning(member.phone) ? styles.inputError : ''}`}
                                                         placeholder="Enter 10-digit phone number"
                                                         value={member.phone}
                                                         onChange={(e) => {
@@ -615,6 +645,12 @@ export default function RegisterPage() {
                                                         title="Please enter a valid phone number"
                                                         required
                                                     />
+                                                    {getPhoneWarning(member.phone) && (
+                                                        <div className={styles.validationWarning}>
+                                                            <i className="hn hn-warning"></i>
+                                                            {getPhoneWarning(member.phone)}
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
