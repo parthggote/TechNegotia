@@ -79,9 +79,10 @@ export const saveRegistration = async (
             teamName,
             members,
             paymentProofURL,
-            reference: reference || undefined,
             timestamp: Timestamp.now(),
             status: 'pending',
+            // Only add reference if it has a value (Firestore rejects undefined)
+            ...(reference ? { reference } : {}),
         };
 
         // Use setDoc with user ID as document ID
