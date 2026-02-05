@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { adminLogin, adminLogout } from "@/lib/adminAuth";
 import { checkAdminSession, setAdminSession, clearAdminSession } from "@/lib/adminAuthClient";
-import { getAllRegistrations, updateRegistrationStatus, Registration, getPaginatedRegistrations, TeamMember } from "@/lib/registrationService";
+import { getAllRegistrations, updateRegistrationStatus, deleteRegistration, Registration, getPaginatedRegistrations, TeamMember } from "@/lib/registrationService";
 import { sendApprovalEmail, sendRejectionEmail, initEmailJS } from "@/lib/emailService";
 import { exportFilteredRegistrations } from "@/lib/excelExport";
 import Header from "@/components/Header/Header";
@@ -217,6 +217,29 @@ export default function AdminPage() {
 
     const handlePageJump = (page: number) => {
         setCurrentPage(page);
+    };
+
+    /**
+     * Handles permanent deletion of a registration
+     */
+    const handleDelete = async (reg: Registration) => {
+        // Double confirmation for safety
+        if (!confirm(`⚠️ DELETE registration for team "${reg.teamName}"?\n\nThis action is PERMANENT and cannot be undone!`)) return;
+        if (!confirm(`Are you absolutely sure you want to DELETE "${reg.teamName}"?\n\nThis will permanently remove all their data.`)) return;
+
+        try {
+            const result = await deleteRegistration(reg.userId);
+
+            if (result.success) {
+                alert(`Registration for "${reg.teamName}" has been permanently deleted.`);
+                closeModal();
+                loadRegistrations();
+            } else {
+                alert("Failed to delete registration: " + result.error);
+            }
+        } catch (error: any) {
+            alert("Error deleting registration: " + error.message);
+        }
     };
 
     const handleFilterChange = (newFilter: 'all' | 'pending' | 'approved' | 'rejected') => {
@@ -615,22 +638,30 @@ export default function AdminPage() {
                         </div>
 
                         {/* Modal Actions */}
-                        {selectedRegistration.status === 'pending' && (
-                            <div className={styles.modalActions}>
-                                <button
-                                    className={styles.approveBtn}
-                                    onClick={() => handleApprove(selectedRegistration)}
-                                >
-                                    <i className="hn hn-check"></i> Approve
-                                </button>
-                                <button
-                                    className={styles.rejectBtn}
-                                    onClick={() => handleReject(selectedRegistration)}
-                                >
-                                    <i className="hn hn-close"></i> Reject
-                                </button>
-                            </div>
-                        )}
+                        <div className={styles.modalActions}>
+                            {selectedRegistration.status === 'pending' && (
+                                <>
+                                    <button
+                                        className={styles.approveBtn}
+                                        onClick={() => handleApprove(selectedRegistration)}
+                                    >
+                                        <i className="hn hn-check"></i> Approve
+                                    </button>
+                                    <button
+                                        className={styles.rejectBtn}
+                                        onClick={() => handleReject(selectedRegistration)}
+                                    >
+                                        <i className="hn hn-close"></i> Reject
+                                    </button>
+                                </>
+                            )}
+                            <button
+                                className={styles.deleteBtn}
+                                onClick={() => handleDelete(selectedRegistration)}
+                            >
+                                <i className="hn hn-trash"></i> Delete
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

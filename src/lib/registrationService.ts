@@ -1,5 +1,5 @@
 // Registration service for Firestore operations
-import { doc, setDoc, getDoc, Timestamp, collection, getDocs, updateDoc, query, where, orderBy, limit, startAfter, Query, DocumentData } from 'firebase/firestore';
+import { doc, setDoc, getDoc, deleteDoc, Timestamp, collection, getDocs, updateDoc, query, where, orderBy, limit, startAfter, Query, DocumentData } from 'firebase/firestore';
 import { db } from './firebase';
 import { FirebaseResult } from './types';
 
@@ -308,6 +308,33 @@ export const updateRegistrationStatus = async (
         return {
             success: false,
             error: error.message || 'Failed to update status',
+        };
+    }
+};
+
+/**
+ * Delete registration permanently (admin only)
+ * WARNING: This action is irreversible
+ */
+export const deleteRegistration = async (
+    userId: string
+): Promise<FirebaseResult<void>> => {
+    try {
+        if (!db) {
+            throw new Error('Firestore is not initialized');
+        }
+
+        const docRef = doc(db, 'registrations', userId);
+        await deleteDoc(docRef);
+
+        return {
+            success: true,
+        };
+    } catch (error: any) {
+        console.error('Error deleting registration:', error);
+        return {
+            success: false,
+            error: error.message || 'Failed to delete registration',
         };
     }
 };
