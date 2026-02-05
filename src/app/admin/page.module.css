@@ -40,6 +40,7 @@
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -254,10 +255,25 @@
     font-size: 1.5rem;
 }
 
-.statTotal .statIcon { background: rgba(244, 160, 32, 0.2); color: #f4a020; }
-.statPending .statIcon { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
-.statApproved .statIcon { background: rgba(52, 211, 153, 0.2); color: #34d399; }
-.statRejected .statIcon { background: rgba(248, 113, 113, 0.2); color: #f87171; }
+.statTotal .statIcon {
+    background: rgba(244, 160, 32, 0.2);
+    color: #f4a020;
+}
+
+.statPending .statIcon {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+}
+
+.statApproved .statIcon {
+    background: rgba(52, 211, 153, 0.2);
+    color: #34d399;
+}
+
+.statRejected .statIcon {
+    background: rgba(248, 113, 113, 0.2);
+    color: #f87171;
+}
 
 .statInfo {
     display: flex;
@@ -616,8 +632,13 @@
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 .modal {
@@ -637,6 +658,7 @@
         opacity: 0;
         transform: scale(0.95) translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: scale(1) translateY(0);
@@ -872,6 +894,30 @@
 .rejectBtn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 0 #dc2626, 0 8px 20px rgba(248, 113, 113, 0.3);
+}
+
+.deleteBtn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2, 0.5rem);
+    padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
+    font-family: var(--font-pixel, 'Press Start 2P'), monospace;
+    font-size: 0.5rem;
+    background: linear-gradient(180deg, #7f1d1d 0%, #450a0a 100%);
+    color: #fca5a5;
+    border: 2px solid #991b1b;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 0 #450a0a;
+}
+
+.deleteBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #450a0a, 0 8px 20px rgba(127, 29, 29, 0.4);
+    background: linear-gradient(180deg, #991b1b 0%, #7f1d1d 100%);
 }
 
 /* ==================== RESPONSIVE ==================== */
