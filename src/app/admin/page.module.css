@@ -973,3 +973,160 @@
         flex-direction: column;
     }
 }
+
+/* ==================== EXPORT MODAL STYLES ==================== */
+.exportDescription {
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0 0 var(--space-5, 1.25rem) 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.exportQuickActions {
+    display: flex;
+    gap: var(--space-3, 0.75rem);
+    margin-bottom: var(--space-5, 1.25rem);
+}
+
+.quickSelectBtn {
+    padding: var(--space-2, 0.5rem) var(--space-4, 1rem);
+    font-family: var(--font-pixel, 'Press Start 2P'), monospace;
+    font-size: 0.4rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.quickSelectBtn:hover {
+    background: rgba(244, 160, 32, 0.1);
+    border-color: var(--accent-gold, #f4a020);
+    color: var(--accent-gold, #f4a020);
+}
+
+.exportFieldsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-3, 0.75rem);
+    margin-bottom: var(--space-5, 1.25rem);
+}
+
+.exportFieldItem {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3, 0.75rem);
+    padding: var(--space-3, 0.75rem);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.exportFieldItem:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(244, 160, 32, 0.3);
+}
+
+.exportFieldItem input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent-gold, #f4a020);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.exportFieldItem span {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.exportInfo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3, 0.75rem);
+    padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
+    background: rgba(244, 160, 32, 0.1);
+    border: 1px solid rgba(244, 160, 32, 0.2);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem;
+}
+
+.exportInfo i {
+    color: var(--accent-gold, #f4a020);
+}
+
+.exportCancelBtn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2, 0.5rem);
+    padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
+    font-family: var(--font-pixel, 'Press Start 2P'), monospace;
+    font-size: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.exportCancelBtn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.exportCancelBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.exportConfirmBtn {
+    flex: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2, 0.5rem);
+    padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
+    font-family: var(--font-pixel, 'Press Start 2P'), monospace;
+    font-size: 0.5rem;
+    background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 0 #059669;
+}
+
+.exportConfirmBtn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #059669, 0 8px 20px rgba(52, 211, 153, 0.3);
+}
+
+.exportConfirmBtn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Responsive adjustments for export modal */
+@media (max-width: 768px) {
+    .exportFieldsGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .exportQuickActions {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 480px) {
+    .exportFieldsGrid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -6,7 +6,7 @@ import { adminLogin, adminLogout } from "@/lib/adminAuth";
 import { checkAdminSession, setAdminSession, clearAdminSession } from "@/lib/adminAuthClient";
 import { getAllRegistrations, updateRegistrationStatus, deleteRegistration, Registration, getPaginatedRegistrations, TeamMember } from "@/lib/registrationService";
 import { sendApprovalEmail, sendRejectionEmail, initEmailJS } from "@/lib/emailService";
-import { exportFilteredRegistrations } from "@/lib/excelExport";
+import { exportFilteredRegistrations, ExportFields, defaultExportFields } from "@/lib/excelExport";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import styles from "./page.module.css";
@@ -31,6 +31,11 @@ export default function AdminPage() {
     // Detail modal state
     const [selectedRegistration, setSelectedRegistration] = useState<Registration | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    // Export modal state
+    const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+    const [exportFields, setExportFields] = useState<ExportFields>(defaultExportFields);
+    const [isExporting, setIsExporting] = useState(false);
 
     // Initialize EmailJS
     useEffect(() => {
@@ -253,17 +258,97 @@ export default function AdminPage() {
     };
 
     /**
-     * Exports current registrations to Excel
+     * Opens the export options modal
      */
-    const handleExportToExcel = () => {
-        if (registrations.length === 0) {
-            alert('No registrations to export!');
-            return;
-        }
+    const openExportModal = () => {
+        setIsExportModalOpen(true);
+    };
 
-        exportFilteredRegistrations(registrations, filter);
-        const statusText = filter === 'all' ? 'all' : filter;
-        alert(`Exported ${totalCount} ${statusText} registration(s) to Excel!`);
+    /**
+     * Closes the export modal
+     */
+    const closeExportModal = () => {
+        setIsExportModalOpen(false);
+    };
+
+    /**
+     * Toggle an export field
+     */
+    const toggleExportField = (field: keyof ExportFields) => {
+        setExportFields(prev => ({
+            ...prev,
+            [field]: !prev[field]
+        }));
+    };
+
+    /**
+     * Select/Deselect all export fields
+     */
+    const toggleAllExportFields = (selectAll: boolean) => {
+        const newFields: ExportFields = {
+            serialNumber: selectAll,
+            teamName: selectAll,
+            status: selectAll,
+            teamEmail: selectAll,
+            reference: selectAll,
+            registrationDate: selectAll,
+            memberNames: selectAll,
+            memberEmails: selectAll,
+            memberPhones: selectAll,
+        };
+        setExportFields(newFields);
+    };
+
+    /**
+     * Performs the Excel export with selected fields
+     */
+    const performExport = async () => {
+        setIsExporting(true);
+        try {
+            // Fetch ALL registrations from database
+            const result = await getAllRegistrations();
+
+            if (!result.success || !result.data) {
+                alert('Failed to fetch registrations for export: ' + (result.error || 'Unknown error'));
+                setIsExporting(false);
+                return;
+            }
+
+            const allRegistrations = result.data;
+
+            if (allRegistrations.length === 0) {
+                alert('No registrations to export!');
+                setIsExporting(false);
+                return;
+            }
+
+            // Apply filter if not 'all'
+            const filteredRegistrations = filter === 'all'
+                ? allRegistrations
+                : allRegistrations.filter(reg => reg.status === filter);
+
+            if (filteredRegistrations.length === 0) {
+                alert(`No ${filter} registrations to export!`);
+                setIsExporting(false);
+                return;
+            }
+
+            // Check if at least one field is selected
+            const hasSelectedField = Object.values(exportFields).some(v => v);
+            if (!hasSelectedField) {
+                alert('Please select at least one field to export!');
+                setIsExporting(false);
+                return;
+            }
+
+            exportFilteredRegistrations(filteredRegistrations, filter, exportFields);
+            const statusText = filter === 'all' ? 'all' : filter;
+            alert(`Exported ${filteredRegistrations.length} ${statusText} registration(s) to Excel!`);
+            closeExportModal();
+        } catch (error: any) {
+            alert('Error exporting registrations: ' + error.message);
+        }
+        setIsExporting(false);
     };
 
     /**
@@ -439,9 +524,8 @@ export default function AdminPage() {
                                 </div>
 
                                 <button
-                                    onClick={handleExportToExcel}
+                                    onClick={openExportModal}
                                     className={styles.exportButton}
-                                    disabled={registrations.length === 0}
                                 >
                                     <i className="hn hn-download"></i> Export Excel
                                 </button>
@@ -660,6 +744,152 @@ export default function AdminPage() {
                                 onClick={() => handleDelete(selectedRegistration)}
                             >
                                 <i className="hn hn-trash"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Export Options Modal */}
+            {isExportModalOpen && (
+                <div className={styles.modalOverlay} onClick={closeExportModal}>
+                    <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+                        <div className={styles.modalHeader}>
+                            <h2>
+                                <i className="hn hn-download"></i> Export Options
+                            </h2>
+                            <button className={styles.modalClose} onClick={closeExportModal}>
+                                <i className="hn hn-close"></i>
+                            </button>
+                        </div>
+
+                        <div className={styles.modalBody}>
+                            <p className={styles.exportDescription}>
+                                Select the fields you want to include in the Excel export:
+                            </p>
+
+                            {/* Quick Actions */}
+                            <div className={styles.exportQuickActions}>
+                                <button
+                                    type="button"
+                                    className={styles.quickSelectBtn}
+                                    onClick={() => toggleAllExportFields(true)}
+                                >
+                                    Select All
+                                </button>
+                                <button
+                                    type="button"
+                                    className={styles.quickSelectBtn}
+                                    onClick={() => toggleAllExportFields(false)}
+                                >
+                                    Deselect All
+                                </button>
+                            </div>
+
+                            {/* Field Checkboxes */}
+                            <div className={styles.exportFieldsGrid}>
+                                <label className={styles.exportFieldItem}>
+                                    <input
+                                        type="checkbox"
+                                        checked={exportFields.serialNumber}
+                                        onChange={() => toggleExportField('serialNumber')}
+                                    />
+                                    <span>Sr. No.</span>
+                                </label>
+                                <label className={styles.exportFieldItem}>
+                                    <input
+                                        type="checkbox"
+                                        checked={exportFields.teamName}
+                                        onChange={() => toggleExportField('teamName')}
+                                    />
+                                    <span>Team Name</span>
+                                </label>
+                                <label className={styles.exportFieldItem}>
+                                    <input
+                                        type="checkbox"
+                                        checked={exportFields.status}
+                                        onChange={() => toggleExportField('status')}
+                                    />
+                                    <span>Status</span>
+                                </label>
+                                <label className={styles.exportFieldItem}>
+                                    <input
+                                        type="checkbox"
+                                        checked={exportFields.teamEmail}
+                                        onChange={() => toggleExportField('teamEmail')}
+                                    />
+                                    <span>Team Email</span>
+                                </label>
+                                <label className={styles.exportFieldItem}>
+                                    <input
+                                        type="checkbox"
+                                        checked={exportFields.reference}
+                                        onChange={() => toggleExportField('reference')}
+                                    />
+                                    <span>Reference</span>
+                                </label>
+                                <label className={styles.exportFieldItem}>
+                                    <input
+                                        type="checkbox"
+                                        checked={exportFields.registrationDate}
+                                        onChange={() => toggleExportField('registrationDate')}
+                                    />
+                                    <span>Registration Date</span>
+                                </label>
+                                <label className={styles.exportFieldItem}>
+                                    <input
+                                        type="checkbox"
+                                        checked={exportFields.memberNames}
+                                        onChange={() => toggleExportField('memberNames')}
+                                    />
+                                    <span>Member Names</span>
+                                </label>
+                                <label className={styles.exportFieldItem}>
+                                    <input
+                                        type="checkbox"
+                                        checked={exportFields.memberEmails}
+                                        onChange={() => toggleExportField('memberEmails')}
+                                    />
+                                    <span>Member Emails</span>
+                                </label>
+                                <label className={styles.exportFieldItem}>
+                                    <input
+                                        type="checkbox"
+                                        checked={exportFields.memberPhones}
+                                        onChange={() => toggleExportField('memberPhones')}
+                                    />
+                                    <span>Member Phones</span>
+                                </label>
+                            </div>
+
+                            {/* Export Info */}
+                            <div className={styles.exportInfo}>
+                                <i className="hn hn-info"></i>
+                                <span>
+                                    Exporting {filter === 'all' ? 'all' : filter} registrations ({totalCount} total)
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Modal Actions */}
+                        <div className={styles.modalActions}>
+                            <button
+                                className={styles.exportCancelBtn}
+                                onClick={closeExportModal}
+                                disabled={isExporting}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className={styles.exportConfirmBtn}
+                                onClick={performExport}
+                                disabled={isExporting}
+                            >
+                                {isExporting ? (
+                                    <><i className="hn hn-loading"></i> Exporting...</>
+                                ) : (
+                                    <><i className="hn hn-download"></i> Export to Excel</>
+                                )}
                             </button>
                         </div>
                     </div>
