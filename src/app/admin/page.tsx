@@ -26,6 +26,7 @@ export default function AdminPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize] = useState(25);
     const [totalCount, setTotalCount] = useState(0);
+    const [totalParticipants, setTotalParticipants] = useState(0);
     const [hasMore, setHasMore] = useState(false);
 
     // Detail modal state
@@ -108,12 +109,14 @@ export default function AdminPage() {
         if (result.success && result.data) {
             setRegistrations(result.data.registrations);
             setTotalCount(result.data.totalCount);
+            setTotalParticipants(result.data.totalParticipants);
             setHasMore(result.data.hasMore);
         } else {
             const errorMsg = result.error || 'Failed to load registrations';
             setError(errorMsg);
             setRegistrations([]);
             setTotalCount(0);
+            setTotalParticipants(0);
             setHasMore(false);
             alert(`Error: ${errorMsg}`);
         }
@@ -353,12 +356,13 @@ export default function AdminPage() {
 
     /**
      * Gets stats for dashboard cards
+     * @returns {{ total: number, pending: number, approved: number, rejected: number, totalParticipants: number }} Dashboard stat values
      */
     const getStats = () => {
         const pending = registrations.filter(r => r.status === 'pending').length;
         const approved = registrations.filter(r => r.status === 'approved').length;
         const rejected = registrations.filter(r => r.status === 'rejected').length;
-        return { total: totalCount, pending, approved, rejected };
+        return { total: totalCount, pending, approved, rejected, totalParticipants };
     };
 
     const stats = getStats();
@@ -474,6 +478,15 @@ export default function AdminPage() {
                                 <div className={styles.statInfo}>
                                     <span className={styles.statNumber}>{stats.rejected}</span>
                                     <span className={styles.statLabel}>Rejected</span>
+                                </div>
+                            </div>
+                            <div className={`${styles.statCard} ${styles.statParticipants}`}>
+                                <div className={styles.statIcon}>
+                                    <i className="hn hn-user"></i>
+                                </div>
+                                <div className={styles.statInfo}>
+                                    <span className={styles.statNumber}>{stats.totalParticipants}</span>
+                                    <span className={styles.statLabel}>Total Participants</span>
                                 </div>
                             </div>
                         </div>
