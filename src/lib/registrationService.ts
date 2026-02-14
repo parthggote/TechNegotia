@@ -173,6 +173,7 @@ export const getAllRegistrations = async (): Promise<FirebaseResult<Registration
 export interface PaginatedRegistrationsResult {
     registrations: Registration[];
     totalCount: number;
+    totalParticipants: number;
     hasMore: boolean;
 }
 
@@ -220,6 +221,12 @@ export const getPaginatedRegistrations = async (
                 reg.members.some(m => m.name.toLowerCase().includes(searchLower))
             );
 
+            // Sum total participants across all matching registrations
+            const totalParticipants = allRegistrations.reduce(
+                (sum, reg) => sum + (Array.isArray(reg.members) ? reg.members.length : 0),
+                0
+            );
+
             // Paginate filtered results
             const totalCount = filtered.length;
             const startIndex = (page - 1) * pageSize;
@@ -232,15 +239,23 @@ export const getPaginatedRegistrations = async (
                 data: {
                     registrations: paginatedResults,
                     totalCount,
+                    totalParticipants,
                     hasMore,
                 },
             };
         }
 
         // No search - use efficient Firestore pagination
-        // First, get total count
+        // First, get total count and total participants
         const countSnapshot = await getDocs(baseQuery);
         const totalCount = countSnapshot.size;
+
+        // Sum total participants across all registrations
+        let totalParticipants = 0;
+        countSnapshot.forEach((docSnap) => {
+            const data = docSnap.data() as Registration;
+            totalParticipants += Array.isArray(data.members) ? data.members.length : 0;
+        });
 
         // Build paginated query
         const startIndex = (page - 1) * pageSize;
@@ -269,6 +284,7 @@ export const getPaginatedRegistrations = async (
             data: {
                 registrations,
                 totalCount,
+                totalParticipants,
                 hasMore,
             },
         };
