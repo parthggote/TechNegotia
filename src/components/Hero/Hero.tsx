@@ -8,7 +8,7 @@ import { useToast } from "@/components/Toast";
 import styles from "./Hero.module.css";
 
 /** Razorpay payment portal link */
-const PAYMENT_LINK = "https://pages.razorpay.com/pl_S6rLrbGpmxkKPx/view";
+const PAYMENT_LINK = "";
 
 /** Video sources */
 const DESKTOP_VIDEO = "/video (2).mp4";
@@ -63,7 +63,7 @@ export default function Hero({ onSignInClick }: HeroProps = {}) {
         if (videoRef.current) {
             const newSrc = isMobile ? MOBILE_VIDEO : DESKTOP_VIDEO;
             const currentSrc = videoRef.current.querySelector("source")?.src || "";
-            
+
             // Only reload if source actually changed
             if (!currentSrc.endsWith(newSrc.replace("/", ""))) {
                 videoRef.current.load();
@@ -106,9 +106,9 @@ export default function Hero({ onSignInClick }: HeroProps = {}) {
                     className={styles.backgroundVideo}
                     key={isMobile ? "mobile" : "desktop"}
                 >
-                    <source 
-                        src={isMobile ? MOBILE_VIDEO : DESKTOP_VIDEO} 
-                        type="video/mp4" 
+                    <source
+                        src={isMobile ? MOBILE_VIDEO : DESKTOP_VIDEO}
+                        type="video/mp4"
                     />
                 </video>
             </div>
@@ -137,6 +137,17 @@ export default function Hero({ onSignInClick }: HeroProps = {}) {
                     <i className="hn hn-sparkles"></i>
                     <span>Join the Quest</span>
                 </div>
+
+                <div className={styles.actionButtons}>
+                    {/* Pay Registration Fee Button - CLOSED */}
+                    <button
+                        className={`${styles.payButton} ${styles.payButtonLocked}`}
+                        onClick={() => showWarning("Sorry Adventures, the Quest are closed!!!")}
+                        style={{ filter: 'blur(3px)', cursor: 'pointer' }}
+                    >
+                        <i className="hn hn-lock"></i>
+                        Pay Registration Fee
+                    </button>
 
                 {authLoading ? (
                     <div className={styles.actionButtons}>
