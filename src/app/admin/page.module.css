@@ -225,7 +225,7 @@
 /* Stats Grid */
 .statsGrid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: var(--space-4, 1rem);
 }
 
@@ -273,6 +273,11 @@
 .statRejected .statIcon {
     background: rgba(248, 113, 113, 0.2);
     color: #f87171;
+}
+
+.statParticipants .statIcon {
+    background: rgba(139, 92, 246, 0.2);
+    color: #a78bfa;
 }
 
 .statInfo {
@@ -921,6 +926,12 @@
 }
 
 /* ==================== RESPONSIVE ==================== */
+@media (max-width: 1200px) {
+    .statsGrid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
 @media (max-width: 1024px) {
     .statsGrid {
         grid-template-columns: repeat(2, 1fr);

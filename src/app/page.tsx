@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Header from "@/components/Header/Header";
 import Hero from "@/components/Hero/Hero";
 import Footer from "@/components/Footer/Footer";
@@ -16,6 +16,7 @@ import { MASCOT_MESSAGES } from "@/lib/mascotData";
 
 export default function Home() {
   const { isVisible, currentMessage, currentMascot, showMessage, dismissMessage, nextMessage, messageQueue } = useMascotGuide('home');
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   // Show welcome messages on first visit
   useEffect(() => {
@@ -42,9 +43,13 @@ export default function Home() {
 
   return (
     <>
-      <Header />
+      <Header
+        isAuthModalOpen={isAuthModalOpen}
+        onOpenAuthModal={() => setIsAuthModalOpen(true)}
+        onCloseAuthModal={() => setIsAuthModalOpen(false)}
+      />
       <main>
-        <Hero />
+        <Hero onSignInClick={() => setIsAuthModalOpen(true)} />
 
         {/* Countdown Section */}
         <section className={styles.section} style={{ padding: 'var(--space-12) 0', background: 'var(--bg-dark)' }}>

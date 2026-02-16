@@ -8,11 +8,21 @@ import { useAuth } from "@/hooks/useAuth";
 import AuthModal from "@/components/AuthModal/AuthModal";
 import styles from "./Header.module.css";
 
-export default function Header() {
+type HeaderProps = {
+    isAuthModalOpen?: boolean;
+    onOpenAuthModal?: () => void;
+    onCloseAuthModal?: () => void;
+};
+
+export default function Header({ isAuthModalOpen: controlledAuthOpen, onOpenAuthModal, onCloseAuthModal }: HeaderProps = {}) {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+    const [internalAuthOpen, setInternalAuthOpen] = useState(false);
     const [showUserMenu, setShowUserMenu] = useState(false);
+
+    const isAuthModalOpen = onOpenAuthModal ? (controlledAuthOpen ?? false) : internalAuthOpen;
+    const openAuthModal = onOpenAuthModal ?? (() => setInternalAuthOpen(true));
+    const closeAuthModal = onCloseAuthModal ?? (() => setInternalAuthOpen(false));
 
     const { user, signOut } = useAuth();
 
@@ -76,57 +86,61 @@ export default function Header() {
                         ))}
                     </ul>
 
-                    {/* Mobile Sign In Button - only show when not logged in */}
-                    {!user ? (
+                    {/* Mobile: Sign Out inside hamburger menu when logged in */}
+                    {user && (
                         <button
                             onClick={() => {
-                                setIsAuthModalOpen(true);
+                                handleSignOut();
                                 setIsMobileMenuOpen(false);
                             }}
-                            className={styles.mobileSignInBtn}
+                            className={styles.mobileNavSignOutBtn}
+                            aria-label="Sign out"
                         >
-                            <i className="hn hn-user"></i>
-                            Sign In / Sign Up
+                            <i className="hn hn-logout"></i>
+                            Sign Out
                         </button>
-                    ) : (
-                        <>
-                            {/* Mobile Register Button - only show when logged in */}
-                            <Link
-                                href="/register"
-                                className={styles.mobileRegisterBtn}
-                                onClick={() => setIsMobileMenuOpen(false)}
-                            >
-                                <i className="hn hn-sword"></i>
-                                Register Now
-                            </Link>
-
-                            {/* Mobile Sign Out Button */}
-                            <button
-                                onClick={() => {
-                                    handleSignOut();
-                                    setIsMobileMenuOpen(false);
-                                }}
-                                className={styles.mobileSignOutBtn}
-                            >
-                                <i className="hn hn-logout"></i>
-                                Sign Out
-                            </button>
-
-                            {/* Mobile User Info */}
-                            <div className={styles.mobileUserInfo}>
-                                <i className="hn hn-user"></i>
-                                <span>{user.displayName || user.email?.split('@')[0]}</span>
-                            </div>
-                        </>
                     )}
                 </nav>
 
                 {/* Right Side Actions */}
                 <div className={styles.actions}>
+                    {/* Mobile auth: hidden when not logged in (Sign In in Join the Quest card); hidden when logged in (Sign Out is in hamburger menu) */}
+                    <div className={`${styles.mobileHeaderAuth} ${!user ? styles.mobileHeaderAuthSignInHidden : ""} ${user ? styles.mobileHeaderAuthLoggedInHidden : ""}`}>
+                        {!user ? (
+                            <button
+                                onClick={openAuthModal}
+                                className={styles.mobileSignInBtn}
+                                aria-label="Sign in or sign up"
+                            >
+                                <i className="hn hn-user"></i>
+                                Sign In / Sign Up
+                            </button>
+                        ) : (
+                            <>
+                                <Link
+                                    href="/register"
+                                    className={styles.mobileRegisterBtn}
+                                    aria-label="Register now"
+                                >
+                                    <i className="hn hn-sword"></i>
+                                    Register
+                                </Link>
+                                <button
+                                    onClick={handleSignOut}
+                                    className={styles.mobileSignOutBtn}
+                                    aria-label="Sign out"
+                                >
+                                    <i className="hn hn-logout"></i>
+                                    Sign Out
+                                </button>
+                            </>
+                        )}
+                    </div>
+
                     {/* Authentication Buttons - Desktop */}
                     {!user ? (
                         <button
-                            onClick={() => setIsAuthModalOpen(true)}
+                            onClick={openAuthModal}
                             className={`nes-btn is-primary ${styles.authBtn}`}
                         >
                             Sign In / Sign Up
@@ -183,7 +197,7 @@ export default function Header() {
             {/* Authentication Modal */}
             <AuthModal
                 isOpen={isAuthModalOpen}
-                onClose={() => setIsAuthModalOpen(false)}
+                onClose={closeAuthModal}
             />
         </header>
     );
