@@ -1,5 +1,7 @@
 "use client";
 
+// Non-functional change to trigger a new commit
+
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -8,7 +10,7 @@ import { useToast } from "@/components/Toast";
 import styles from "./Hero.module.css";
 
 /** Razorpay payment portal link */
-const PAYMENT_LINK = "";
+const PAYMENT_LINK = " ";
 
 /** Video sources */
 const DESKTOP_VIDEO = "/video (2).mp4";
@@ -17,6 +19,8 @@ const MOBILE_VIDEO = "/video (3).mp4";
 /** Mobile breakpoint in pixels */
 const MOBILE_BREAKPOINT = 768;
 
+
+/* Hweeo section export code */
 export default function Hero() {
     const { user, loading: authLoading } = useAuth();
     const { showWarning, showInfo } = useToast();
