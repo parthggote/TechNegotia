@@ -19,18 +19,14 @@ const MOBILE_VIDEO = "/video (3).mp4";
 /** Mobile breakpoint in pixels */
 const MOBILE_BREAKPOINT = 768;
 
-<<<<<<< HEAD
-
-/* Hweeo section export code */
-export default function Hero() {
-=======
 type HeroProps = {
     /** Called when user taps "Sign In / Sign Up" in the hero (opens auth modal on home) */
     onSignInClick?: () => void;
 };
 
 export default function Hero({ onSignInClick }: HeroProps = {}) {
->>>>>>> ff28e748886462ea24ee3824e8c13f544155f6c7
+
+
     const { user, loading: authLoading } = useAuth();
     const { showInfo, showWarning } = useToast();
     const heroRef = useRef<HTMLDivElement>(null);
