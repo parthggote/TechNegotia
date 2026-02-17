@@ -13,6 +13,7 @@ import HowItWorks from "@/components/HowItWorks/HowItWorks";
 import MascotGuide from "@/components/MascotGuide";
 import { useMascotGuide } from "@/hooks/useMascotGuide";
 import { MASCOT_MESSAGES } from "@/lib/mascotData";
+import ClosedBanner from "@/components/ClosedBanner/ClosedBanner";
 
 export default function Home() {
   const { isVisible, currentMessage, currentMascot, showMessage, dismissMessage, nextMessage, messageQueue } = useMascotGuide('home');
@@ -48,6 +49,7 @@ export default function Home() {
         onOpenAuthModal={() => setIsAuthModalOpen(true)}
         onCloseAuthModal={() => setIsAuthModalOpen(false)}
       />
+      <ClosedBanner />
       <main>
         <Hero onSignInClick={() => setIsAuthModalOpen(true)} />
 

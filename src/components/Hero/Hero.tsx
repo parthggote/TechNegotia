@@ -35,6 +35,14 @@ export default function Hero({ onSignInClick }: HeroProps = {}) {
     };
 
     /**
+     * Handles click when registration is closed
+     * Shows retro game-themed message
+     */
+    const handleRegistrationClosed = () => {
+        showWarning("Sorry Adventurers, the portal to the quest is closed!!!");
+    };
+
+    /**
      * Handles click on the main CTA button when authenticated
      * Opens payment portal
      */
@@ -138,17 +146,6 @@ export default function Hero({ onSignInClick }: HeroProps = {}) {
                     <span>Join the Quest</span>
                 </div>
 
-                <div className={styles.actionButtons}>
-                    {/* Pay Registration Fee Button - CLOSED */}
-                    <button
-                        className={`${styles.payButton} ${styles.payButtonLocked}`}
-                        onClick={() => showWarning("Sorry Adventures, the Quest are closed!!!")}
-                        style={{ filter: 'blur(3px)', cursor: 'pointer' }}
-                    >
-                        <i className="hn hn-lock"></i>
-                        Pay Registration Fee
-                    </button>
-
                 {authLoading ? (
                     <div className={styles.actionButtons}>
                         <button className={`${styles.payButton} ${styles.payButtonLoading}`} disabled>
@@ -157,23 +154,17 @@ export default function Hero({ onSignInClick }: HeroProps = {}) {
                         </button>
                     </div>
                 ) : !isMobile ? (
-                    /* Desktop: always show Pay + Register; locked until logged in */
+                    /* Desktop: always show Pay + Register; CLOSED - blurred and disabled */
                     <>
                         <div className={styles.actionButtons}>
-                            {user ? (
-                                <button className={styles.payButton} onClick={handleBeginQuest}>
-                                    <i className="hn hn-coin"></i>
-                                    Pay Registration Fee
-                                </button>
-                            ) : (
-                                <button
-                                    className={`${styles.payButton} ${styles.payButtonLocked}`}
-                                    onClick={handleLockedClick}
-                                >
-                                    <i className="hn hn-lock"></i>
-                                    Pay Registration Fee
-                                </button>
-                            )}
+                            <button
+                                className={`${styles.payButton} ${styles.payButtonLocked}`}
+                                onClick={handleRegistrationClosed}
+                                style={{ filter: 'blur(1.5px)', cursor: 'not-allowed', opacity: 0.7 }}
+                            >
+                                <i className="hn hn-lock"></i>
+                                Pay Registration Fee
+                            </button>
                             {user ? (
                                 <Link href="/register" className={styles.registerButton}>
                                     <i className="hn hn-sword"></i>
@@ -190,7 +181,7 @@ export default function Hero({ onSignInClick }: HeroProps = {}) {
                             )}
                         </div>
                         <p className={styles.actionHint}>
-                            {user ? "Pay first, then register" : "Sign in to continue"}
+                            Registration portal closed
                         </p>
                     </>
                 ) : !user ? (
@@ -209,11 +200,15 @@ export default function Hero({ onSignInClick }: HeroProps = {}) {
                         </div>
                     </>
                 ) : (
-                    /* Mobile, logged in: show Pay and Register */
+                    /* Mobile, logged in: show Pay (CLOSED - blurred) and Register */
                     <>
                         <div className={styles.actionButtons}>
-                            <button className={styles.payButton} onClick={handleBeginQuest}>
-                                <i className="hn hn-coin"></i>
+                            <button 
+                                className={`${styles.payButton} ${styles.payButtonLocked}`}
+                                onClick={handleRegistrationClosed}
+                                style={{ filter: 'blur(1.5px)', cursor: 'not-allowed', opacity: 0.7 }}
+                            >
+                                <i className="hn hn-lock"></i>
                                 Pay Registration Fee
                             </button>
                             <Link href="/register" className={styles.registerButton}>
@@ -222,7 +217,7 @@ export default function Hero({ onSignInClick }: HeroProps = {}) {
                             </Link>
                         </div>
                         <p className={styles.actionHint}>
-                            Pay first, then register
+                            Registration portal closed
                         </p>
                     </>
                 )}
