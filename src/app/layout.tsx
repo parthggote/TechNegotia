@@ -3,6 +3,7 @@ import "./globals.css";
 import "./nes.css";
 import "@hackernoon/pixel-icon-library/fonts/iconfont.css";
 import { ToastProvider } from "@/components/Toast";
+import ErrorBoundary from "@/components/ErrorBoundary/ErrorBoundary";
 
 export const metadata: Metadata = {
   title: "TechNegotia | Multi-Round Hackathon Event",
@@ -41,7 +42,9 @@ export default function RootLayout({
       </head>
       <body>
         <ToastProvider>
-          {children}
+          <ErrorBoundary>
+            {children}
+          </ErrorBoundary>
         </ToastProvider>
       </body>
     </html>

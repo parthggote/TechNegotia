@@ -1,5 +1,5 @@
 // Registration service for Firestore operations
-import { doc, setDoc, getDoc, deleteDoc, Timestamp, collection, getDocs, updateDoc, query, where, orderBy, limit, startAfter, Query, DocumentData } from 'firebase/firestore';
+import { doc, setDoc, getDoc, deleteDoc, Timestamp, collection, getDocs, updateDoc, query, where, orderBy, limit, startAfter, Query, DocumentData, runTransaction } from 'firebase/firestore';
 import { db } from './firebase';
 import { FirebaseResult } from './types';
 
@@ -58,7 +58,9 @@ export const checkExistingRegistration = async (
 
 /**
  * Save registration to Firestore
- * Uses user ID as document ID to prevent duplicates
+ * Uses a transaction to prevent the overwrite race condition:
+ *   - If two tabs submit simultaneously, only the first one wins.
+ *   - The second attempt sees the doc already exists and aborts.
  */
 export const saveRegistration = async (
     userId: string,
@@ -73,22 +75,29 @@ export const saveRegistration = async (
             throw new Error('Firestore is not initialized');
         }
 
-        const registration: Registration = {
-            userId,
-            userEmail,
-            teamName,
-            members,
-            paymentProofURL,
-            timestamp: Timestamp.now(),
-            status: 'pending',
-            // Only add reference if it has a value (Firestore rejects undefined)
-            ...(reference ? { reference } : {}),
-        };
+        const firestore = db;
 
-        // Use setDoc with user ID as document ID
-        // This ensures one registration per user
-        const docRef = doc(db, 'registrations', userId);
-        await setDoc(docRef, registration);
+        await runTransaction(firestore, async (transaction) => {
+            const docRef = doc(firestore, 'registrations', userId);
+            const docSnap = await transaction.get(docRef);
+
+            if (docSnap.exists()) {
+                throw new Error('You have already registered! Each user can only register once.');
+            }
+
+            const registration: Registration = {
+                userId,
+                userEmail,
+                teamName,
+                members,
+                paymentProofURL,
+                timestamp: Timestamp.now(),
+                status: 'pending',
+                ...(reference ? { reference } : {}),
+            };
+
+            transaction.set(docRef, registration);
+        });
 
         return {
             success: true,
@@ -300,6 +309,9 @@ export const getPaginatedRegistrations = async (
 
 /**
  * Update registration status (admin only)
+ * Uses a transaction to prevent concurrent approve/reject race:
+ *   - Reads current status first
+ *   - Only writes if status is still 'pending' (or the expected previous status)
  */
 export const updateRegistrationStatus = async (
     userId: string,
@@ -310,10 +322,30 @@ export const updateRegistrationStatus = async (
             throw new Error('Firestore is not initialized');
         }
 
-        const docRef = doc(db, 'registrations', userId);
-        await updateDoc(docRef, {
-            status,
-            updatedAt: Timestamp.now(),
+        const firestore = db;
+
+        await runTransaction(firestore, async (transaction) => {
+            const docRef = doc(firestore, 'registrations', userId);
+            const docSnap = await transaction.get(docRef);
+
+            if (!docSnap.exists()) {
+                throw new Error('Registration not found');
+            }
+
+            const currentData = docSnap.data() as Registration;
+
+            // Guard: if another admin already changed the status, abort
+            if (currentData.status !== 'pending' && status !== 'pending') {
+                throw new Error(
+                    `This registration has already been ${currentData.status}. ` +
+                    `Refresh the page to see the latest status.`
+                );
+            }
+
+            transaction.update(docRef, {
+                status,
+                updatedAt: Timestamp.now(),
+            });
         });
 
         return {

@@ -3,12 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/components/Toast";
 import styles from "./Hero.module.css";
-
-/** Razorpay payment portal link */
-const PAYMENT_LINK = "";
 
 /** Video sources */
 const DESKTOP_VIDEO = "/video (2).mp4";
@@ -17,39 +12,26 @@ const MOBILE_VIDEO = "/video (3).mp4";
 /** Mobile breakpoint in pixels */
 const MOBILE_BREAKPOINT = 768;
 
+/** Quest release time — Feb 20, 2026 12:00 PM IST (UTC+5:30 = 06:30 UTC) */
+const QUEST_RELEASE_TIME = new Date('2026-02-20T06:30:00Z').getTime();
+
 type HeroProps = {
     /** Called when user taps "Sign In / Sign Up" in the hero (opens auth modal on home) */
     onSignInClick?: () => void;
 };
 
+
 export default function Hero({ onSignInClick }: HeroProps = {}) {
-    const { user, loading: authLoading } = useAuth();
-    const { showInfo, showWarning } = useToast();
     const heroRef = useRef<HTMLDivElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isMobile, setIsMobile] = useState(false);
 
-    /** Desktop: click on locked Pay/Register shows toast */
-    const handleLockedClick = () => {
-        showWarning("Please sign in to begin your quest!");
-    };
-
-    /**
-     * Handles click when registration is closed
-     * Shows retro game-themed message
-     */
-    const handleRegistrationClosed = () => {
-        showWarning("Sorry Adventurers, the portal to the quest is closed!!!");
-    };
-
-    /**
-     * Handles click on the main CTA button when authenticated
-     * Opens payment portal
-     */
-    const handleBeginQuest = () => {
-        showInfo("Opening payment portal...");
-        window.open(PAYMENT_LINK, "_blank", "noopener,noreferrer");
-    };
+    // Countdown timer state
+    const [timeLeft, setTimeLeft] = useState(() => {
+        const diff = QUEST_RELEASE_TIME - Date.now();
+        return diff > 0 ? diff : 0;
+    });
+    const questsUnlocked = timeLeft <= 0;
 
     // Detect mobile viewport and switch video source
     useEffect(() => {
@@ -100,6 +82,34 @@ export default function Hero({ onSignInClick }: HeroProps = {}) {
         return () => window.removeEventListener("scroll", handleScroll);
     }, [isMobile]);
 
+    // Countdown ticker — updates every second
+    useEffect(() => {
+        if (questsUnlocked) return;
+
+        const interval = setInterval(() => {
+            const diff = QUEST_RELEASE_TIME - Date.now();
+            if (diff <= 0) {
+                setTimeLeft(0);
+                clearInterval(interval);
+            } else {
+                setTimeLeft(diff);
+            }
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [questsUnlocked]);
+
+    // Format the countdown into hours/minutes/seconds
+    const formatCountdown = (ms: number) => {
+        const totalSeconds = Math.floor(ms / 1000);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        return { hours, minutes, seconds };
+    };
+
+    const countdown = formatCountdown(timeLeft);
+
     return (
         <section className={styles.hero} ref={heroRef}>
             {/* Animated Background Video with Parallax */}
@@ -139,88 +149,49 @@ export default function Hero({ onSignInClick }: HeroProps = {}) {
                 </div>
             </div>
 
-            {/* Join the Quest card: desktop = always Pay + Register (locked if !user); mobile = Sign In when !user, then Pay + Register */}
+            {/* Quest Portal Button */}
             <div className={styles.actionCard}>
                 <div className={styles.actionCardHeader}>
                     <i className="hn hn-sparkles"></i>
                     <span>Join the Quest</span>
                 </div>
+                <div className={styles.actionButtons}>
+                    <div className={styles.questBtnWrapper}>
+                        {/* Outer magical aura */}
+                        <div className={`${styles.questAura} ${!questsUnlocked ? styles.questAuraLocked : ''}`} />
+                        {/* Floating sparkle particles */}
+                        <div className={styles.questSparkles}>
+                            {[...Array(8)].map((_, i) => (
+                                <span key={i} className={styles.sparkle} style={{
+                                    '--i': i,
+                                    '--total': 8,
+                                } as React.CSSProperties} />
+                            ))}
+                        </div>
 
-                {authLoading ? (
-                    <div className={styles.actionButtons}>
-                        <button className={`${styles.payButton} ${styles.payButtonLoading}`} disabled>
-                            <i className="hn hn-loading"></i>
-                            Loading...
-                        </button>
-                    </div>
-                ) : !isMobile ? (
-                    /* Desktop: always show Pay + Register; CLOSED - blurred and disabled */
-                    <>
-                        <div className={styles.actionButtons}>
-                            <button
-                                className={`${styles.payButton} ${styles.payButtonLocked}`}
-                                onClick={handleRegistrationClosed}
-                                style={{ filter: 'blur(1.5px)', cursor: 'not-allowed', opacity: 0.7 }}
-                            >
-                                <i className="hn hn-lock"></i>
-                                Pay Registration Fee
-                            </button>
-                            {user ? (
-                                <Link href="/register" className={styles.registerButton}>
-                                    <i className="hn hn-sword"></i>
-                                    Register Team
-                                </Link>
-                            ) : (
-                                <button
-                                    className={`${styles.registerButton} ${styles.registerButtonLocked}`}
-                                    onClick={handleLockedClick}
-                                >
-                                    <i className="hn hn-lock"></i>
-                                    Register Team
-                                </button>
-                            )}
-                        </div>
-                        <p className={styles.actionHint}>
-                            Registration portal closed
-                        </p>
-                    </>
-                ) : !user ? (
-                    /* Mobile, not logged in: show only Sign In / Sign Up */
-                    <>
-                        <div className={styles.actionButtons}>
-                            <button
-                                type="button"
-                                className={styles.heroAuthCta}
-                                onClick={onSignInClick ?? (() => {})}
-                                aria-label="Sign in or create account"
-                            >
-                                <i className="hn hn-user"></i>
-                                Sign In / Sign Up
-                            </button>
-                        </div>
-                    </>
-                ) : (
-                    /* Mobile, logged in: show Pay (CLOSED - blurred) and Register */
-                    <>
-                        <div className={styles.actionButtons}>
-                            <button 
-                                className={`${styles.payButton} ${styles.payButtonLocked}`}
-                                onClick={handleRegistrationClosed}
-                                style={{ filter: 'blur(1.5px)', cursor: 'not-allowed', opacity: 0.7 }}
-                            >
-                                <i className="hn hn-lock"></i>
-                                Pay Registration Fee
-                            </button>
-                            <Link href="/register" className={styles.registerButton}>
-                                <i className="hn hn-sword"></i>
-                                Register Team
+                        {questsUnlocked ? (
+                            <Link href="/quests" className={styles.questPortalBtn}>
+                                <span className={styles.questPortalBtnGlow} />
+                                <span className={styles.questPortalBtnShimmer} />
+                                <span className={styles.questPortalBtnIcon}>⚔️</span>
+                                <span className={styles.questPortalBtnText}>Quests Are Available</span>
+                                <span className={styles.questPortalBtnArrow}>→</span>
                             </Link>
-                        </div>
-                        <p className={styles.actionHint}>
-                            Registration portal closed
-                        </p>
-                    </>
-                )}
+                        ) : (
+                            <div className={styles.questPortalBtnLocked}>
+                                <span className={styles.questPortalBtnIcon}>🔒</span>
+                                <span className={styles.questPortalBtnText}>Quests Unlock In</span>
+                                <div className={styles.questTimerInline}>
+                                    <span className={styles.timerDigit}>{String(countdown.hours).padStart(2, '0')}</span>
+                                    <span className={styles.timerSep}>:</span>
+                                    <span className={styles.timerDigit}>{String(countdown.minutes).padStart(2, '0')}</span>
+                                    <span className={styles.timerSep}>:</span>
+                                    <span className={styles.timerDigit}>{String(countdown.seconds).padStart(2, '0')}</span>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
 
             {/* Supported By Section - at bottom like reference */}

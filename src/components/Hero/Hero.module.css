@@ -1,7 +1,8 @@
 .hero {
     position: relative;
     height: 100vh;
-    height: 100dvh; /* Dynamic viewport height for mobile browsers */
+    height: 100dvh;
+    /* Dynamic viewport height for mobile browsers */
     min-height: 500px;
     display: flex;
     flex-direction: column;
@@ -89,9 +90,12 @@
 }
 
 @keyframes titleFloat {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(0px);
     }
+
     50% {
         transform: translateY(-6px);
     }
@@ -196,11 +200,11 @@
     border-radius: 12px;
     padding: var(--space-4);
     backdrop-filter: blur(10px);
-    box-shadow: 
+    box-shadow:
         0 8px 32px rgba(0, 0, 0, 0.5),
         0 0 20px rgba(244, 160, 32, 0.2);
     animation: cardSlideIn 0.5s ease-out;
-    max-width: 280px;
+    max-width: 360px;
 }
 
 @keyframes cardSlideIn {
@@ -208,6 +212,7 @@
         opacity: 0;
         transform: translateX(20px);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
@@ -230,7 +235,7 @@
 
 .actionCardHeader span {
     font-family: var(--font-pixel);
-    font-size: 0.5rem;
+    font-size: 0.7rem;
     color: var(--accent-gold);
     letter-spacing: 0.05em;
 }
@@ -241,7 +246,371 @@
     gap: var(--space-2);
 }
 
-/* Pay Button */
+/* ===== MAGICAL QUEST BUTTON ===== */
+
+/* Wrapper for aura + sparkles + button */
+.questBtnWrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+/* Pulsing outer aura — magical glow behind button */
+.questAura {
+    position: absolute;
+    inset: -8px;
+    border-radius: 14px;
+    background: linear-gradient(135deg,
+            rgba(255, 215, 0, 0.3),
+            rgba(255, 100, 50, 0.2),
+            rgba(180, 80, 255, 0.25),
+            rgba(255, 215, 0, 0.3));
+    background-size: 300% 300%;
+    animation: auraShift 4s ease-in-out infinite, auraPulse 2s ease-in-out infinite;
+    filter: blur(12px);
+    z-index: 0;
+    pointer-events: none;
+}
+
+@keyframes auraShift {
+
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+@keyframes auraPulse {
+
+    0%,
+    100% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.85;
+        transform: scale(1.04);
+    }
+}
+
+/* Orbiting sparkle particles */
+.questSparkles {
+    position: absolute;
+    inset: -12px;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.sparkle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff 0%, #ffd700 60%, transparent 100%);
+    box-shadow: 0 0 6px 2px rgba(255, 215, 0, 0.6), 0 0 12px rgba(255, 180, 50, 0.3);
+    animation: sparkleOrbit 3s ease-in-out infinite;
+    animation-delay: calc(var(--i) * 0.375s);
+    opacity: 0;
+}
+
+/* Position sparkles around the button perimeter */
+.sparkle:nth-child(1) {
+    top: 0;
+    left: 20%;
+}
+
+.sparkle:nth-child(2) {
+    top: 0;
+    right: 15%;
+}
+
+.sparkle:nth-child(3) {
+    top: 30%;
+    right: -4px;
+}
+
+.sparkle:nth-child(4) {
+    bottom: 20%;
+    right: 0;
+}
+
+.sparkle:nth-child(5) {
+    bottom: -2px;
+    right: 25%;
+}
+
+.sparkle:nth-child(6) {
+    bottom: 0;
+    left: 20%;
+}
+
+.sparkle:nth-child(7) {
+    top: 40%;
+    left: -4px;
+}
+
+.sparkle:nth-child(8) {
+    top: 10%;
+    left: 5%;
+}
+
+@keyframes sparkleOrbit {
+    0% {
+        opacity: 0;
+        transform: scale(0) translateY(0);
+    }
+
+    20% {
+        opacity: 1;
+        transform: scale(1.2) translateY(-4px);
+    }
+
+    50% {
+        opacity: 0.8;
+        transform: scale(0.8) translateY(-10px);
+    }
+
+    80% {
+        opacity: 0.3;
+        transform: scale(0.4) translateY(-16px);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(0) translateY(-20px);
+    }
+}
+
+/* The button itself */
+.questPortalBtn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: var(--font-pixel);
+    font-size: 0.9rem;
+    padding: 1rem 1.8rem;
+    background: linear-gradient(180deg, #ffd700 0%, #f4a020 40%, #e86a17 100%);
+    color: #1a1a2e;
+    border: 3px solid #8b4513;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow:
+        0 3px 0 #8b4513,
+        0 4px 12px rgba(0, 0, 0, 0.3),
+        0 0 20px rgba(255, 215, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: bold;
+    z-index: 1;
+}
+
+.questPortalBtn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow:
+        0 6px 0 #8b4513,
+        0 8px 20px rgba(0, 0, 0, 0.4),
+        0 0 40px rgba(255, 215, 0, 0.5),
+        0 0 60px rgba(255, 160, 50, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.questPortalBtn:active {
+    transform: translateY(1px) scale(0.98);
+    box-shadow: 0 2px 0 #8b4513, 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Hover makes aura explode outward */
+.questBtnWrapper:hover .questAura {
+    animation: auraShift 2s ease-in-out infinite, auraExplode 0.6s ease-out forwards;
+}
+
+@keyframes auraExplode {
+    0% {
+        inset: -8px;
+        filter: blur(12px);
+        opacity: 0.5;
+    }
+
+    100% {
+        inset: -14px;
+        filter: blur(16px);
+        opacity: 1;
+    }
+}
+
+/* Sweep glow across button surface */
+.questPortalBtnGlow {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+    animation: questBtnSweep 3s ease-in-out infinite;
+    z-index: 2;
+}
+
+@keyframes questBtnSweep {
+    0% {
+        left: -100%;
+    }
+
+    40% {
+        left: 150%;
+    }
+
+    100% {
+        left: 150%;
+    }
+}
+
+/* Shimmer — second slower sweep with color tint */
+.questPortalBtnShimmer {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 180, 50, 0.2), rgba(180, 80, 255, 0.15), transparent);
+    animation: questBtnShimmer 5s ease-in-out infinite 1.5s;
+    z-index: 2;
+}
+
+@keyframes questBtnShimmer {
+    0% {
+        left: -100%;
+    }
+
+    50% {
+        left: 150%;
+    }
+
+    100% {
+        left: 150%;
+    }
+}
+
+.questPortalBtnIcon {
+    font-size: 1.4rem;
+    z-index: 3;
+    filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.5));
+    animation: iconPulse 2s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.5));
+    }
+
+    50% {
+        transform: scale(1.15);
+        filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.8));
+    }
+}
+
+.questPortalBtnText {
+    position: relative;
+    z-index: 3;
+}
+
+.questPortalBtnArrow {
+    font-size: 1.2rem;
+    z-index: 3;
+    transition: transform 0.25s ease;
+}
+
+.questPortalBtn:hover .questPortalBtnArrow {
+    transform: translateX(4px);
+}
+
+.questPortalBtn:hover .questPortalBtnIcon {
+    animation: iconPulse 1s ease-in-out infinite;
+}
+
+/* ===== LOCKED QUEST BUTTON (countdown active) ===== */
+.questPortalBtnLocked {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    font-family: var(--font-pixel);
+    font-size: 0.9rem;
+    padding: 1rem 1.8rem;
+    background: linear-gradient(180deg, #4b5563 0%, #374151 40%, #1f2937 100%);
+    color: #9ca3af;
+    border: 3px solid #374151;
+    border-radius: 8px;
+    cursor: not-allowed;
+    box-shadow:
+        0 3px 0 #1f2937,
+        0 4px 12px rgba(0, 0, 0, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: bold;
+    z-index: 1;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.questAuraLocked {
+    background: linear-gradient(135deg,
+            rgba(107, 114, 128, 0.2),
+            rgba(75, 85, 99, 0.15),
+            rgba(107, 114, 128, 0.2)) !important;
+    filter: blur(12px) !important;
+    animation: auraPulse 3s ease-in-out infinite !important;
+}
+
+.questTimerInline {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-top: 2px;
+}
+
+.timerDigit {
+    font-family: var(--font-pixel);
+    font-size: 1.1rem;
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.1);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+    border-radius: 4px;
+    padding: 2px 6px;
+    min-width: 28px;
+    text-align: center;
+    text-shadow: 0 0 8px rgba(251, 191, 36, 0.4);
+}
+
+.timerSep {
+    font-family: var(--font-pixel);
+    font-size: 1rem;
+    color: rgba(251, 191, 36, 0.5);
+    animation: sepPulse 1s step-end infinite;
+}
+
+@keyframes sepPulse {
+    50% {
+        opacity: 0.2;
+    }
+}
+
 .payButton {
     display: flex;
     align-items: center;
@@ -256,7 +625,7 @@
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 
+    box-shadow:
         0 3px 0 #8b4513,
         0 4px 12px rgba(0, 0, 0, 0.3);
     text-decoration: none;
@@ -265,7 +634,7 @@
 
 .payButton:hover {
     transform: translateY(-2px);
-    box-shadow: 
+    box-shadow:
         0 5px 0 #8b4513,
         0 6px 16px rgba(0, 0, 0, 0.4),
         0 0 20px rgba(255, 215, 0, 0.3);
@@ -273,7 +642,7 @@
 
 .payButton:active {
     transform: translateY(1px);
-    box-shadow: 
+    box-shadow:
         0 2px 0 #8b4513,
         0 3px 8px rgba(0, 0, 0, 0.2);
 }
@@ -281,13 +650,13 @@
 .payButtonLocked {
     background: linear-gradient(180deg, #6b7280 0%, #4b5563 100%);
     border-color: #374151;
-    box-shadow: 
+    box-shadow:
         0 3px 0 #374151,
         0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .payButtonLocked:hover {
-    box-shadow: 
+    box-shadow:
         0 5px 0 #374151,
         0 6px 16px rgba(0, 0, 0, 0.4),
         0 0 15px rgba(251, 191, 36, 0.2);
@@ -296,7 +665,7 @@
 .payButtonLoading {
     background: linear-gradient(180deg, #a78bfa 0%, #7c3aed 100%);
     border-color: #5b21b6;
-    box-shadow: 
+    box-shadow:
         0 3px 0 #5b21b6,
         0 4px 12px rgba(0, 0, 0, 0.3);
     cursor: wait;
@@ -353,9 +722,12 @@
 }
 
 @keyframes loadingPulse {
-    0%, 100% {
+
+    0%,
+    100% {
         opacity: 0.8;
     }
+
     50% {
         opacity: 1;
     }
@@ -371,9 +743,12 @@
 }
 
 @keyframes float {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(0) rotate(-2deg);
     }
+
     50% {
         transform: translateY(-12px) rotate(2deg);
     }
@@ -491,6 +866,7 @@
             opacity: 0;
             transform: translateX(-50%) translateY(20px);
         }
+
         to {
             opacity: 1;
             transform: translateX(-50%) translateY(0);
@@ -514,7 +890,7 @@
 
     .payButton {
         border-width: 3px;
-        box-shadow: 
+        box-shadow:
             0 4px 0 #8b4513,
             0 6px 16px rgba(0, 0, 0, 0.3);
     }
@@ -682,7 +1058,7 @@
 
     .payButton {
         border-width: 3px;
-        box-shadow: 
+        box-shadow:
             0 3px 0 #8b4513,
             0 5px 12px rgba(0, 0, 0, 0.25);
     }

@@ -1141,3 +1141,34 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* ==================== TAB NAVIGATION ==================== */
+.tabNav {
+    display: flex;
+    gap: var(--space-2, 0.5rem);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 0;
+}
+
+.tabButton {
+    padding: var(--space-3, 0.75rem) var(--space-5, 1.25rem);
+    font-family: var(--font-pixel, 'Press Start 2P'), monospace;
+    font-size: 0.5rem;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: -2px;
+}
+
+.tabButton:hover {
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.tabActive {
+    color: var(--accent-gold, #f4a020) !important;
+    border-bottom-color: var(--accent-gold, #f4a020) !important;
+}
