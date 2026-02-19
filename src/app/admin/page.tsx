@@ -6,13 +6,21 @@ import { adminLogin, adminLogout } from "@/lib/adminAuth";
 import { checkAdminSession, setAdminSession, clearAdminSession } from "@/lib/adminAuthClient";
 import { getAllRegistrations, updateRegistrationStatus, deleteRegistration, Registration, getPaginatedRegistrations, TeamMember } from "@/lib/registrationService";
 import { sendApprovalEmail, sendRejectionEmail, initEmailJS } from "@/lib/emailService";
-import { exportFilteredRegistrations, ExportFields, defaultExportFields } from "@/lib/excelExport";
+import { exportFilteredRegistrations, exportRegistrationsWithQuests, ExportFields, defaultExportFields } from "@/lib/excelExport";
+import {
+    getAllProblemStatements,
+    addProblemStatement,
+    updateProblemStatement,
+    deleteProblemStatement,
+    ProblemStatement,
+    QuestSelection,
+} from "@/lib/questService";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import styles from "./page.module.css";
 
 export default function AdminPage() {
-    const { user } = useAuth();
+    const { user, loading: authLoading } = useAuth();
     const [isAdminAuth, setIsAdminAuth] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -38,6 +46,16 @@ export default function AdminPage() {
     const [exportFields, setExportFields] = useState<ExportFields>(defaultExportFields);
     const [isExporting, setIsExporting] = useState(false);
 
+    // Quest management state
+    const [activeTab, setActiveTab] = useState<'registrations' | 'quests'>('registrations');
+    const [quests, setQuests] = useState<ProblemStatement[]>([]);
+    const [questsLoading, setQuestsLoading] = useState(false);
+    const [isQuestModalOpen, setIsQuestModalOpen] = useState(false);
+    const [editingQuest, setEditingQuest] = useState<ProblemStatement | null>(null);
+    const [questForm, setQuestForm] = useState({ title: '', description: '', maxTeams: 10 });
+    const [questSaving, setQuestSaving] = useState(false);
+    const [viewingQuestSelections, setViewingQuestSelections] = useState<ProblemStatement | null>(null);
+
     // Initialize EmailJS
     useEffect(() => {
         initEmailJS();
@@ -45,20 +63,32 @@ export default function AdminPage() {
 
     // Check admin session
     useEffect(() => {
-        if (checkAdminSession()) {
+        const hasSession = checkAdminSession();
+        if (hasSession) {
             setIsAdminAuth(true);
-            loadRegistrations();
         } else {
             setLoading(false);
         }
     }, []);
 
-    // Reload registrations when pagination, filter, or search changes
+    // Reload registrations when pagination, filter, search, or auth state changes
     useEffect(() => {
         if (isAdminAuth) {
-            loadRegistrations();
+            if (user) {
+                loadRegistrations();
+            } else if (!authLoading) {
+                // If auth is done and no user, stop loading spinner
+                setLoading(false);
+            }
         }
-    }, [currentPage, filter, searchTerm]);
+    }, [currentPage, filter, searchTerm, isAdminAuth, user, authLoading]);
+
+    // Load quests when admin is authenticated and user is ready
+    useEffect(() => {
+        if (isAdminAuth && user) {
+            loadQuests();
+        }
+    }, [isAdminAuth, user]);
 
     /**
      * Handles admin login form submission
@@ -298,6 +328,7 @@ export default function AdminPage() {
             memberNames: selectAll,
             memberEmails: selectAll,
             memberPhones: selectAll,
+            problemStatement: selectAll,
         };
         setExportFields(newFields);
     };
@@ -325,17 +356,6 @@ export default function AdminPage() {
                 return;
             }
 
-            // Apply filter if not 'all'
-            const filteredRegistrations = filter === 'all'
-                ? allRegistrations
-                : allRegistrations.filter(reg => reg.status === filter);
-
-            if (filteredRegistrations.length === 0) {
-                alert(`No ${filter} registrations to export!`);
-                setIsExporting(false);
-                return;
-            }
-
             // Check if at least one field is selected
             const hasSelectedField = Object.values(exportFields).some(v => v);
             if (!hasSelectedField) {
@@ -344,14 +364,109 @@ export default function AdminPage() {
                 return;
             }
 
-            exportFilteredRegistrations(filteredRegistrations, filter, exportFields);
+            // If problemStatement field is selected, fetch quests and use enriched export
+            if (exportFields.problemStatement) {
+                const questResult = await getAllProblemStatements();
+                const questData = (questResult.success && questResult.data) ? questResult.data : [];
+                exportRegistrationsWithQuests(allRegistrations, questData, filter, exportFields);
+            } else {
+                exportFilteredRegistrations(allRegistrations, filter, exportFields);
+            }
+
             const statusText = filter === 'all' ? 'all' : filter;
-            alert(`Exported ${filteredRegistrations.length} ${statusText} registration(s) to Excel!`);
+            const filteredCount = filter === 'all' ? allRegistrations.length : allRegistrations.filter(r => r.status === filter).length;
+            alert(`Exported ${filteredCount} ${statusText} registration(s) to Excel!`);
             closeExportModal();
         } catch (error: any) {
             alert('Error exporting registrations: ' + error.message);
         }
         setIsExporting(false);
+    };
+
+    // ==================== Quest Management Handlers ====================
+
+    const loadQuests = async () => {
+        setQuestsLoading(true);
+        const result = await getAllProblemStatements();
+        if (result.success && result.data) {
+            setQuests(result.data);
+        } else {
+            alert('Failed to load quests: ' + (result.error || 'Unknown error'));
+        }
+        setQuestsLoading(false);
+    };
+
+    const openAddQuestModal = () => {
+        setEditingQuest(null);
+        setQuestForm({ title: '', description: '', maxTeams: 10 });
+        setIsQuestModalOpen(true);
+    };
+
+    const openEditQuestModal = (quest: ProblemStatement) => {
+        setEditingQuest(quest);
+        setQuestForm({
+            title: quest.title,
+            description: quest.description,
+            maxTeams: quest.maxTeams,
+        });
+        setIsQuestModalOpen(true);
+    };
+
+    const closeQuestModal = () => {
+        setIsQuestModalOpen(false);
+        setEditingQuest(null);
+        setQuestForm({ title: '', description: '', maxTeams: 10 });
+    };
+
+    const handleSaveQuest = async () => {
+        if (!questForm.title.trim() || !questForm.description.trim()) {
+            alert('Please fill in title and description');
+            return;
+        }
+        setQuestSaving(true);
+
+        if (editingQuest && editingQuest.id) {
+            const result = await updateProblemStatement(editingQuest.id, {
+                title: questForm.title,
+                description: questForm.description,
+                maxTeams: questForm.maxTeams,
+            });
+            if (result.success) {
+                alert('Quest updated successfully!');
+                closeQuestModal();
+                loadQuests();
+            } else {
+                alert('Failed to update quest: ' + result.error);
+            }
+        } else {
+            const result = await addProblemStatement(
+                questForm.title,
+                questForm.description,
+                questForm.maxTeams
+            );
+            if (result.success) {
+                alert('Quest added successfully!');
+                closeQuestModal();
+                loadQuests();
+            } else {
+                alert('Failed to add quest: ' + result.error);
+            }
+        }
+        setQuestSaving(false);
+    };
+
+    const handleDeleteQuest = async (quest: ProblemStatement) => {
+        if (!quest.id) return;
+        if (!confirm(`Delete quest "${quest.title}"?\n\nThis action is PERMANENT!`)) return;
+        if (!confirm(`Are you absolutely sure? This will remove the quest and all selection data.`)) return;
+
+        const result = await deleteProblemStatement(quest.id);
+        if (result.success) {
+            alert('Quest deleted successfully!');
+            loadQuests();
+        } else {
+            alert('Failed to delete quest: ' + result.error);
+        }
     };
 
     /**
@@ -493,168 +608,357 @@ export default function AdminPage() {
                     </div>
                 </section>
 
-                {/* Controls Section */}
+                {/* Tab Navigation */}
                 <section className={styles.controlsSection}>
                     <div className={styles.container}>
-                        <div className={styles.controls}>
-                            <div className={styles.filters}>
-                                <button
-                                    className={filter === 'all' ? styles.filterActive : ''}
-                                    onClick={() => handleFilterChange('all')}
-                                >
-                                    All
-                                </button>
-                                <button
-                                    className={filter === 'pending' ? styles.filterActive : ''}
-                                    onClick={() => handleFilterChange('pending')}
-                                >
-                                    Pending
-                                </button>
-                                <button
-                                    className={filter === 'approved' ? styles.filterActive : ''}
-                                    onClick={() => handleFilterChange('approved')}
-                                >
-                                    Approved
-                                </button>
-                                <button
-                                    className={filter === 'rejected' ? styles.filterActive : ''}
-                                    onClick={() => handleFilterChange('rejected')}
-                                >
-                                    Rejected
-                                </button>
-                            </div>
-
-                            <div className={styles.rightControls}>
-                                <div className={styles.searchWrapper}>
-                                    <i className="hn hn-search"></i>
-                                    <input
-                                        type="text"
-                                        placeholder="Search teams..."
-                                        value={searchTerm}
-                                        onChange={(e) => handleSearchChange(e.target.value)}
-                                        className={styles.searchInput}
-                                    />
-                                </div>
-
-                                <button
-                                    onClick={openExportModal}
-                                    className={styles.exportButton}
-                                >
-                                    <i className="hn hn-download"></i> Export Excel
-                                </button>
-                            </div>
+                        <div className={styles.tabNav}>
+                            <button
+                                className={`${styles.tabButton} ${activeTab === 'registrations' ? styles.tabActive : ''}`}
+                                onClick={() => setActiveTab('registrations')}
+                            >
+                                📋 Registrations
+                            </button>
+                            <button
+                                className={`${styles.tabButton} ${activeTab === 'quests' ? styles.tabActive : ''}`}
+                                onClick={() => setActiveTab('quests')}
+                            >
+                                ⚔️ Quest Management
+                            </button>
                         </div>
                     </div>
                 </section>
 
-                {/* Table Section */}
-                <section className={styles.tableSection}>
-                    <div className={styles.container}>
-                        {loading ? (
-                            <div className={styles.loadingState}>
-                                <i className="hn hn-loading"></i>
-                                <p>Loading registrations...</p>
+                {activeTab === 'registrations' && (
+                    <>
+                        {/* Controls Section */}
+                        <section className={styles.controlsSection}>
+                            <div className={styles.container}>
+                                <div className={styles.controls}>
+                                    <div className={styles.filters}>
+                                        <button
+                                            className={filter === 'all' ? styles.filterActive : ''}
+                                            onClick={() => handleFilterChange('all')}
+                                        >
+                                            All
+                                        </button>
+                                        <button
+                                            className={filter === 'pending' ? styles.filterActive : ''}
+                                            onClick={() => handleFilterChange('pending')}
+                                        >
+                                            Pending
+                                        </button>
+                                        <button
+                                            className={filter === 'approved' ? styles.filterActive : ''}
+                                            onClick={() => handleFilterChange('approved')}
+                                        >
+                                            Approved
+                                        </button>
+                                        <button
+                                            className={filter === 'rejected' ? styles.filterActive : ''}
+                                            onClick={() => handleFilterChange('rejected')}
+                                        >
+                                            Rejected
+                                        </button>
+                                    </div>
+
+                                    <div className={styles.rightControls}>
+                                        <div className={styles.searchWrapper}>
+                                            <i className="hn hn-search"></i>
+                                            <input
+                                                type="text"
+                                                placeholder="Search teams..."
+                                                value={searchTerm}
+                                                onChange={(e) => handleSearchChange(e.target.value)}
+                                                className={styles.searchInput}
+                                            />
+                                        </div>
+
+                                        <button
+                                            onClick={openExportModal}
+                                            className={styles.exportButton}
+                                        >
+                                            <i className="hn hn-download"></i> Export Excel
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                        ) : registrations.length === 0 ? (
-                            <div className={styles.emptyState}>
-                                <i className="hn hn-inbox"></i>
-                                <p>No registrations found</p>
+                        </section>
+
+                        {/* Table Section */}
+                        <section className={styles.tableSection}>
+                            <div className={styles.container}>
+                                {loading ? (
+                                    <div className={styles.loadingState}>
+                                        <i className="hn hn-loading"></i>
+                                        <p>Loading registrations...</p>
+                                    </div>
+                                ) : registrations.length === 0 ? (
+                                    <div className={styles.emptyState}>
+                                        <i className="hn hn-inbox"></i>
+                                        <p>No registrations found</p>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className={styles.tableWrapper}>
+                                            <table className={styles.dataTable}>
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Team Name</th>
+                                                        <th>Members</th>
+                                                        <th>Contact Email</th>
+                                                        <th>Registered</th>
+                                                        <th>Status</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {registrations.map((reg, index) => (
+                                                        <tr key={reg.userId}>
+                                                            <td className={styles.rowNum}>
+                                                                {((currentPage - 1) * pageSize) + index + 1}
+                                                            </td>
+                                                            <td className={styles.teamName}>{reg.teamName}</td>
+                                                            <td>{reg.members.length}</td>
+                                                            <td className={styles.email}>{reg.userEmail}</td>
+                                                            <td className={styles.date}>
+                                                                {reg.timestamp.toDate().toLocaleDateString()}
+                                                            </td>
+                                                            <td>
+                                                                <span className={`${styles.statusBadge} ${styles[reg.status]}`}>
+                                                                    {reg.status}
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <button
+                                                                    className={styles.viewButton}
+                                                                    onClick={() => handleViewDetails(reg)}
+                                                                >
+                                                                    <i className="hn hn-eye"></i> View
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        {/* Pagination */}
+                                        {totalCount > pageSize && (
+                                            <div className={styles.pagination}>
+                                                <span className={styles.paginationInfo}>
+                                                    Showing {((currentPage - 1) * pageSize) + 1}-{Math.min(currentPage * pageSize, totalCount)} of {totalCount}
+                                                </span>
+                                                <div className={styles.paginationButtons}>
+                                                    <button
+                                                        onClick={handlePrevPage}
+                                                        disabled={currentPage === 1}
+                                                        className={styles.paginationBtn}
+                                                    >
+                                                        <i className="hn hn-arrow-left"></i>
+                                                    </button>
+                                                    {Array.from({ length: Math.ceil(totalCount / pageSize) }, (_, i) => i + 1)
+                                                        .filter(page => {
+                                                            const totalPages = Math.ceil(totalCount / pageSize);
+                                                            return page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1;
+                                                        })
+                                                        .map((page, idx, arr) => {
+                                                            const prevPage = arr[idx - 1];
+                                                            const showEllipsis = prevPage && page - prevPage > 1;
+                                                            return (
+                                                                <span key={page} style={{ display: 'flex', alignItems: 'center' }}>
+                                                                    {showEllipsis && <span className={styles.ellipsis}>...</span>}
+                                                                    <button
+                                                                        onClick={() => handlePageJump(page)}
+                                                                        className={`${styles.pageBtn} ${page === currentPage ? styles.pageBtnActive : ''}`}
+                                                                    >
+                                                                        {page}
+                                                                    </button>
+                                                                </span>
+                                                            );
+                                                        })}
+                                                    <button
+                                                        onClick={handleNextPage}
+                                                        disabled={!hasMore}
+                                                        className={styles.paginationBtn}
+                                                    >
+                                                        <i className="hn hn-arrow-right"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </>
+                                )}
                             </div>
-                        ) : (
-                            <>
+                        </section>
+                    </>
+                )}
+
+                {/* ==================== QUEST MANAGEMENT TAB ==================== */}
+                {activeTab === 'quests' && (
+                    <section className={styles.tableSection}>
+                        <div className={styles.container}>
+                            {/* Quest Controls */}
+                            <div className={styles.controls} style={{ marginBottom: 'var(--space-6)' }}>
+                                <h2 style={{ fontFamily: 'var(--font-pixel)', fontSize: '0.9rem', color: 'var(--accent-gold)' }}>
+                                    ⚔️ Problem Statements ({quests.length})
+                                </h2>
+                                <button onClick={openAddQuestModal} className={styles.exportButton}>
+                                    ➕ Add Quest
+                                </button>
+                            </div>
+
+                            {questsLoading ? (
+                                <div className={styles.loadingState}>
+                                    <i className="hn hn-loading"></i>
+                                    <p>Loading quests...</p>
+                                </div>
+                            ) : quests.length === 0 ? (
+                                <div className={styles.emptyState}>
+                                    <i className="hn hn-inbox"></i>
+                                    <p>No problem statements added yet</p>
+                                </div>
+                            ) : (
                                 <div className={styles.tableWrapper}>
                                     <table className={styles.dataTable}>
                                         <thead>
                                             <tr>
                                                 <th>#</th>
-                                                <th>Team Name</th>
-                                                <th>Members</th>
-                                                <th>Contact Email</th>
-                                                <th>Registered</th>
-                                                <th>Status</th>
+                                                <th>Title</th>
+                                                <th>Description</th>
+                                                <th>Max Teams</th>
+                                                <th>Selected</th>
+                                                <th>Remaining</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {registrations.map((reg, index) => (
-                                                <tr key={reg.userId}>
-                                                    <td className={styles.rowNum}>
-                                                        {((currentPage - 1) * pageSize) + index + 1}
+                                            {quests.map((quest, index) => (
+                                                <tr key={quest.id}>
+                                                    <td className={styles.rowNum}>{index + 1}</td>
+                                                    <td className={styles.teamName}>{quest.title}</td>
+                                                    <td className={styles.email} style={{ maxWidth: '250px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                                        {quest.description}
                                                     </td>
-                                                    <td className={styles.teamName}>{reg.teamName}</td>
-                                                    <td>{reg.members.length}</td>
-                                                    <td className={styles.email}>{reg.userEmail}</td>
-                                                    <td className={styles.date}>
-                                                        {reg.timestamp.toDate().toLocaleDateString()}
-                                                    </td>
+                                                    <td>{quest.maxTeams}</td>
                                                     <td>
-                                                        <span className={`${styles.statusBadge} ${styles[reg.status]}`}>
-                                                            {reg.status}
+                                                        <span className={`${styles.statusBadge} ${(quest.selectedBy?.length || 0) >= quest.maxTeams ? styles.rejected : styles.approved}`}>
+                                                            {quest.selectedBy?.length || 0}
                                                         </span>
                                                     </td>
+                                                    <td>{quest.maxTeams - (quest.selectedBy?.length || 0)}</td>
                                                     <td>
-                                                        <button
-                                                            className={styles.viewButton}
-                                                            onClick={() => handleViewDetails(reg)}
-                                                        >
-                                                            <i className="hn hn-eye"></i> View
-                                                        </button>
+                                                        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                                                            <button className={styles.viewButton} onClick={() => setViewingQuestSelections(quest)}>
+                                                                👥 Selections
+                                                            </button>
+                                                            <button className={styles.viewButton} onClick={() => openEditQuestModal(quest)}>
+                                                                ✏️ Edit
+                                                            </button>
+                                                            <button className={styles.viewButton} style={{ color: '#F87171' }} onClick={() => handleDeleteQuest(quest)}>
+                                                                🗑️ Delete
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             ))}
                                         </tbody>
                                     </table>
                                 </div>
-
-                                {/* Pagination */}
-                                {totalCount > pageSize && (
-                                    <div className={styles.pagination}>
-                                        <span className={styles.paginationInfo}>
-                                            Showing {((currentPage - 1) * pageSize) + 1}-{Math.min(currentPage * pageSize, totalCount)} of {totalCount}
-                                        </span>
-                                        <div className={styles.paginationButtons}>
-                                            <button
-                                                onClick={handlePrevPage}
-                                                disabled={currentPage === 1}
-                                                className={styles.paginationBtn}
-                                            >
-                                                <i className="hn hn-arrow-left"></i>
-                                            </button>
-                                            {Array.from({ length: Math.ceil(totalCount / pageSize) }, (_, i) => i + 1)
-                                                .filter(page => {
-                                                    const totalPages = Math.ceil(totalCount / pageSize);
-                                                    return page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1;
-                                                })
-                                                .map((page, idx, arr) => {
-                                                    const prevPage = arr[idx - 1];
-                                                    const showEllipsis = prevPage && page - prevPage > 1;
-                                                    return (
-                                                        <span key={page} style={{ display: 'flex', alignItems: 'center' }}>
-                                                            {showEllipsis && <span className={styles.ellipsis}>...</span>}
-                                                            <button
-                                                                onClick={() => handlePageJump(page)}
-                                                                className={`${styles.pageBtn} ${page === currentPage ? styles.pageBtnActive : ''}`}
-                                                            >
-                                                                {page}
-                                                            </button>
-                                                        </span>
-                                                    );
-                                                })}
-                                            <button
-                                                onClick={handleNextPage}
-                                                disabled={!hasMore}
-                                                className={styles.paginationBtn}
-                                            >
-                                                <i className="hn hn-arrow-right"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                )}
-                            </>
-                        )}
-                    </div>
-                </section>
+                            )}
+                        </div>
+                    </section>
+                )}
             </main>
+
+            {/* Quest Selections Modal */}
+            {viewingQuestSelections && (
+                <div className={styles.modalOverlay} onClick={() => setViewingQuestSelections(null)}>
+                    <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+                        <div className={styles.modalHeader}>
+                            <h2>👥 Selections: {viewingQuestSelections.title}</h2>
+                            <button className={styles.modalClose} onClick={() => setViewingQuestSelections(null)}>
+                                <i className="hn hn-close"></i>
+                            </button>
+                        </div>
+                        <div className={styles.modalBody}>
+                            <p style={{ marginBottom: '1rem', color: 'var(--text-secondary)' }}>
+                                {viewingQuestSelections.selectedBy?.length || 0} / {viewingQuestSelections.maxTeams} teams selected
+                            </p>
+                            {(!viewingQuestSelections.selectedBy || viewingQuestSelections.selectedBy.length === 0) ? (
+                                <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '2rem' }}>No teams have selected this quest yet</p>
+                            ) : (
+                                <div className={styles.membersList}>
+                                    {viewingQuestSelections.selectedBy.map((sel: QuestSelection, idx: number) => (
+                                        <div key={idx} className={styles.memberCard}>
+                                            <div className={styles.memberNumber}>#{idx + 1}</div>
+                                            <div className={styles.memberDetails}>
+                                                <span className={styles.memberName}>{sel.teamName}</span>
+                                                <span className={styles.memberInfo}>
+                                                    <i className="hn hn-email"></i> {sel.userEmail}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Add/Edit Quest Modal */}
+            {isQuestModalOpen && (
+                <div className={styles.modalOverlay} onClick={closeQuestModal}>
+                    <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+                        <div className={styles.modalHeader}>
+                            <h2>{editingQuest ? '✏️ Edit Quest' : '➕ Add New Quest'}</h2>
+                            <button className={styles.modalClose} onClick={closeQuestModal}>
+                                <i className="hn hn-close"></i>
+                            </button>
+                        </div>
+                        <div className={styles.modalBody}>
+                            <div className={styles.formGroup || ''} style={{ marginBottom: '1.5rem' }}>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Title</label>
+                                <input
+                                    type="text"
+                                    value={questForm.title}
+                                    onChange={(e) => setQuestForm(prev => ({ ...prev, title: e.target.value }))}
+                                    placeholder="Problem statement title"
+                                    style={{ width: '100%', padding: '0.75rem', background: 'var(--bg-darker)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: 'var(--text-primary)', fontSize: '0.9rem' }}
+                                />
+                            </div>
+                            <div style={{ marginBottom: '1.5rem' }}>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Description</label>
+                                <textarea
+                                    value={questForm.description}
+                                    onChange={(e) => setQuestForm(prev => ({ ...prev, description: e.target.value }))}
+                                    placeholder="Problem statement description"
+                                    rows={4}
+                                    style={{ width: '100%', padding: '0.75rem', background: 'var(--bg-darker)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: 'var(--text-primary)', fontSize: '0.9rem', resize: 'vertical', fontFamily: 'inherit' }}
+                                />
+                            </div>
+                            <div style={{ marginBottom: '1.5rem' }}>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Max Teams (selection limit)</label>
+                                <input
+                                    type="number"
+                                    value={questForm.maxTeams}
+                                    onChange={(e) => setQuestForm(prev => ({ ...prev, maxTeams: parseInt(e.target.value) || 1 }))}
+                                    min={1}
+                                    max={100}
+                                    style={{ width: '120px', padding: '0.75rem', background: 'var(--bg-darker)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: 'var(--text-primary)', fontSize: '0.9rem' }}
+                                />
+                            </div>
+                        </div>
+                        <div className={styles.modalActions}>
+                            <button className={styles.exportCancelBtn} onClick={closeQuestModal} disabled={questSaving}>Cancel</button>
+                            <button className={styles.exportConfirmBtn} onClick={handleSaveQuest} disabled={questSaving}>
+                                {questSaving ? '⏳ Saving...' : (editingQuest ? '💾 Update Quest' : '➕ Add Quest')}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
             <Footer />
 
             {/* Detail Modal */}
@@ -723,6 +1027,29 @@ export default function AdminPage() {
                             <div className={styles.modalSection}>
                                 <h3><i className="hn hn-email"></i> Registration Email</h3>
                                 <p className={styles.contactEmail}>{selectedRegistration.userEmail}</p>
+                            </div>
+
+                            {/* Selected Quest / Problem Statement */}
+                            <div className={styles.modalSection}>
+                                <h3>📜 Selected Problem Statement</h3>
+                                {(() => {
+                                    const selectedQuest = quests.find(q =>
+                                        q.selectedBy?.some(s => s.userId === selectedRegistration.userId)
+                                    );
+                                    return selectedQuest ? (
+                                        <div style={{
+                                            padding: '0.75rem 1rem',
+                                            background: 'rgba(100, 149, 237, 0.08)',
+                                            border: '1px solid rgba(100, 149, 237, 0.2)',
+                                            borderRadius: '8px',
+                                        }}>
+                                            <p style={{ color: '#e0e0ff', fontWeight: 600, marginBottom: '0.25rem' }}>{selectedQuest.title}</p>
+                                            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', lineHeight: 1.6 }}>{selectedQuest.description}</p>
+                                        </div>
+                                    ) : (
+                                        <p style={{ color: 'rgba(255,255,255,0.35)', fontStyle: 'italic' }}>No quest selected yet</p>
+                                    );
+                                })()}
                             </div>
 
                             {/* Reference/Referred By */}
@@ -872,6 +1199,14 @@ export default function AdminPage() {
                                         onChange={() => toggleExportField('memberPhones')}
                                     />
                                     <span>Member Phones</span>
+                                </label>
+                                <label className={styles.exportFieldItem}>
+                                    <input
+                                        type="checkbox"
+                                        checked={exportFields.problemStatement}
+                                        onChange={() => toggleExportField('problemStatement')}
+                                    />
+                                    <span>Problem Statement</span>
                                 </label>
                             </div>
 

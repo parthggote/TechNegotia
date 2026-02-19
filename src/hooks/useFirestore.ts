@@ -140,7 +140,9 @@ export const useFirestore = <T extends DocumentData>(): UseFirestoreReturn<T> =>
 };
 
 /**
- * Custom hook for real-time collection subscription
+ * Custom hook for real-time collection subscription.
+ * Uses a stable key for options to prevent infinite re-subscribe
+ * when callers pass inline option objects.
  */
 export const useCollection = <T extends DocumentData>(
     collectionName: string,
@@ -150,9 +152,15 @@ export const useCollection = <T extends DocumentData>(
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
+    // Stable dependency key — JSON.stringify is safe for shallow option objects
+    const optionsKey = JSON.stringify(options);
+
     useEffect(() => {
         setLoading(true);
         setError(null);
+
+        // Parse back from the stable key
+        const parsedOptions = optionsKey ? JSON.parse(optionsKey) : undefined;
 
         const unsubscribe: Unsubscribe | null = subscribeToCollection<T>(
             collectionName,
@@ -160,7 +168,7 @@ export const useCollection = <T extends DocumentData>(
                 setData(documents);
                 setLoading(false);
             },
-            options
+            parsedOptions
         );
 
         if (!unsubscribe) {
@@ -173,7 +181,7 @@ export const useCollection = <T extends DocumentData>(
                 unsubscribe();
             }
         };
-    }, [collectionName, options]);
+    }, [collectionName, optionsKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
     return { data, loading, error };
 };

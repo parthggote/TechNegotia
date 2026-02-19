@@ -1,7 +1,7 @@
 'use client';
 
 // Custom React hook for Firebase Authentication
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { User as FirebaseUser, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import {
@@ -28,12 +28,19 @@ interface UseAuthReturn {
 
 /**
  * Custom hook for Firebase Authentication
- * Provides auth state and helper functions
+ * Provides auth state and helper functions.
+ *
+ * Uses a ref to track in-progress operations so that onAuthStateChanged
+ * doesn't prematurely clear the loading state while an operation is running.
  */
 export const useAuth = (): UseAuthReturn => {
     const [user, setUser] = useState<FirebaseUser | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+
+    // Tracks whether an auth operation (signUp/signIn/signOut etc.) is in progress.
+    // Prevents onAuthStateChanged from setting loading=false mid-operation.
+    const operationInProgress = useRef(false);
 
     useEffect(() => {
         if (!auth) {
@@ -47,7 +54,10 @@ export const useAuth = (): UseAuthReturn => {
             auth,
             (user) => {
                 setUser(user);
-                setLoading(false);
+                // Only clear loading if no manual operation is running
+                if (!operationInProgress.current) {
+                    setLoading(false);
+                }
                 setError(null);
             },
             (error) => {
@@ -61,81 +71,65 @@ export const useAuth = (): UseAuthReturn => {
         return () => unsubscribe();
     }, []);
 
-    const signUp = async (
+    /**
+     * Wraps an async auth operation with loading/error state management.
+     * Sets the ref so onAuthStateChanged doesn't prematurely clear loading.
+     */
+    const withOperation = useCallback(async <T>(
+        fn: () => Promise<FirebaseResult<T>>,
+        errorLabel: string
+    ): Promise<FirebaseResult<T>> => {
+        operationInProgress.current = true;
+        setLoading(true);
+        setError(null);
+
+        const result = await fn();
+
+        if (!result.success) {
+            setError(result.error || errorLabel);
+        }
+
+        operationInProgress.current = false;
+        setLoading(false);
+        return result;
+    }, []);
+
+    const signUp = useCallback(async (
         email: string,
         password: string,
         displayName?: string
     ): Promise<FirebaseResult<FirebaseUser>> => {
-        setLoading(true);
-        setError(null);
-        const result = await firebaseSignUp(email, password, displayName);
-        if (!result.success) {
-            setError(result.error || 'Sign up failed');
-        }
-        setLoading(false);
-        return result;
-    };
+        return withOperation(() => firebaseSignUp(email, password, displayName), 'Sign up failed');
+    }, [withOperation]);
 
-    const signIn = async (
+    const signIn = useCallback(async (
         email: string,
         password: string
     ): Promise<FirebaseResult<FirebaseUser>> => {
-        setLoading(true);
-        setError(null);
-        const result = await firebaseSignIn(email, password);
-        if (!result.success) {
-            setError(result.error || 'Sign in failed');
-        }
-        setLoading(false);
-        return result;
-    };
+        return withOperation(() => firebaseSignIn(email, password), 'Sign in failed');
+    }, [withOperation]);
 
-    const signInWithGoogle = async (): Promise<FirebaseResult<FirebaseUser>> => {
-        setLoading(true);
-        setError(null);
-        const result = await firebaseGoogleSignIn();
-        if (!result.success) {
-            setError(result.error || 'Google sign in failed');
-        }
-        setLoading(false);
-        return result;
-    };
+    const signInWithGoogle = useCallback(async (): Promise<FirebaseResult<FirebaseUser>> => {
+        return withOperation(() => firebaseGoogleSignIn(), 'Google sign in failed');
+    }, [withOperation]);
 
-    const signOut = async (): Promise<FirebaseResult<void>> => {
-        setLoading(true);
-        setError(null);
-        const result = await firebaseSignOut();
-        if (!result.success) {
-            setError(result.error || 'Sign out failed');
-        }
-        setLoading(false);
-        return result;
-    };
+    const signOut = useCallback(async (): Promise<FirebaseResult<void>> => {
+        return withOperation(() => firebaseSignOut(), 'Sign out failed');
+    }, [withOperation]);
 
-    const resetPassword = async (email: string): Promise<FirebaseResult<void>> => {
-        setLoading(true);
-        setError(null);
-        const result = await firebaseResetPassword(email);
-        if (!result.success) {
-            setError(result.error || 'Password reset failed');
-        }
-        setLoading(false);
-        return result;
-    };
+    const resetPassword = useCallback(async (email: string): Promise<FirebaseResult<void>> => {
+        return withOperation(() => firebaseResetPassword(email), 'Password reset failed');
+    }, [withOperation]);
 
-    const updateProfile = async (
+    const updateProfile = useCallback(async (
         displayName?: string,
         photoURL?: string
     ): Promise<FirebaseResult<void>> => {
-        setLoading(true);
-        setError(null);
-        const result = await firebaseUpdateProfile(displayName, photoURL);
-        if (!result.success) {
-            setError(result.error || 'Profile update failed');
-        }
-        setLoading(false);
-        return result;
-    };
+        return withOperation(
+            () => firebaseUpdateProfile(displayName, photoURL),
+            'Profile update failed'
+        );
+    }, [withOperation]);
 
     return {
         user,

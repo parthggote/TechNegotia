@@ -315,3 +315,181 @@
 }
 
 /* Cards removed */
+
+/* ===== Quest Portal Button ===== */
+.questPortalSection {
+    padding: var(--space-8) 0;
+    background: var(--bg-dark);
+    position: relative;
+    overflow: hidden;
+}
+
+.questPortalWrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.questPortalButton {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-family: var(--font-pixel);
+    font-size: clamp(0.6rem, 1.5vw, 0.85rem);
+    padding: var(--space-5) var(--space-8);
+    color: var(--bg-darker);
+    background: var(--gradient-gold);
+    border: none;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    overflow: hidden;
+    box-shadow:
+        0 4px 0 #b87a15,
+        0 0 25px rgba(244, 160, 32, 0.4),
+        0 0 50px rgba(244, 160, 32, 0.2);
+    animation: questGlow 2s ease-in-out infinite alternate;
+    transition: all 200ms ease;
+    z-index: 1;
+}
+
+@keyframes questGlow {
+    0% {
+        box-shadow:
+            0 4px 0 #b87a15,
+            0 0 20px rgba(244, 160, 32, 0.3),
+            0 0 40px rgba(244, 160, 32, 0.15);
+    }
+
+    100% {
+        box-shadow:
+            0 4px 0 #b87a15,
+            0 0 35px rgba(244, 160, 32, 0.6),
+            0 0 70px rgba(244, 160, 32, 0.3),
+            0 0 100px rgba(244, 160, 32, 0.15);
+    }
+}
+
+.questPortalButton:hover {
+    transform: translateY(-3px) scale(1.02);
+    color: var(--bg-darker);
+    box-shadow:
+        0 6px 0 #b87a15,
+        0 0 40px rgba(244, 160, 32, 0.7),
+        0 0 80px rgba(244, 160, 32, 0.4),
+        0 0 120px rgba(244, 160, 32, 0.2);
+}
+
+.questPortalButton:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #b87a15;
+}
+
+.questPortalGlow {
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    background: linear-gradient(45deg, #f4a020, #ffc857, #fb923c, #f4a020);
+    background-size: 300% 300%;
+    animation: glowShift 3s ease infinite;
+    z-index: -1;
+    filter: blur(8px);
+    opacity: 0.6;
+}
+
+@keyframes glowShift {
+
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+.questPortalIcon {
+    font-size: 1.2em;
+    animation: swordSwing 2s ease-in-out infinite;
+}
+
+@keyframes swordSwing {
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(-10deg);
+    }
+
+    75% {
+        transform: rotate(10deg);
+    }
+}
+
+.questPortalText {
+    position: relative;
+}
+
+.questPortalArrow {
+    transition: transform 200ms ease;
+    font-size: 1.1em;
+}
+
+.questPortalButton:hover .questPortalArrow {
+    transform: translateX(4px);
+}
+
+/* Tooltip */
+.questTooltip {
+    position: absolute;
+    bottom: calc(100% + 16px);
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(244, 160, 32, 0.2);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: all 250ms ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    z-index: 10;
+}
+
+.questTooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: rgba(244, 160, 32, 0.2);
+}
+
+.questPortalWrapper:hover .questTooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+@media (max-width: 576px) {
+    .questPortalButton {
+        font-size: 0.55rem;
+        padding: var(--space-4) var(--space-5);
+    }
+
+    .questTooltip {
+        font-size: 0.7rem;
+        white-space: normal;
+        width: 250px;
+        text-align: center;
+    }
+}
