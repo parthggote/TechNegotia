@@ -12,8 +12,8 @@ const MOBILE_VIDEO = "/video (3).mp4";
 /** Mobile breakpoint in pixels */
 const MOBILE_BREAKPOINT = 768;
 
-/** Quest release time — Feb 20, 2026 12:00 PM IST (UTC+5:30 = 06:30 UTC) */
-const QUEST_RELEASE_TIME = new Date('2026-02-20T06:30:00Z').getTime();
+/** Quest release time — Feb 20, 2026 9:00 AM IST (UTC+5:30 = 03:30 UTC) */
+const QUEST_RELEASE_TIME = new Date('2026-02-20T03:30:00Z').getTime();
 
 type HeroProps = {
     /** Called when user taps "Sign In / Sign Up" in the hero (opens auth modal on home) */

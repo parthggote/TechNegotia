@@ -56,9 +56,9 @@
     to {
         transform: rotate(360deg);
     }
-}s
+}
 
-.authGate {
+s .authGate {
     display: flex;
     flex-direction: column;
     align-items: center;
