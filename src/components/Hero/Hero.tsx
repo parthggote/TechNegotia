@@ -12,8 +12,8 @@ const MOBILE_VIDEO = "/video (3).mp4";
 /** Mobile breakpoint in pixels */
 const MOBILE_BREAKPOINT = 768;
 
-/** Quest release time — Feb 20, 2026 12:00 PM IST (UTC+5:30 = 06:30 UTC) */
-const QUEST_RELEASE_TIME = new Date('2026-02-20T06:30:00Z').getTime();
+/** Quest release time — Feb 20, 2026 9:00 AM IST (UTC+5:30 = 03:30 UTC) */
+const QUEST_RELEASE_TIME = new Date('2026-02-20T03:30:00Z').getTime();
 
 type HeroProps = {
     /** Called when user taps "Sign In / Sign Up" in the hero (opens auth modal on home) */
@@ -27,11 +27,10 @@ export default function Hero({ onSignInClick }: HeroProps = {}) {
     const [isMobile, setIsMobile] = useState(false);
 
     // Countdown timer state
-    const [timeLeft, setTimeLeft] = useState(() => {
-        const diff = QUEST_RELEASE_TIME - Date.now();
-        return diff > 0 ? diff : 0;
-    });
-    const questsUnlocked = timeLeft <= 0;
+    // Countdown timer state — null until client mounts (avoids SSR hydration mismatch)
+    const [timeLeft, setTimeLeft] = useState<number | null>(null);
+    const questsUnlocked = timeLeft !== null && timeLeft <= 0;
+    const timerReady = timeLeft !== null;
 
     // Detect mobile viewport and switch video source
     useEffect(() => {
@@ -82,22 +81,24 @@ export default function Hero({ onSignInClick }: HeroProps = {}) {
         return () => window.removeEventListener("scroll", handleScroll);
     }, [isMobile]);
 
-    // Countdown ticker — updates every second
+    // Initialize + tick countdown — client-only to avoid hydration mismatch
     useEffect(() => {
-        if (questsUnlocked) return;
+        const computeDiff = () => {
+            const diff = QUEST_RELEASE_TIME - Date.now();
+            return diff > 0 ? diff : 0;
+        };
+
+        // Set initial value on mount
+        setTimeLeft(computeDiff());
 
         const interval = setInterval(() => {
-            const diff = QUEST_RELEASE_TIME - Date.now();
-            if (diff <= 0) {
-                setTimeLeft(0);
-                clearInterval(interval);
-            } else {
-                setTimeLeft(diff);
-            }
+            const diff = computeDiff();
+            setTimeLeft(diff);
+            if (diff <= 0) clearInterval(interval);
         }, 1000);
 
         return () => clearInterval(interval);
-    }, [questsUnlocked]);
+    }, []);
 
     // Format the countdown into hours/minutes/seconds
     const formatCountdown = (ms: number) => {
@@ -108,7 +109,7 @@ export default function Hero({ onSignInClick }: HeroProps = {}) {
         return { hours, minutes, seconds };
     };
 
-    const countdown = formatCountdown(timeLeft);
+    const countdown = formatCountdown(timeLeft ?? 0);
 
     return (
         <section className={styles.hero} ref={heroRef}>
@@ -181,13 +182,23 @@ export default function Hero({ onSignInClick }: HeroProps = {}) {
                             <div className={styles.questPortalBtnLocked}>
                                 <span className={styles.questPortalBtnIcon}>🔒</span>
                                 <span className={styles.questPortalBtnText}>Quests Unlock In</span>
-                                <div className={styles.questTimerInline}>
-                                    <span className={styles.timerDigit}>{String(countdown.hours).padStart(2, '0')}</span>
-                                    <span className={styles.timerSep}>:</span>
-                                    <span className={styles.timerDigit}>{String(countdown.minutes).padStart(2, '0')}</span>
-                                    <span className={styles.timerSep}>:</span>
-                                    <span className={styles.timerDigit}>{String(countdown.seconds).padStart(2, '0')}</span>
-                                </div>
+                                {timerReady ? (
+                                    <div className={styles.questTimerInline}>
+                                        <span className={styles.timerDigit}>{String(countdown.hours).padStart(2, '0')}</span>
+                                        <span className={styles.timerSep}>:</span>
+                                        <span className={styles.timerDigit}>{String(countdown.minutes).padStart(2, '0')}</span>
+                                        <span className={styles.timerSep}>:</span>
+                                        <span className={styles.timerDigit}>{String(countdown.seconds).padStart(2, '0')}</span>
+                                    </div>
+                                ) : (
+                                    <div className={styles.questTimerInline}>
+                                        <span className={styles.timerDigit}>--</span>
+                                        <span className={styles.timerSep}>:</span>
+                                        <span className={styles.timerDigit}>--</span>
+                                        <span className={styles.timerSep}>:</span>
+                                        <span className={styles.timerDigit}>--</span>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>
