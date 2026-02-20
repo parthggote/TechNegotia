@@ -86,6 +86,21 @@ export default function Header({ isAuthModalOpen: controlledAuthOpen, onOpenAuth
                         ))}
                     </ul>
 
+                    {/* Mobile: Sign In inside hamburger menu when not logged in */}
+                    {!user && (
+                        <button
+                            onClick={() => {
+                                openAuthModal();
+                                setIsMobileMenuOpen(false);
+                            }}
+                            className={styles.mobileNavSignInBtn}
+                            aria-label="Sign in or sign up"
+                        >
+                            <i className="hn hn-user"></i>
+                            Sign In / Sign Up
+                        </button>
+                    )}
+
                     {/* Mobile: Sign Out inside hamburger menu when logged in */}
                     {user && (
                         <button
@@ -104,39 +119,6 @@ export default function Header({ isAuthModalOpen: controlledAuthOpen, onOpenAuth
 
                 {/* Right Side Actions */}
                 <div className={styles.actions}>
-                    {/* Mobile auth: hidden when not logged in (Sign In in Join the Quest card); hidden when logged in (Sign Out is in hamburger menu) */}
-                    <div className={`${styles.mobileHeaderAuth} ${!user ? styles.mobileHeaderAuthSignInHidden : ""} ${user ? styles.mobileHeaderAuthLoggedInHidden : ""}`}>
-                        {!user ? (
-                            <button
-                                onClick={openAuthModal}
-                                className={styles.mobileSignInBtn}
-                                aria-label="Sign in or sign up"
-                            >
-                                <i className="hn hn-user"></i>
-                                Sign In / Sign Up
-                            </button>
-                        ) : (
-                            <>
-                                <Link
-                                    href="/register"
-                                    className={styles.mobileRegisterBtn}
-                                    aria-label="Register now"
-                                >
-                                    <i className="hn hn-sword"></i>
-                                    Register
-                                </Link>
-                                <button
-                                    onClick={handleSignOut}
-                                    className={styles.mobileSignOutBtn}
-                                    aria-label="Sign out"
-                                >
-                                    <i className="hn hn-logout"></i>
-                                    Sign Out
-                                </button>
-                            </>
-                        )}
-                    </div>
-
                     {/* Authentication Buttons - Desktop */}
                     {!user ? (
                         <button
